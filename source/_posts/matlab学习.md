@@ -239,4 +239,21 @@ while .. end
 switch .. case .. end
 ```
 
-![untitled](../images/untitled-1554820079963.png)
+
+
+###### 简单作图
+
+```matlab
+x = -2*pi : 0.1 : 2 * pi;
+y1 = sin(x);
+y2 = cos(x);
+plot(x, y1, '-b')	 % plot画线 '-b'蓝色
+hold on  			 %保持当前画的结果，否则蓝色线会被红色线覆盖
+plot(x, y2, '-r')	 % '-r'红色
+xlabel('x') 	%x轴添加一个标签
+ylabel('y') 	%y轴添加一个标签
+text(0,0, '(0,0)') 			 %在(0,0)这个位置标上一个字符串'(0,0)'
+legend('sin x', 'cos x')	 %图例
+```
+
+![1554820856374](/images/1554820856374.png)
