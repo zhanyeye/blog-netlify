@@ -231,3 +231,12 @@ ans =
 
 
 ###### 基本语句
+
+```matlab
+![untitled](C:/Users/zhany/Desktop/untitled.pngfor .. end
+if .. else .. end
+while .. end
+switch .. case .. end
+```
+
+![untitled](../images/untitled-1554820079963.png)
