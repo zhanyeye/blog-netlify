@@ -7,8 +7,6 @@ categories:
 - 数学建模
 ---
 
-### Chap1 MATLAB 入门基础
-
 
 
 ###### 数据的输入
@@ -554,136 +552,234 @@ K=shiftdim(H,2)      %  将各维向左移动2位，使2*3*3数组变成3*2*3数
 
 ###### 数据类型
 
-数值型
++ 数值型
 
+  ......
 
-逻辑型
-a=[1 2 3; 4 5 6]       %  创建测试矩阵
-B=a>5                    %  返回逻辑下标
-c=true(size(a))
-false([size(a),2])
++ 逻辑型
 
+```matlab
+>> a=[1 2 3; 4 5 6]       %  创建测试矩阵
+>> B=a>5                    %  返回逻辑下标
+B =    0   0   0
+   0   0   1
 
+>> c=true(size(a))
+c =   
+	1   1   1
+   	1   1   1
 
-下面自己练习，不再讲解
+>> false([size(a),2])  %=>  false(2, 3, 2])
+ans = 
+(:,:,1) =
+
+   0   0   0
+   0   0   0
+
+(:,:,2) =
+
+   0   0   0
+   0   0   0
+```
+
+练习
+
+```
 a=[1 2 3;4 5 6];
 b=[1 0 0;0 -2 1];
 A=a&b                %  逻辑“与”
 B=a|b                %  逻辑“或”
 C=~b                 %  逻辑“非”
+
 a=[1 1 0; 1 0 0;1 0 1]
 A=all(a)                %  每列元素均为非零时返回真
 B=any(a)                %  每列元素存在非零时返回真
-a=[0  -1  2];
-b=[-3  1  2];
-a<b                                %  对应元素比较大小
+
+>> a=[0  -1  2];
+>> b=[-3  1  2];
+>> a<b                                %  对应元素比较大小
+ans =    0   1   0
+
 a>b                                %  对应元素比较大小
 a<=b                                %  对应元素比较大小
 a>=b                                %  对应元素比较大小
 a==b                                %  对应元素比较相等
-a~=b                                %  对应元素比较不相等
-----------------------------
-运算符优先级，重要
-------------------------------
+>> a~=b                                %  对应元素比较不相等
+ans =    1   1   0
+```
 
 
-字符和字符串
-a='matlab'
-size(a)
-A='中文字符串输入演示'
-A(3:5)
-S=['This string array '
+
+
+
+###### 运算符优先级
+
+![1555136189103](/images/1555136189103.png)
+
+###### 字符和字符串
+
+```matlab
+>> a = 'matlab'
+a =
+matlab
+
+>> size(a)
+ans =
+     1     6
+>> A='中文字符串输入演示';
+>> A(3:5)
+ans =
+	字符串
+	
+>> S=['This string array '
 'has multiple rows.']
-a=char('这','字符','串数组','','由5 行组成')
+S = 
+This string array 
+has multiple rows.
+
+>> a=char('这','字符','串数组','','由5 行组成')
+a = 这     
+字符    
+串数组   
+      
+由5 行组成
 % 以字符最多的一行为准，而将其他行中的字符以空格补齐
-size(a)
-以下例题不讲，自己可以了解一下，字符串的较复杂操作数学建模中很少用
-str1 = 'hello';
-str2 = 'help';
-C = strcmp(str1,str2)
-C = strncmp(str1, str2, 2)      %  比较前两个字符
-str3 = 'Hello';
-D = strncmp(str1, str3,2)                % 对大小写敏感
-F = strncmpi(str1, str3,2)               % 对大小写不敏感
-A = 'fate';
-B = 'cake';
-A == B  %使用（==）运算符来判断两个字符串中有哪些字符相等
 
 
-结构数组
+```
 
-employee.name='henry';
-employee.sex='male';
-employee.age=25;
-employee.number=12345;
-employee
+
+
+###### 结构数组
+
+![1555136234814](/images/1555136234814.png)
+
+```matlab
+>> employee.name='henry';
+>> employee.sex='male';
+>> employee.age=25;
+>> employee.number=12345;
+>> employee
+employee =       
+	  name: 'henry'
+       sex: 'male'
+       age: 25
+    number: 12345
+
+
+```
 
 结构还可以通过赋值的方式扩展为结构数组
-employee(2).name='lee';
-employee(2).sex='female';
-employee(2).age=23;
-employee(2).number=98765;
-employee(2)
-employee                      %  查看employee结构数组
+
+```matlab
+>> employee(2).name='lee';
+>> employee(2).sex='female';
+>> employee(2).age=23;
+>> employee(2).number=98765;
+>> employee(2)
+employee =       
+	  name: 'henry'
+       sex: 'male'
+       age: 25
+    number: 12345
+    
+>> employee                      %  查看employee结构数组
+employee =     
+	name
+    sex
+    age
+    number
+
+
+```
+
 子域
 
-green_house.name='一号房'; 
-green_house.volume='2000 立方米'; 
-green_house.parameter.temperature=...
+```matlab
+>> green_house.name='一号房'; 
+>> green_house.volume='2000 立方米'; 
+>> green_house.parameter.temperature=...
 [31.2 30.4 31.6 28.7;29.7 31.1 30.9 29.6];       %子域温度
-green_house.parameter.humidity=...
+>> green_house.parameter.humidity=...
 [62.1 59.5 57.7 61.5;62.0 61.9 59.2 57.5];        %子域湿度
-green_house.parameter      %  显示域的内容
-green_house.parameter.temperature              %  显示子域中的内容
+>> green_house.parameter      %  显示域的内容
+ans =     temperature: [2×4 double]
+       humidity: [2×4 double]
+
+>> green_house.parameter.temperature              %  显示子域中的内容
+ans = 
+   31.2000   30.4000   31.6000   28.7000
+   29.7000   31.1000   30.9000   29.6000
+
+```
 
 
-以下内容数学建模不常用，感兴趣的了解一下
 
-USPres.name = 'Franklin D. Roosevelt';  
-USPres.vp(1) = {'John Garner'};
-USPres.vp(2) = {'Henry Wallace'};       
-USPres.vp(3) = {'Harry S Truman'};
-USPres.term = [1933, 1945];             
-USPres.party = 'Democratic';            %  创建包括4个域名的结构数组
-presFields = fieldnames(USPres)        %  使用fieldnames函数获取现有域名
-orderfields(USPres)            %  使用orderfields函数对域名按照字母顺序进行排序
-mystr1 = getfield(USPres, 'name')                  %  获取结构的域内容
-mystr2= setfield(USPres, 'name', 'ted')        %  设置结构的域内容
-USPres.name = 'Franklin D. Roosevelt';  
-USPres.vp(1) = {'John Garner'};
-USPres.vp(2) = {'Henry Wallace'};       
-USPres.vp(3) = {'Harry S Truman'};
-USPres.term = [1933, 1945];             
-USPres.party = 'Democratic';         	%  创建包括4个域名的结构数组
-USPres(3,2).name='Richard P. Jackson'	%  结构数组的扩展
-USPres(2,:)=[]       			%  通过对结构数组赋值为空矩阵来实现删除
+###### 元胞数组
 
-
-元胞数组
-
-
+![1555136644305](/images/1555136644305.png)
 
 创建元胞数组
 
-A = {[1 4 3; 0 5 8; 7 2 9], 'Anne Smith'; 3+7i, -pi:pi/4:pi}
-header = {'Name', 'Age', 'Pulse/Temp/BP'};    			%  元胞数组的创建
-records(1,:) = {'Kelly', 49, {58, 98.3, [103, 72]}};	%  嵌套元胞数组的创建
+```matlab
+>> A = {[1 4 3; 0 5 8; 7 2 9], 'Anne Smith'; 3+7i, -pi:pi/4:pi}
+A =           
+	[3×3 double]    'Anne Smith'
+    [3.0000 + 7.0000i]    [1×9 double]
+
+>> header = {'Name', 'Age', 'Pulse/Temp/BP'};    			%  元胞数组的创建
+>> records(1,:) = {'Kelly', 49, {58, 98.3, [103, 72]}};	%  嵌套元胞数组的创建
+```
+
 依次创建元胞数组
+
+```matlab
 clear
 A(1,1) = {[1 4 3; 0 5 8; 7 2 9]};
 A(1,2) = {'Anne Smith'};
 A(2,1) = {3+7i};
 A(2,2) = {-pi:pi/4:pi};
 A(3,3) = {5}
+A =           
+		  [3×3 double]    'Anne Smith'     []
+    [3.0000 + 7.0000i]    [1×9 double]     []
+                    []              []    [5]
 
-str=A{1,2}       %  返回字符型数组str，a{1,2}表示对应元胞的内容
-class(str)       %  查看变量str的数据类型，结果确为字符型
-str2=A(1,2)      %  a(1,2)表示元胞数组中的一个元胞
-class(str2)      %  查看变量str2的数据类型，结果为元胞数组
-[nrows, ncols] = cellfun(@size, A)        %  将size函数应用于每一个元胞元素
+>> str=A{1,2}       %  返回字符型数组str，a{1,2}表示对应元胞的内容
+str = 
+	'Anne Smith'
+>> class(str)       %  查看变量str的数据类型，结果确为字符型
+ans = 'char'
+
+>> str2=A(1,2)      %  a(1,2)表示元胞数组中的一个元胞
+str2 =
+  cell
+    'Anne Smith'
+>> class(str2)      %  查看变量str2的数据类型，结果为元胞数组
+ans = 'cell'
+
+>> [nrows, ncols] = cellfun(@size, A)        %  将size函数应用于每一个元胞元素
+ncols = 
+     3    10     0
+     1     9     0
+     0     0     1
+
+ncols = 
+     3    10     0
+     1     9     0
+     0     0     1
+
+
 cellplot(A)    %  以图片表示元胞数组的基本结构
+```
 
-日期和时间
+![1555137533427](/images/1555137533427.png)
+
+
+
+###### 日期和时间
+
+```matlab
 t = datetime(2017,8,28,6:7,0,0)
 t.Day
 t.Day = 27:28
@@ -697,28 +793,37 @@ d.Format = 'd'
 load('datahis.mat')   % 载入时间、风速、功率等测试数据
 plot(datahis0.t_his,datahis0.v)
 plot(datetime(datevec(datahis0.t_his)),datahis0.v)
+```
 
+###### Tables   表格数组
 
-Tables   表格数组
+```
 T = readtable('patients.dat')   % 读取表格数据
 T(1:5,1:5)
+```
+
 可通过以下方式直接创建
+
+```matlab
 LastName = {'Smith';'Johnson';'Williams';'Jones';'Brown'};
 Age = [38;43;38;40;49];
 Height = [71;69;64;67;64];
 Weight = [176;163;131;133;119];
 BloodPressure = [124 93; 109 77; 125 83; 117 75; 122 80];
 T = table(LastName,Age,Height,Weight,BloodPressure)
+```
 
 
-以下内容大家自己学习，课堂上不再详细讲解
 表可以像普通数值矩阵那样通过小括号加下标来进行寻访。除了数值和逻辑型下标之外，用户还可以使用变量名和行名来作为下标。例如本例中可以使用LastName作为行名，然后将这一列数据删除。
+
+```matlab
 clear
 T = readtable('patients.dat')   % 读取表格数据
 T.Properties.RowNames = T.LastName;
 T.LastName = [];
 size(T)                      %  查看当前表T的尺寸
 T(1:5,6:9)
+```
 
 基于已有变量（身高和体重）用户可以创建新的变量BMI，也就是体重指数。然后还可以添加变量的单位和描述等属性。
 T.BMI = (T.Weight*0.453592)./(T.Height*0.0254).^2;
@@ -726,20 +831,35 @@ T.Properties.VariableUnits{'BMI'} = 'kg/m^2';
 T.Properties.VariableDescriptions{'BMI'} = 'Body Mass Index';
 size(T)           %  查看当前表的尺寸
 
-导数
+###### 导数
+
+```
 A=randperm(9)                     %  生成随机数列
 B = diff(A)                        %  求数列的差分
 C = pascal(6)
 D = diff(C)              % 对矩阵C列方向各元素进行差分计算
+```
 
-梯度
-FX = gradient(F)：返回F的一维数值梯度，F是一个向量。
-[FX,FY] = gradient(F)：返回二维数值梯度的x和y部分，F是一个矩阵。
-[FX,FY,FZ,...] = gradient(F)：求高维矩阵F的数值梯度。
-[...] = gradient(F,h)：h是一个标量，用于指定各个方向上点之间的间距。
-[...] = gradient(F,h1,h2,...)：指定各个方向上的间距。
-v = -2:0.2:2;
-[x,y] = meshgrid(v);
-z = x .* exp(-x.^2 - y.^2);        %  创建测试数据
-[px,py] = gradient(z,.2,.2);       %  求梯度
-contour(v,v,z), hold on, quiver(v,v,px,py), hold off    %  绘制等高线和梯度方向
+
+
+###### 梯度
+
++ FX = gradient(F)：返回F的一维数值梯度，F是一个向量。
+
++ [FX,FY] = gradient(F)：返回二维数值梯度的x和y部分，F是一个矩阵。
+
++ [FX,FY,FZ,...] = gradient(F)：求高维矩阵F的数值梯度。
+
++ [...] = gradient(F,h)：h是一个标量，用于指定各个方向上点之间的间距。
+
++ [...] = gradient(F,h1,h2,...)：指定各个方向上的间距。
+
+  ```
+  v = -2:0.2:2;
+  [x,y] = meshgrid(v);
+  z = x .* exp(-x.^2 - y.^2);        %  创建测试数据
+  [px,py] = gradient(z,.2,.2);       %  求梯度
+  contour(v,v,z), hold on, quiver(v,v,px,py), hold off    %  绘制等高线和梯度方向
+  ```
+
+  
