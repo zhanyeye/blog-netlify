@@ -152,3 +152,4 @@ provident   a.有远见的, 未雨绸缪的  `/'prɒvɪd(ə)nt/ `
    antiquated  antique 古董的
    
    ```
+
