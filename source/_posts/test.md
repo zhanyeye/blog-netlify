@@ -17,7 +17,7 @@ plethora   n.过多，过剩   `/'pleθ(ə)rə/`
 - replete a.充满的 be ~ with (re:again)
 - deplete v.耗尽  (de:not)
 
-
+<!--more-->
 
 provident   a.有远见的, 未雨绸缪的  `/'prɒvɪd(ə)nt/ `
 
