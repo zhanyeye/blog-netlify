@@ -3,7 +3,7 @@ title: 19-04-28 Dijkstra 最短路径算法
 date: 2019-04-28 18:00:12
 tags:
 - 图
-categories：
+categories:
 - 算法
 ---
 
