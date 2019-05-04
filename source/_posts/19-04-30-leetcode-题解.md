@@ -57,7 +57,7 @@ public:
 };
 ```
 
-
+<!--more-->
 
 The basic idea is to maintain a hash table for each element `num` in `nums`, using `num` as key and its index (`0`-based) as value. For each `num`, search for `target - num` in the hash table. If it is found and is not the same element as `num`, then we are done.
 
