@@ -150,7 +150,7 @@ void dijkstra(int u) {
             return;
         }
         vis[min_index] = true;
-        for (int j = head[min_index]; ~j; j = e[j].next) {
+        for (int j = head[min_index]; ~j; j = e[j].next) { //去便利当前dis最小点的所有邻接点（便利链表）
             int v = e[j].v;
             int w = e[j].w;
             if (!vis[v] && dis[v] > dis[min_index] + w) {
