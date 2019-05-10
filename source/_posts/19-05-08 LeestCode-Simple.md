@@ -180,3 +180,60 @@ public:
 };
 ```
 
+
+
+###### 88. Merge Sorted Array
+
+Easy
+
+Given two sorted integer arrays *nums1* and *nums2*, merge *nums2* into *nums1* as one sorted array.
+
+**Note:**
+
+- The number of elements initialized in *nums1* and *nums2* are *m* and *n* respectively.
+- You may assume that *nums1* has enough space (size that is greater or equal to *m* + *n*) to hold additional elements from *nums2*.
+
+**Example:**
+
+```
+Input:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+Output: [1,2,2,3,5,6]
+```
+
+
+  因为是原地修改所以只能从后向前：
+
++ cur 表示当前要填充的位置，初始化为 m + n - 1
++ pm 指向 nums1  的最后一个元素，pn 指向num2 的最后一个元素
++ while cur >= 0 
+  + if pm < 0 ：将nums2 中剩余的元素插入到 nums1
+  + if pn < 0 ： nums2 中元素已经全部插完，return 
+  + else 选择 nums1[pm] 和 nums2[pn] 中小的插入 nums[cur]
+
+```c++
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int cur = m + n -1;
+        int pm = m - 1, pn = n - 1;
+        while (cur >= 0) {
+            if (pm < 0) {
+                nums1[cur--] = nums2[pn--];
+                continue;
+            }
+            if (pn < 0) {
+                return;
+            }
+            if (nums1[pm] > nums2[pn]) {
+                nums1[cur--] = nums1[pm--];    
+            } else {
+                nums1[cur--] = nums2[pn--];
+            }
+        }
+    }
+};
+```
+
