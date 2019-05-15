@@ -10,7 +10,7 @@ categories:
 
 
 
-###### Example 01 UI
+##### Example 01 UI
 
 > dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等
 > sp，描述字体大小
@@ -19,14 +19,12 @@ categories:
 
 
 RelativeLayout: 相对布局
-
 LinearLayout: 线性布局
-
 ConstraintLayout: 约束布局
 
 
 
-LinearLayout 主要属性
+###### LinearLayout 主要属性
 
 + android:orientation，LinearLayout方向
 + android:layout_gravity，控件本身的显示位置。仅在LinearLayout内有效，受android:orientation属性影响
@@ -35,7 +33,7 @@ LinearLayout 主要属性
 
 
 
-ConstraintLayout
+###### ConstraintLayout
 
 它的出现主要是为了解决布局嵌套过多的问题 [link](https://www.jianshu.com/p/17ec9bd6ca8a)
 
@@ -49,4 +47,35 @@ implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
 
 
-###### Example 02 Common Widgets
+##### Example 02 Common Widgets
+
+android:id属性，声明组件ID; 后端可以通过ID值获取组件对象
+
++ @+id，创建一个新ID
++ @id，引用一个ID
++ @，引用资源
++ @android:，引用android下自带资源
+
+```xml
+<TextView
+    android:id="@+id/textView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="基本文本显示" />
+
+<ImageView
+    android:id="@+id/imageView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:srcCompat="@android:drawable/ic_input_add" />
+```
+
+基本输入组件： Buttons；Text Fields；CheckBoxes；Radio Buttons；Toggle Buttons；ImageView；EditText
+
+other: imageview; progressBar; Seekbar; RatingBar;
+
+
+
+
+
+##### Example 03 UI-Events
