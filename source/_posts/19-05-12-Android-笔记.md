@@ -241,25 +241,25 @@ button = findViewById(R.id.act_main_button);
 </manifest >
 ```
 
-|                                                              |                                                              |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [onCreate()](https://developer.android.google.cn/reference/android/app/Activity.html#onCreate(android.os.Bundle)) | 系统会在创建 Activity 时调用此方法. <br />实现内初始化 Activity 的数据 .<br />必须在 [setContentView()](https://developer.android.google.cn/reference/android/app/Activity.html#setContentView(android.view.View)) 中定义 Activity 所使用的的layout文件.<br />onCreate() 完成后 下一步 就是 onStart(). |
-| [onStart()](https://developer.android.google.cn/reference/android/app/Activity.html#onStart()) | As `onCreate()` exits, the activity enters the Started state.<br />the activity becomes visible to the user.<br />This callback contains the activity’s final preparations for coming to the foreground and becoming interactive. |
-| [onPause()](https://developer.android.google.cn/reference/android/app/Activity.html#onPause()) | when the activity loses focus and enters a Paused state.<br />the activity will soon enter the **Stopped** or **Resumed** state.<br />may continue to update the UI if the user is expecting the UI to update (a media player playing). |
-| [onStop()](https://developer.android.google.cn/reference/android/app/Activity.html#onStop()) | when the activity is no longer visible to the user<br />may happen because the activity is being destroyedd, a new activity is starting, or an existing activity is entering a Resumed state and is covering the stopped activity<br />next callback that the system calls is either `onRestart()`  or  `onDestroy()` |
-| [onRestart()](https://developer.android.google.cn/reference/android/app/Activity.html#onRestart()) | when an activity in the Stopped state is about to restart<br />restores(恢复) the state of the activity from the time that it was stopped<br />This callback is always followed by `onStart()` |
-| [onDestroy()](https://developer.android.google.cn/reference/android/app/Activity.html#onDestroy()) | invokes this callback before an activity is destroyed<br />ensure that all of an activity’s resources are released |
+|             |                                                              |
+| ----------- | ------------------------------------------------------------ |
+| onCreate()  | 系统会在创建 Activity 时调用此方法. <br />实现内初始化 Activity 的数据 .<br />必须在 setContentView() 中定义 Activity 所使用的的layout文件.<br />onCreate() 完成后 下一步 就是 onStart(). |
+| onStart()   | As `onCreate()` exits, the activity enters the Started state.<br />the activity becomes visible to the user.<br />This callback contains the activity’s final preparations for coming to the foreground and becoming interactive. |
+| onPause()   | when the activity loses focus and enters a Paused state.<br />the activity will soon enter the **Stopped** or **Resumed** state.<br />may continue to update the UI if the user is expecting the UI to update (a media player playing). |
+| onStop()    | when the activity is no longer visible to the user<br />may happen because the activity is being destroyedd, a new activity is starting, or an existing activity is entering a Resumed state and is covering the stopped activity<br />next callback that the system calls is either `onRestart()`  or  `onDestroy()` |
+| onRestart() | when an activity in the Stopped state is about to restart<br />restores(恢复) the state of the activity from the time that it was stopped<br />This callback is always followed by `onStart()` |
+| onDestroy() | invokes this callback before an activity is destroyed<br />ensure that all of an activity’s resources are released |
 
 
 
-###### Common [Intents]((https://developer.android.google.cn/guide/components/intents-common.html) )
+###### Common [Intents](https://developer.android.google.cn/guide/components/intents-common.html)
 
 Intent在Android中的核心作用就是“跳转”,同时可以携带必要的信息，将Intent作为一个信息桥梁
 
 1. explicit intent : 显示跳转到下一个活动
 
    ```java
-   Intent intent = new Intent(this, SecondActivity.class);
+   Intent intent = new Intent(this, SecondActivity.class);  //上下文环境； 目的Activity
    startActivity(intent);   //startActivity方法
    ```
 
@@ -405,6 +405,111 @@ public class SecActivity extends AppCompatActivity {
 
 
 
-##### Example 06  RecyclerView
+##### Example 06  [RecyclerView](https://www.jianshu.com/p/4f9591291365)
 
- 
+
+
+> The views in the list are represented by *view holder*(视图持有者) objects. These objects are instances of a class you define by extending `RecyclerView.ViewHolder`. Each view holder is in charge of displaying a single item with a view. 
+> The `RecyclerView`creates only as many view holders as are needed to display the on-screen portion of the dynamic content, plus a few extra. As the user scrolls through the list, the `RecyclerView` takes the off-screen views and rebinds them to the data which is scrolling onto the screen.
+
+**配置**
+
+在对应的 `build.gradle`   文件中dependencies加上   
+
+```
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
+```
+
+布局
+
+Activity布局文件 activity_main.xml
+RecyclerView中item布局文件 item_1.xml
+	news_pic; news_title; news_subtitle
+
+
+
+创建实体类news封装数据  
+
+> 实体类属性 public ?     :谷歌虚拟机没有使用内联，减少损耗   故不建议使用 get/set ， 直接public
+
+
+
+创建自定义adapter
+
++ 在adapter中创建viewholder (在Adapter中创建一个**继承RecyclerView.ViewHolder**的静态内部类，记为VH)
++ adapter继承RecyclerView.Adapter，并声明VH泛型为自定义的VH类型
++ 在**Adapter中实现3个方法**
+  1. **onCreateViewHolder()**
+
+```java
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
+    private static final String TAG = "MainAdapter";
+    private List<News> news;
+
+    public MainAdapter(List<News> news) {
+        this.news = news;
+    }
+
+    /**
+     * 基于指定样式，渲染item，并将item对象绑定到viewholder
+     * 当回收缓存区没有vm时，回调
+     * 基于布局创建item对象，创建vm封装item对象，返回vm以复用
+     * 因此，仅会回调有限次数。不同系统版本，不同屏幕尺寸等等均不同
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.i(TAG, "onCreateViewHolder");
+        // 每一个item对象
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_news, parent, false);
+        // 由VM持有
+        return new MyViewHolder(itemView);
+    }
+
+    /**
+     * 当渲染指定位置item时，从回收缓存区注入一个相同布局类型的VH，以及item的位置
+     * 从vm中获取持有的控件对象，将指定集合位置的数据加载到控件，渲染
+     *
+     * @param holder
+     * @param position
+     */
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Log.i(TAG, "onBindViewHolder: " + position + "/" + news.get(position).title);
+        holder.title.setText(news.get(position).title);
+        holder.suttitle.setText(news.get(position).subtitle);
+        // 模拟图片
+        holder.pic.setImageResource(R.mipmap.ic_launcher);
+    }
+
+    // 必须指定初始化时item数量，后期可动态改变
+    @Override
+    public int getItemCount() {
+        return news.size();
+    }
+
+    /**
+     * VH的作用是保持item view上的控件对象的引用
+     * 避免在复用item上反复findViewById
+     */
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView title;
+        TextView suttitle;
+        ImageView pic;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.news_title);
+            suttitle = itemView.findViewById(R.id.news_subtitle);
+            pic = itemView.findViewById(R.id.news_pic);
+        }
+    }
+}
+
+```
+
