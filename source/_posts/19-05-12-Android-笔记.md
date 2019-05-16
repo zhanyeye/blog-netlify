@@ -8,8 +8,6 @@ categories:
 
 
 
-
-
 ##### Example 01 UI
 
 > dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等
@@ -89,16 +87,16 @@ other: imageview; progressBar; Seekbar; RatingBar;
 
 
 
-Android中Callback的设计与使用 ?
-理解掌握2种实现监听的方法?
+**Android中Callback的设计与使用 ? 理解掌握2种实现监听的方法?**
 
 + 匿名内部类、 lambda表达式 (set language level to 8)
 
-
+  
 
 `View.OnClickListener: onClick()`
 
 ```java
+buttonSubmit = findViewById(R.id.act_main_button_submit);
 //匿名内部类
 buttonSubmit.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -118,6 +116,8 @@ buttonSubmit.setOnClickListener(v -> {
 `EditText: TextChangedListener `
 
 ```java
+editTextNameChange  =findViewById(R.id.act_main_editText_change);
+
 editTextNameChange.addTextChangedListener(new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,4 +144,78 @@ View.OnKeyListener: onKey()
 ```
 
 
+
+
+
+##### Example 04 App Resources
+
+**各文件目录放置的资源?**
+
++ drawable : 图片相关的xml文件 (若图标有固定的尺寸，不需要更改，那么drawable更适合)
++ minmap :  图片相关的xml文件   (如果需要变大变小的，有动画的，放在mipmap中能有更高的质量)
++ Layout : 布局文件
++ value : 用于存放显示相的配置数据的定义文件，如strings.xml, style.xml, dimens.xml, arrays.xml, ids.xml等
+
+
+
+**R.java的作用与意义 ?**
+
++ R.java文件自动生成，用来定义Android程序中所有各类型的资源的索引。
+
++ 在java程序中引用资源 `R.resource_type.resource_name`
+
++ 在XML文件中引用资源 `@[package:]type/name`
+  @drawable/icon
+  @ 代表的是R.java类
+  `drawable` 代表的是`R.java`中的静态内部类 `drawable`
+  `/icon`代表静态内部类 `drawable` 中的静态属性 `icon`
+  如果访问的是Android系统中自带的文件，则要添加包名“Android:” `android:textColor="@android:color/red"`
+
++ 往R.java文件中添加一条资源记录
+
+  为组件添加Id属性作为标识:`@id+/name`
+
+
+
+自定义资源文件，创建字符串数组资源，添加ListView，引入自定义字符串数组至ListView显示
+
+```xml
+自定义资源文件 mysource.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="courses">
+        <item>C语言</item>
+        <item>Java语言</item>
+        <item>数据库原理</item>
+        <item>计算机网络</item>
+    </string-array>
+</resources>
+
+布局文件 activity_main.xml
+<ListView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:entries="@array/courses"></ListView>
+```
+
+定义字符串数组资源，并在代码中通过R调用
+
+```java
+button = findViewById(R.id.act_main_button);
+```
+
+
+
+[Resources Overview](https://developer.android.google.cn/guide/topics/resources/overview.html)  
+
+[Providing Resources](https://developer.android.google.cn/guide/topics/resources/providing-resources.html)  
+
+[Accessing Resources](https://developer.android.google.cn/guide/topics/resources/accessing-resources.html)  
+
+[Resource Types](https://developer.android.google.cn/guide/topics/resources/available-resources.html)
+
+
+
+##### Example 05 Activities
 
