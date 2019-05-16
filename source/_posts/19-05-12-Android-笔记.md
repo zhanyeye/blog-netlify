@@ -243,9 +243,9 @@ button = findViewById(R.id.act_main_button);
 
 |                                                              |                                                              |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [onCreate()](https://developer.android.google.cn/reference/android/app/Activity.html#onCreate(android.os.Bundle)) | 系统会在创建 Activity 时调用此方法 <br />实现内初始化 Activity 的数据 <br />必须在 [setContentView()](https://developer.android.google.cn/reference/android/app/Activity.html#setContentView(android.view.View)) 中定义 Activity 所使用的的layout文件<br />onCreate() 完成后 下一步 就是 onStart() |
-| [onStart()](https://developer.android.google.cn/reference/android/app/Activity.html#onStart()) | As `onCreate()` exits, the activity enters the Started state<br />the activity becomes visible to the user<br />This callback contains the activity’s final preparations for coming to the foreground and becoming interactive. |
-| [onPause()](https://developer.android.google.cn/reference/android/app/Activity.html#onPause()) | when the activity loses focus and enters a Paused state<br />the activity will soon enter the **Stopped** or **Resumed** state<br />may continue to update the UI if the user is expecting the UI to update (a media player playing) |
+| [onCreate()](https://developer.android.google.cn/reference/android/app/Activity.html#onCreate(android.os.Bundle)) | 系统会在创建 Activity 时调用此方法. <br />实现内初始化 Activity 的数据 .<br />必须在 [setContentView()](https://developer.android.google.cn/reference/android/app/Activity.html#setContentView(android.view.View)) 中定义 Activity 所使用的的layout文件.<br />onCreate() 完成后 下一步 就是 onStart(). |
+| [onStart()](https://developer.android.google.cn/reference/android/app/Activity.html#onStart()) | As `onCreate()` exits, the activity enters the Started state.<br />the activity becomes visible to the user.<br />This callback contains the activity’s final preparations for coming to the foreground and becoming interactive. |
+| [onPause()](https://developer.android.google.cn/reference/android/app/Activity.html#onPause()) | when the activity loses focus and enters a Paused state.<br />the activity will soon enter the **Stopped** or **Resumed** state.<br />may continue to update the UI if the user is expecting the UI to update (a media player playing). |
 | [onStop()](https://developer.android.google.cn/reference/android/app/Activity.html#onStop()) | when the activity is no longer visible to the user<br />may happen because the activity is being destroyedd, a new activity is starting, or an existing activity is entering a Resumed state and is covering the stopped activity<br />next callback that the system calls is either `onRestart()`  or  `onDestroy()` |
 | [onRestart()](https://developer.android.google.cn/reference/android/app/Activity.html#onRestart()) | when an activity in the Stopped state is about to restart<br />restores(恢复) the state of the activity from the time that it was stopped<br />This callback is always followed by `onStart()` |
 | [onDestroy()](https://developer.android.google.cn/reference/android/app/Activity.html#onDestroy()) | invokes this callback before an activity is destroyed<br />ensure that all of an activity’s resources are released |
@@ -401,3 +401,10 @@ public class SecActivity extends AppCompatActivity {
 
 ```
 
+
+
+
+
+##### Example 06  RecyclerView
+
+ 
