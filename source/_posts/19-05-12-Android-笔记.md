@@ -8,6 +8,16 @@ categories:
 
 
 
+
+
+在最前面：
+在AS中新建project 时，请勾上
+
++ This project will support instant apps
++ use androidx.* artifacts 避免版本依赖的问题
+
+
+
 ##### Example 01 UI
 
 > dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等
@@ -22,7 +32,7 @@ ConstraintLayout: 约束布局
 
 
 
-###### LinearLayout 主要属性
+LinearLayout 主要属性
 
 + android:orientation，LinearLayout方向
 + android:layout_gravity，控件本身的显示位置。仅在LinearLayout内有效，受android:orientation属性影响
@@ -136,12 +146,10 @@ editTextNameChange.addTextChangedListener(new TextWatcher() {
 });
 ```
 
-```java
-View.OnLongClickListener: onLongClick()
-View.OnFocusChangeListener: onFocusChange()
-View.OnTouchListener: onTouch()
-View.OnKeyListener: onKey()
-```
+`View.OnLongClickListener: onLongClick()`
+`View.OnFocusChangeListener: onFocusChange()`
+`View.OnTouchListener: onTouch()`
+`View.OnKeyListener: onKey()`
 
 
 
@@ -204,11 +212,8 @@ button = findViewById(R.id.act_main_button);
 
 
 [Resources Overview](https://developer.android.google.cn/guide/topics/resources/overview.html)  
-
 [Providing Resources](https://developer.android.google.cn/guide/topics/resources/providing-resources.html)  
-
 [Accessing Resources](https://developer.android.google.cn/guide/topics/resources/accessing-resources.html)  
-
 [Resource Types](https://developer.android.google.cn/guide/topics/resources/available-resources.html)
 
 
@@ -412,7 +417,7 @@ public class SecActivity extends AppCompatActivity {
 > The views in the list are represented by *view holder*(视图持有者) objects. These objects are instances of a class you define by extending `RecyclerView.ViewHolder`. Each view holder is in charge of displaying a single item with a view. 
 > The `RecyclerView`creates only as many view holders as are needed to display the on-screen portion of the dynamic content, plus a few extra. As the user scrolls through the list, the `RecyclerView` takes the off-screen views and rebinds them to the data which is scrolling onto the screen.
 
-**配置**
+配置
 
 在对应的 `build.gradle`   文件中dependencies加上   
 
@@ -439,7 +444,25 @@ RecyclerView中item布局文件 item_1.xml
 + 在adapter中创建viewholder (在Adapter中创建一个**继承RecyclerView.ViewHolder**的静态内部类，记为VH)
 + adapter继承RecyclerView.Adapter，并声明VH泛型为自定义的VH类型
 + 在**Adapter中实现3个方法**
+  
   1. **onCreateViewHolder()**
+  
+     > 这个方法主要**生成**为**每个Item [inflater](https://www.jianshu.com/p/cdc9d4c0826e?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)出一个View**，但是该方法**返回**的是一个**ViewHolder**。该方法把View直接封装在ViewHolder中，然后我们面向的是ViewHolder这个实例，当然这个ViewHolder需要我们自己去编写
+  
+  2. **onBindViewHolder()**
+  
+     > 这个方法主要用于**适配渲染数据到View**中。方法**提供**给你了一**viewHolder**而不是原来的convertView
+  
+  3. **getItemCount()**
+  
+     > 这个方法就**类似**于BaseAdapter的**getCount**方法了，即总共有多少个条目。
+
+
+
+重写getItemCount()方法返回集合元素数量，即需要渲染的item数量  
+重写onBindViewHolder()方法，当视图item滚动，绑定对应数据到item中的相应控件  
+重写onCreateViewHolder()方法，声明item布局样式，并将view item对象，交由viewholder持有  
+RecyclerView默认不包含点击事件及点击动画，需手动实现  
 
 ```java
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
@@ -452,8 +475,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
 
     /**
      * 基于指定样式，渲染item，并将item对象绑定到viewholder
-     * 当回收缓存区没有vm时，回调
-     * 基于布局创建item对象，创建vm封装item对象，返回vm以复用
+     * 当回收缓存区没有VH时，回调
+     * 基于布局创建item对象，创建VH封装item对象，返回VH以复用
      * 因此，仅会回调有限次数。不同系统版本，不同屏幕尺寸等等均不同
      *
      * @param parent
@@ -465,6 +488,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.i(TAG, "onCreateViewHolder");
         // 每一个item对象
+		//将一个xml布局文件转换成一个View
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_news, parent, false);
         // 由VM持有
@@ -511,5 +535,171 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
     }
 }
 
+```
+
+
+
+RecyclerView提供了**三种布局管理器**：
+- **LinerLayoutManager** 以**垂直**或者**水平列表**方式展示Item
+- **GridLayoutManager** 以**网格**方式展示Item
+- **StaggeredGridLayoutManager** 以**瀑布流**方式展示Item
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private MainAdapter adapter;
+    private Button button;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        recyclerView = findViewById(R.id.act_main_recyclerview);
+        // 指定一个默认的布局管理器
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        // 指定item插入/移除动画
+        // recyclerView.setItemAnimator(new DefaultItemAnimator());
+        // 指定item分割线
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        // 指定适配器
+        adapter = new MainAdapter(listNews());
+        recyclerView.setAdapter(adapter);
+
+        button = findViewById(R.id.act_main_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SecActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private List<News> listNews() {
+        News n1 = new News(1, "阿根廷VS波黑", "小组赛F组 阿根廷VS波黑");
+        News n2 = new News(2, "法国VS洪都拉斯", "小组赛E组 法国VS洪都拉斯");
+        News n3 = new News(3, "瑞士VS厄瓜多尔", "小组赛E组 瑞士VS厄瓜多尔");
+        News n4 = new News(4, "西班牙VS荷兰", "小组赛B组 西班牙VS荷兰");
+        News n5 = new News(5, "俄罗斯VS丹麦", "小组赛A组 俄罗斯VS丹麦");
+        News n6 = new News(6, "巴西VS意大利", "小组赛C组 巴西VS意大利");
+        News n7 = new News(7, "日本VS伊朗", "小组赛D组 日本VS伊朗");
+        List<News> news = new ArrayList<>();
+        news.add(n1); news.add(n2); news.add(n3); news.add(n4);
+        news.add(n5); news.add(n6); news.add(n7);
+        news.add(n1); news.add(n2); news.add(n3); news.add(n4);
+        return news;
+    }
+}
+
+```
+
+
+
+###### 需求OnItemClicklistener
+
++ 在item布局样式中添加点击波纹动画  
++ 在adapter onBindViewHolder()方法为item view设置点击监听  
++ 高级，自定义接口，实现在activity等的点击监听
+
+```xml
+//在RecyclerView.xml根元素加上属性：添加点击波纹动画  
+android:background="?android:attr/selectableItemBackground"
+android:clickable="true"
+android:focusable="true"
+```
+
+```java
+//在适配器中，自定义监听接口
+public interface OnItemClickListener {
+    void onItemClick(View view, int position, News news);
+}
+
+//onBindViewHolder()方法为item view设置点击监听 
+@Override
+public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    holder.title.setText(news.get(position).title);
+    holder.suttitle.setText(news.get(position).subtitle);
+    holder.pic.setImageResource(R.mipmap.ic_launcher);
+    holder.itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(context, news.get(position).title, Toast.LENGTH_SHORT).show();
+        }
+    });
+}
+```
+
+```java
+//实现在activity等的点击监听
+//在onCreate()中：
+button.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(SecActivity.this, ThirdActivity.class);
+        startActivity(i);
+    }
+});
+```
+
+
+
+###### SwipeRefreshLayout
++ 添加下拉刷新功能，将RecyclerView嵌入SwipeRefreshLayout  
++ 通过Handler模拟耗时操作，添加元素  
+
+
+
+```xml
+//将RecyclerView嵌入SwipeRefreshLayout 
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/act_third_swipe"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/act_third_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+```
+
+
+
+通过Handler模拟耗时操作，添加元素  
+
+```java
+swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    @Override
+    public void onRefresh() {
+        //模拟耗时操作，子线程禁止直接修改主线程控件属性
+        new Handler().postDelayed(() -> {
+            //取消刷新动画
+            swipe.setRefreshing(false);
+            news.add(0, new News(1, "阿根廷VS波黑" + news.size(), "小组赛F组 阿根廷VS波黑"));
+                adapter.notifyDataSetChanged();
+            }, 2000);
+        }
+});
+```
+
+
+
+
+
+##### Example 06
+
+
+
+
+
+
+
+##### Example 07
+
+添加依赖
+
+```
+implementation 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
