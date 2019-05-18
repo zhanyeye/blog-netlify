@@ -852,7 +852,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
 
 ```
 
-
+MainActivity配置
 
 ```java
 public class MainActivity extends AppCompatActivity {
@@ -872,7 +872,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         // 指定item插入/移除动画
         DefaultItemAnimator animator = new DefaultItemAnimator();
-        // 包含默认的操作动画世界，也可自定义动画时间
+        // 包含默认的操作动画事件，也可自定义动画时间
         animator.setRemoveDuration(500);
         animator.setMoveDuration(500);
         recyclerView.setItemAnimator(animator);
@@ -915,11 +915,28 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-##### Example 08
+##### Example 08 Appbar & Toolbar & Menu
 
-添加依赖
+Appbar & Toolbar
 
+> 预使用功能丰富的appbar/toolbar，需先关闭android自带的title/actionbar  
+> 自定义无title/actionbar样式的主题  
+> 在AndroidManifest配置中引入自定义主题  
+> 自定义独立的appbar布局文件，注意命名空间  
+> 在activity layout中引入(类似JSP的include)  
+> 在activity中获取toolbar对象，可动态修改各种属性  
+> 动态置于ActionBar，开启左箭头(可选)等等  
+
+res/values/styles.xml 中
+
+```xml
+ <!-- 自定义无title/actionbar样式 -->
+<style name="AppTheme.NoActionBar">
+    <item name="windowNoTitle">true</item>
+    <item name="windowActionBar">false</item>
+</style>
 ```
-implementation 'androidx.recyclerview:recyclerview:1.0.0'
-```
 
+
+
+Menu
