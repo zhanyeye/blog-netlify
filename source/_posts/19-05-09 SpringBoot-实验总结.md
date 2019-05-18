@@ -170,3 +170,9 @@ public class ElectiveRepository {
 }
 ```
 
+
+
+
+
+###### 实体对象状态实验
+
