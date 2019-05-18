@@ -11,7 +11,7 @@ categories:
 
 
 在最前面：
-在AS中新建project 时，请勾上
+在AS中新建project 时，请勾上：
 
 + This project will support instant apps
 + use androidx.* artifacts 避免版本依赖的问题
@@ -687,15 +687,235 @@ swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 
 
-##### Example 06
+##### Example 07 ItemTouchHelper
+
+ItemTouchHelper，用来协助处理RecyclerView中item的移动/滑动/拖拽等操作  
+
+> Callback内部类(非回调接口)，继承实现各种操作  
+> 重写getMovementFlags()方法，决定拖拽滑动在哪个方向是被允许  
+> 重写onSwiped()方法，Item横向滑动时回调，删除item  
+> DefaultItemAnimator类定义recyclerView item操作动画  
+> adapter添加/移除item必须通过notifyItemInserted()/notifyItemRemoved()方法，才有动画效果  
+> 互交。重写onSwiped()方法可删除item，但无法删除数据，通过自定义回调接口实现  
+> 依然通过SwipeRefreshLayout下拉刷新
 
 
 
 
+ItemTouchHelper[使用步骤](https://blog.csdn.net/u014133119/article/details/80942932#commentBox)：
+
+1. 创建 `MyCallback` 继承 `ItemTouchHelper.Callback` 
+
+2. 把数据操作部分抽象成一个接口 `AdapterCallback`,这个接口可以写在 `MyCallback` 内
+
+   > 因为`ItemTouchHelper`在完成触摸的各种动作后，就要对`Adapter`的数据进行操作，比如侧滑删除操作
+
+3. 自定义 adapter 实现接口`MyCallback.AdapterCallback`, 重写相关方法
+
+4. 在`MainActivity`中
+
+   ```java
+   ItemTouchHelper helper = new ItemTouchHelper(new MyCallback(adapter));
+   helper.attachToRecyclerView(recyclerView);
+   ```
+
+   
+
+具体实现：
+
+MyCallback 及内部接口 AdapterCallback
+
+```java
+//MyCallback 及内部接口 AdapterCallback
+public class MyCallback extends ItemTouchHelper.Callback {
+    private static final String TAG = "MyCallback";
+    private AdapterCallback adapterCallback;
+
+    public interface AdapterCallback { //数据操作接口
+        void remove(int position);
+    }
+
+    public MyCallback(AdapterCallback adapterCallback) {
+        this.adapterCallback = adapterCallback;
+    }
+
+    /**
+     * 该方法返回一个整数，用来指定拖拽和滑动在哪个方向是被允许的。
+     * 在其中使用makeMovementFlags(int dragFlags, int swipeFlags)返回，
+     * 该方法第一个参数用来指定拖动，第二个参数用来指定滑动。
+     * ItemTouchHelper.UP  //滑动拖拽向上方向
+     * ItemTouchHelper.DOWN//向下
+     * ItemTouchHelper.LEFT//向左
+     * ItemTouchHelper.RIGHT//向右
+     * ItemTouchHelper.START//依赖布局方向的水平开始方向
+     * ItemTouchHelper.END//依赖布局方向的水平结束方向
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @return
+     */
+    @Override
+    public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        // Log.i(TAG, "" + "getMovementFlags");
+        //允许上下的拖动
+        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+        //只允许从右向左侧滑
+        int swipeFlags = ItemTouchHelper.LEFT;
+        return makeMovementFlags(0, swipeFlags);
+    }
+
+    /**
+     * onMove方法是拖拽的回调，参数viewHolder是拖动的Item，target是拖动的目标位置的Item,
+     * 该方法如果返回true表示切换了位置，反之返回false。
+     *
+     * @param recyclerView
+     * @param viewHolder
+     * @param target
+     * @return
+     */
+    @Override
+    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+
+        return false;
+    }
+
+    /**
+     * onSwiped方法为Item滑动回调，viewHolder为滑动的item，direction为滑动的方向。
+     *
+     * @param viewHolder
+     * @param direction
+     */
+    @Override
+    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        switch (direction) {
+            case ItemTouchHelper.LEFT:
+                adapterCallback.remove(viewHolder.getAdapterPosition());
+        }
+
+    }
+}
+
+```
+
+自定义适配器并实现操作接口
+
+```java
+//自定义适配器并实现操作接口
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> implements MyCallback.AdapterCallback {
+    private static final String TAG = "MainAdapter";
+    private List<News> news;
+    public MainAdapter(List<News> news) {
+        this.news = news;
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_news, parent, false);
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        holder.title.setText(news.get(position).title);
+        holder.suttitle.setText(news.get(position).subtitle);
+        holder.pic.setImageResource(R.mipmap.ic_launcher);
+    }
+
+    @Override
+    public int getItemCount() {
+        return news.size();
+    }
+
+    @Override
+    public void remove(int position) {
+        news.remove(position);
+        // 指定通知可提高渲染效率，同时支持动画
+        notifyItemRemoved(position);
+    }
+
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView title;
+        TextView suttitle;
+        ImageView pic;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.news_title);
+            suttitle = itemView.findViewById(R.id.news_subtitle);
+            pic = itemView.findViewById(R.id.news_pic);
+        }
+    }
+}
+
+```
 
 
 
-##### Example 07
+```java
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+    private RecyclerView recyclerView;
+    private MainAdapter adapter;
+    private SwipeRefreshLayout swipe;
+    private List<News> news = listNews();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        recyclerView = findViewById(R.id.act_main_recyclerview);
+        // 指定一个默认的布局管理器
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        // 指定item插入/移除动画
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        // 包含默认的操作动画世界，也可自定义动画时间
+        animator.setRemoveDuration(500);
+        animator.setMoveDuration(500);
+        recyclerView.setItemAnimator(animator);
+        // 指定item分割线
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        // 指定适配器
+        adapter = new MainAdapter(news);
+        recyclerView.setAdapter(adapter);
+
+        ItemTouchHelper helper = new ItemTouchHelper(new MyCallback(adapter));
+        helper.attachToRecyclerView(recyclerView);
+
+        swipe = findViewById(R.id.act_third_swipe);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //模拟耗时操作，子线程禁止直接修改主线程控件属性
+                new Handler().postDelayed(() -> {
+                    //取消刷新动画
+                    swipe.setRefreshing(false);
+                    news.add(0, new News(1, "阿根廷VS波黑" + news.size(), "小组赛F组 阿根廷VS波黑"));
+                    // 指定通知可提高渲染效率，同时支持动画
+                    adapter.notifyItemInserted(0);
+                    recyclerView.scrollToPosition(0);
+                }, 500);
+            }
+        });
+    }
+
+    private List<News> listNews() {
+        List<News> news = new ArrayList<>();
+        News n1 = new News(1, "阿根廷VS波黑", "小组赛F组 阿根廷VS波黑");
+        News n2 = new News(2, "法国VS洪都拉斯", "小组赛E组 法国VS洪都拉斯");
+        News n3 = new News(3, "瑞士VS厄瓜多尔", "小组赛E组 瑞士VS厄瓜多尔");
+        news.add(n1); news.add(n2); news.add(n3);
+        return news;
+    }
+}
+```
+
+
+
+##### Example 08
 
 添加依赖
 
