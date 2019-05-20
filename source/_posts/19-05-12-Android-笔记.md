@@ -937,15 +937,111 @@ res/values/styles.xml 中
 </style>
 ```
 
+在AndroidManifest配置中引入自定义主题: 
+
+`android:theme="@style/AppTheme.NoActionBar">`
+
+自定义独立的appbar布局文件，注意命名空间
+
+```xml
+---->> appbar.xml
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.Toolbar
+
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></androidx.appcompat.widget.Toolbar>
+
+</com.google.android.material.appbar.AppBarLayout>
+```
+
+在activity layout中引入(类似JSP的include)
+
+```xml
+---->> activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <include layout="@layout/appbar"></include>
+
+</LinearLayout>
+```
+
+在activity中获取toolbar对象，可动态修改各种属性  
+动态置于ActionBar，开启左箭头(可选)等等  
+
+```java
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        // 动态修改toolbar属性
+        toolbar.setLogo(R.mipmap.ic_launcher);
+        toolbar.setTitle("标题");
+        setSupportActionBar(toolbar);
+        // 显示左箭头
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * 重写，加载menu布局
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    /**
+     * 重写，监听menu点击事件
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String msg = "";
+        switch (item.getItemId()) {
+            case R.id.menu_add:
+                msg = "add";
+                break;
+            // 点击左箭头，返回，即关闭当前activity
+            case android.R.id.home:
+                msg = "home";
+                finish();
+            case R.id.menu_send:
+                msg = "send";
+                break;
+            case R.id.menu_edit:
+                msg = "edit";
+                break;
+            case R.id.menu_del:
+                msg = "delete";
+                break;
+        }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
+    }
+}
+```
 
 
-Menu
-
-
-
-
-
-未完成...
 
 
 
