@@ -1530,6 +1530,7 @@ public class SharedPreferencesUtils {
 在activity中将输入写入文件
 
 ```java
+// 在Main_Activity.java 中
 @Override
 protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
