@@ -53,6 +53,8 @@ implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
 
 
+----
+
 
 
 ##### Example 02 Common Widgets
@@ -83,6 +85,8 @@ android:id属性，声明组件ID; 后端可以通过ID值获取组件对象
 other: imageview; progressBar; Seekbar; RatingBar;
 
 
+
+-----
 
 
 
@@ -153,6 +157,8 @@ editTextNameChange.addTextChangedListener(new TextWatcher() {
 
 
 
+----
+
 
 
 ##### Example 04 App Resources
@@ -218,6 +224,8 @@ button = findViewById(R.id.act_main_button);
 
 
 
+---
+
 
 
 ##### Example 05 Activities
@@ -246,7 +254,7 @@ button = findViewById(R.id.act_main_button);
 </manifest >
 ```
 
-|             |                                                              |
+| 回调方法    | 特点                                                         |
 | ----------- | ------------------------------------------------------------ |
 | onCreate()  | 系统会在创建 Activity 时调用此方法. <br />实现内初始化 Activity 的数据 .<br />必须在 setContentView() 中定义 Activity 所使用的的layout文件.<br />onCreate() 完成后 下一步 就是 onStart(). |
 | onStart()   | As `onCreate()` exits, the activity enters the Started state.<br />the activity becomes visible to the user.<br />This callback contains the activity’s final preparations for coming to the foreground and becoming interactive. |
@@ -407,6 +415,8 @@ public class SecActivity extends AppCompatActivity {
 ```
 
 
+
+----
 
 
 
@@ -685,6 +695,8 @@ swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 
 
+----
+
 
 
 ##### Example 07 ItemTouchHelper
@@ -915,6 +927,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+-----
+
+
+
 ##### Example 08 Appbar & Toolbar & Menu
 
 Appbar & Toolbar
@@ -1042,6 +1058,8 @@ public class MainActivity extends AppCompatActivity {
 ```
 
 
+
+-------
 
 
 
@@ -1211,6 +1229,10 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     }
 }
 ```
+
+
+
+--------
 
 
 
@@ -1430,4 +1452,97 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 ```
 
 
+
+---------
+
+
+
+##### Example 11 SharedPreferences 接口
+
+> Saving Key-Value Sets:  
+> https://developer.android.google.cn/training/data-storage/shared-preferences  
+> 基本的保存键值对数据的实现  
+> 自定义application，暴露获取application对象的静态方法  
+> 修改AndroidManifest配置启动自定义application  
+> 创建SharedPreferences操作工具类  
+> 编写输入输出布局  
+> 在activity中将输入写入文件  
+> 重新进入应用，文本输出控件，显式上次持久化的数据  
+
+> SharedPreferences 需要上下文
+> 使用： `getApplicationContext()` 拿
+
+
+
+自定义application，暴露获取application对象的静态方法 
+
+```java
+public class MyApplication extends Application {
+    private static MyApplication instance;
+    public static MyApplication getInstance() {
+        return instance;
+    }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+    }
+}
+```
+
+修改AndroidManifest配置启动自定义application  
+`android:name=".util.MyApplication"`
+
+创建SharedPreferences操作工具类
+
+```java
+/**
+ * 有则直接使用，没有则创建名为为pre_my的XML配置文件
+ * 位置data\data\packagename\shared_prefs
+ * 声明使用范围
+ */
+public class SharedPreferencesUtils {
+    private static SharedPreferences sf = create();
+    private static final String PRE_FILE = "pre_my";
+    private static final String MYEDIT = "myedit";
+
+    /**
+     * 封装SharedPreferences的构建过程，对外仅暴露允许修改的方法
+     * @return
+     */
+    private static SharedPreferences create() {
+        return MyApplication.getInstance()
+                .getSharedPreferences(PRE_FILE, Context.MODE_PRIVATE);
+    }
+
+    public static void putMyedit (String myedit) {
+        sf.edit().putString(MYEDIT, myedit).apply();
+    }
+
+    public static String getMyedit() {
+        return sf.getString(MYEDIT, "");
+    }
+
+}
+
+```
+
+在activity中将输入写入文件
+
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    editText = findViewById(R.id.act_main_edittext);
+    textView = findViewById(R.id.act_main_textView);
+    button = findViewById(R.id.act_main_button);
+    // 获取值，没有默认值为空
+    textView.setText(SharedPreferencesUtils.getMyedit());
+
+    button.setOnClickListener(v -> {
+        SharedPreferencesUtils.putMyedit(editText.getEditableText().toString());
+    });
+}
+```
 
