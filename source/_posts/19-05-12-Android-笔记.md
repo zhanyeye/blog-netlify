@@ -982,7 +982,6 @@ implementation "androidx.navigation:navigation-ui:$nav_version"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/foodFragment">
-	...
     <fragment
         android:id="@+id/foodFragment"
         android:name="com.example.example09.FoodFragment"
@@ -997,6 +996,7 @@ implementation "androidx.navigation:navigation-ui:$nav_version"
         android:name="com.example.example09.FoodDetailFragment"
         android:label="fragment_food_detail"
         tools:layout="@layout/fragment_food_detail" />
+    ...
     ...
 </navigation>
 ```
@@ -1053,9 +1053,10 @@ public class FoodFragment extends Fragment {
 
 
 创建menu文件，声明Navigation所需item，图标及文字，绑定Navigation中的fragment
-menu_bottom_nav.xml
 
 ```xml
+------->> menu_bottom_nav.xml
+
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@id/foodFragment"
@@ -1114,4 +1115,223 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
     }
 }
 ```
+
+
+
+##### Example 10 DrawerLayout & NavigationView
+
+checkable 
+
+> 基于DrawerLayout创建抽屉布局，从内向外逐层构建  
+> 引入com.google.android.material:material:1.0.0依赖  
+> 创建基本主内容布局，声明layout_behavior属性避免被appbar覆盖  
+> 可声明使用showIn属性，增加预览效果  
+> 创建appbar布局，声明toolbar，引入主内容布局(需声明使用noactionbar样式)  
+> 基于menu创建抽屉导航选项  
+> 基于DrawerLayout创建抽屉布局，引入appbar布局，NavigationView引用menu导航  
+> 可选创建抽屉头部布局，并引入到NavigationView属性(自定义了头部背景样式)  
+> Activity代码中添加actionbar  
+> 监听navigationView OnNavigationItemSelectedListener  
+> 任意item被点击，关闭抽屉  
+> 抽屉与下导航，选一种作为app主布局即可  
+
+引入依赖
+
+```
+implementation 'com.google.android.material:material:1.0.0'
+```
+
+创建基本主内容布局，声明layout_behavior属性避免被appbar覆盖
+
+```xml
+------->> content.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    tools:showIn="@layout/appbar">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="左拉抽屉；单activity开发，用navfragmenthost替换"
+        android:textSize="40sp" />
+
+</LinearLayout>
+```
+
+创建appbar布局，声明toolbar，引入主内容布局 (需在AndroidManifest.xml和style.xml声明使用AppTheme.NoActionBar样式)
+
+```xml
+------>> appbar.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_main">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content" />
+</LinearLayout>
+
+```
+
+基于menu创建抽屉导航选项
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@android:drawable/ic_menu_camera"
+            android:title="camera" />
+        ...
+        ...
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@android:drawable/ic_menu_share"
+                android:title="share" />
+            ...
+            ...
+        </menu>
+    </item>
+
+</menu>
+
+```
+
+基于DrawerLayout创建抽屉布局，引入appbar布局，NavigationView引用menu导航  
+
+```xml
+---->> menu_drawer.xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity"
+    tools:openDrawer="start">
+
+    <include
+        layout="@layout/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/menu_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+
+```
+
+可选创建抽屉头部布局，并引入到NavigationView属性(自定义了头部背景样式)
+
+```xml
+---->> drawer_header.xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="176dp"
+    android:background="@drawable/side_nav_bar"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:text="主标题"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="副标题" />
+
+</LinearLayout>
+```
+
+Activity代码中添加actionbar  
+监听navigationView OnNavigationItemSelectedListener  
+任意item被点击，关闭抽屉  
+
+```java
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.my_toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        setSupportActionBar(toolbar);
+        // 显示左箭头
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_camera:
+                Toast.makeText(this, "camera", Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+        drawerLayout.closeDrawer(GravityCompat.START); //任意item被点击，关闭抽屉  
+        return true;
+    }
+}
+```
+
+
 
