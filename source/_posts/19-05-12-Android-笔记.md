@@ -940,3 +940,178 @@ res/values/styles.xml 中
 
 
 Menu
+
+
+
+
+
+未完成...
+
+
+
+##### Example 09 Navigation & BottomNavigationView
+
+###### Fragment
+
+> 在module gradle配置引入navigation-fragment，navigation-ui依赖  
+> (不直接声明依赖，创建导航视图文件时也可自动引入，但AS会卡住假死)  
+> 创建多个Fragment及布局  
+> 创建navigation资源目录，创建nav_graph导航视图文件  
+> 在导航视图中引入fragment，声明导航规则  
+> (也可设置fragment的独立global action)  
+> 修改activity_main布局，添加NavHostFragment容器，，引用导航视图，声明必须属性   
+
+
+
+引入依赖
+
+```
+def nav_version = "2.0.0"
+implementation "androidx.navigation:navigation-fragment:$nav_version"
+implementation "androidx.navigation:navigation-ui:$nav_version"
+```
+
+创建多个Fragment及布局
+
+> new -> fragment -> 勾选 Create Layout XML; 下面的2个include 选项不要勾选 (在创建 fragment 类的同时 创建布局文件)
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/foodFragment">
+	...
+    <fragment
+        android:id="@+id/foodFragment"
+        android:name="com.example.example09.FoodFragment"
+        android:label="fragment_food"
+        tools:layout="@layout/fragment_food" >
+        <action
+            android:id="@+id/action_foodFragment_to_foodDetailFragment"
+            app:destination="@id/foodDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodDetailFragment"
+        android:name="com.example.example09.FoodDetailFragment"
+        android:label="fragment_food_detail"
+        tools:layout="@layout/fragment_food_detail" />
+    ...
+</navigation>
+```
+
+```java
+public class FoodFragment extends Fragment {
+    private static final String TAG = "FoodFragment";
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_food, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Button button = view.findViewById(R.id.frag_food_detail_button);
+        button.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_foodFragment_to_foodDetailFragment);
+        });
+    }
+}
+```
+
+
+
+创建navigation资源目录，创建nav_graph导航视图文件
+
+> 在导航视图中引入fragment，声明导航规则
+
+
+
+在导航视图中引入fragment，声明导航规则
+
+```xml
+<fragment
+    android:id="@+id/my_nav_host_fragment"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    app:defaultNavHost="true"
+    app:navGraph="@navigation/nav_graph" />
+```
+
+###### BottomNavigationView
+
+> com.google.android.material.bottomnavigation.BottomNavigationView  
+> (自动包含选中状态样式：图标加亮+显示字体，区别未选中其他item)  
+> 创建menu文件，声明Navigation所需item，图标及文字，绑定Navigation中的fragment  
+> 在activity布局声明引入底部导航BottomNavigationView控件，引用menu  
+> 在activity中获取NavController对象及并绑定BottomNavigationView对象
+
+
+
+创建menu文件，声明Navigation所需item，图标及文字，绑定Navigation中的fragment
+menu_bottom_nav.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@id/foodFragment"
+        android:title="Food"
+        android:icon="@drawable/food_u" />
+    <item android:id="@id/hotelFragment"
+        android:title="Hotel"
+        android:icon="@drawable/hotel_u" />
+    <item android:id="@id/mapFragment"
+        android:title="Map"
+        android:icon="@drawable/ic_loc_in_map_u" />
+    <item android:id="@+id/menu_bottom_list"
+        android:title="List"
+        android:icon="@drawable/main_index_my_pressed" />
+</menu>
+```
+
+在activity布局声明引入底部导航BottomNavigationView控件，引用menu
+
+```xml
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    android:id="@+id/bottom_nav"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:menu="@menu/menu_bottom_nav" />
+```
+
+在Activity类中获取NavController对象及并绑定BottomNavigationView对象
+
+```java
+public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener {
+    private static final String TAG = "MainActivity";
+
+    private NavController controller;
+    private BottomNavigationView bottomNavigationView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+        controller = Navigation.findNavController(this, R.id.my_nav_host_fragment);
+        // 监听导航切换事件
+        controller.addOnDestinationChangedListener(this);
+        NavigationUI.setupWithNavController(bottomNavigationView, controller);
+    }
+    @Override
+    public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+        switch (destination.getId()) {
+            case R.id.foodDetailFragment:
+                bottomNavigationView.setVisibility(View.GONE);
+                break;
+            default:
+                bottomNavigationView.setVisibility(View.VISIBLE);
+        }
+    }
+}
+```
+
