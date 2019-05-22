@@ -1547,3 +1547,22 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
+
+
+----
+
+
+
+##### Example 12
+
+setValue()  主线程 中更新数据 
+postValue()  在子线程 中更新数据
+
+vm 不能绑定组件，应为可能已经被销毁了
+
+setContentView 删去，
+
+
+双向绑定 `@={}`
+
+对象中的属性改变时，更新不会通知
