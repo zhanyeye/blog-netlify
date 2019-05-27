@@ -1566,3 +1566,445 @@ setContentView 删去，
 双向绑定 `@={}`
 
 对象中的属性改变时，更新不会通知
+
+
+
+
+
+---
+
+
+
+##### Example 13
+
+
+
+###### Network Request/Response & Image Resources
+
+添加请求权限
+
+```xml
+在 AndroidManifest.xml 添加
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+
+创建自定义application类，配置
+
+```java
+public class MyApplication extends Application {
+    public static Application instance;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+    }
+    public static Application getInstance() {
+        return instance;
+    }
+}
+-----------------------
+AndroidManifest.xml 中 application 的 android:name=".util.MyApplication"
+```
+
+Android 9以后，要求网络请求必须为HTTPS加密请求，不便于测试，创建配置关闭该功能  
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
+------------------------
+AndroidManifest.xml 中 application 的 android:networkSecurityConfig="@xml/network_security_config"
+```
+
+引入Retrofit框架依赖
+
+```xml
+implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+```
+
+创建实体类
+
+创建封装响应数据的DTO类  (Data To Object)
+
+```java
+/**
+ * 用于从json字符串转成Java对象  
+ * 属性名称必须与响应中属性名称完全相同，一个dto可对应多个响应
+ * 没有对应属性，自动忽略
+ */
+public class NewsDTO {
+    public News news;
+    public List<News> newsList;
+
+}
+```
+
+创建网络请求接口，声明与后端对应的restful请求地址，图片资源请求处理
+
+```java
+/**
+ * 后端将数据封装在Map转为json
+ * 与基于弱类型JS的前端处理不同，由于无法确定Map中值的类型而无法反序列化数据
+ * 因此，为返回的响应创建对应转换的DTO类型，响应数据封装在DTO对象属性中
+ * 请求路径不能使用，/，开始，否则baseurl设置会无效，将直接向服务器根路径相对请求
+ * 请求注解与springMVC相似
+ */
+public interface NewsService {
+    @GET("news/{id}")
+    Call<NewsDTO> getNews(@Path("id") int id);
+
+    @GET("news")
+    Call<NewsDTO> listNews();
+
+    /**
+     * 全局的图片下载，可声明在一个独立的接口，此处简化
+     * 传入图片地址，响应返回图片封装在ResponseBody
+     * 结合构造retrofit时的缓存策略，自动重用缓存图片
+     * 可结合自定义bindingadapter使用，更简洁，耦合性更低
+     * @param url
+     * @return
+     */
+    @GET
+    Call<ResponseBody> getBitmap(@Url String url);
+
+    /**
+     * 即使没有返回值，也必须封装一个空类型Void
+     * @param n
+     * @return
+     */
+    @POST("news")
+    Call<ResponseBody> post(@Body News n); //Call<Void> post(@Body News n);
+}
+```
+
+构造封装retrofit对象，声明缓存，请求相对根路径，转换器，拦截器等配置
+
+构造封装请求接口类型对象，并对外暴露
+
++ 小小知识点： **Builder 设计模式**
+
+  + 在类中加一个静态内部类
+  + 静态内部类中有public方法设置属性
+  + 最后build() 方法，返回外部的类的对象
+
+  > Builder模式通常作为配置类的构建器将配置的构建和表示分离开来，同时也是将配置从目标类中隔离出来，避免作为过多的setter方法，并且隐藏内部的细节。Builder模式比较常见的实现形式是通过链式调用，这样使得代码更加简洁、易懂。缺点是，内部类与外部类相互引用，可能会导致内存消耗比较大，不过鉴于现在的手机内存来讲，这点几乎影响不大。
+
+```java
+public class ServiceFactory {
+    // 默认retrofit将请求的图片置于缓存，当向相同地址请求图片时，自动加载缓存的图片
+    // 自动在data/data/应用包/cache下，创建缓存文件,10MB
+    private static OkHttpClient client = new OkHttpClient.Builder()
+            .cache(new Cache(MyApplication.getInstance().getCacheDir(), 10 * 1024 * 1024))
+            .build();
+    // 基于OKhttp对象，自定义属性，构造retrofit对象
+    private static Retrofit retrofit = new Retrofit.Builder()
+            // 本地测试不能使用localhost，使用本地IP
+            // 根路径必须已，/，结束
+            // .baseUrl("http://192.168.1.3:8080/api/")
+            .baseUrl("http://www.whyman.site/api/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    // retrofit自动创建接口的代理类
+    public static NewsService getNewsService() {
+        return retrofit.create(NewsService.class);
+    }
+}
+```
+
+编写布局文件  
+监听事件，调用retrofit完成异步的网络请求，并将结果渲染到视图  
+
++ 像网络请求这种线程阻塞的操作，禁止在主线程中执行
++ enqueue()为异步方法，将请求任务加入应用全局异步请求队列
++ 在异步子线程中获取响应对象，在主线程，回调结果。即onResponse()方法为主线程调用
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+    private Button button;
+    private TextView textView;
+    private ImageView imageView;
+    NewsService service = ServiceFactory.getNewsService();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        button = findViewById(R.id.button);
+        textView = findViewById(R.id.textView);
+        imageView = findViewById(R.id.imageView);
+        button.setOnClickListener(v -> {
+            // 像网络请求这种线程阻塞的操作，禁止在主线程中执行
+            // enqueue()为异步方法，将请求任务加入应用全局异步请求队列
+            // 在异步子线程中获取响应对象，在主线程，回调结果。即onResponse()方法为主线程调用
+            service.listNews().enqueue(new Callback<NewsDTO>() {
+                @Override
+                public void onResponse(Call<NewsDTO> call, Response<NewsDTO> response) {
+                    if (response.body() == null) {
+                        return;
+                    }
+                    // 基于converter-gson自动完成反序列化
+                    NewsDTO newsDTO = response.body();
+                    List<News> newsList = newsDTO.newsList;
+                    textView.setText(newsList.get(0).title);
+                }
+
+                @Override
+                public void onFailure(Call<NewsDTO> call, Throwable t) {
+
+                }
+            });
+            // 基于图片资源地址，获取渲染图片
+            service.getBitmap("resources/pics/Spain_Flag.jpg").enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Log.i(TAG, "image");
+                    // BitmapFactory类，提供将多种类型数据转为bitmap的静态方法
+                    Bitmap bitmap = BitmapFactory.decodeStream( response.body().byteStream());
+                    imageView.setImageBitmap(bitmap);
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+        });
+
+        findViewById(R.id.act_main_button_tosec).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SecActivity.class);
+            startActivity(intent);
+        });
+    }
+}
+
+```
+
+
+
+###### Databinding & ViewModel & BindingAdapter
+
+添加ViewModel LiveData依赖，声明启动Databinding  
+
+```java
+dataBinding {
+    enabled = true
+}
+dependencies {
+    def lifecycle_version = "2.0.0"
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+}
+```
+
+创建Recyclerview item布局，绑定实体对象，自定义图片网络地址属性  
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="news"
+            type="com.example.example13.entity.News" />
+    </data>
+<LinearLayout ... >
+    <!-- 自定义imageUrl属性标签，自定义处理的的adapter -->
+    <ImageView
+        ...
+        app:imageUrl="@{news.picAddress}"
+        ... />
+    ...
+</LinearLayout>
+</layout>
+```
+
+创建自定义图片绑定适配器，基于动态绑定的图片网络地址，下载图片并渲染  
+
+```java
+public class MyImageBindingAdapter {
+    private static final String TAG = "MyImageBindingAdapter";
+    /**
+     * 直接声明imageUrl属性，而非app:imageUrl
+     * @param view 第一个参数，是自动传入的，绑定的imageview控件对象
+     * @param url 第二个参数，为动态绑定的属性值，即图片网络地址
+     */
+    @BindingAdapter({"imageUrl"})
+    public static void loadImage(ImageView view, String url) {
+        // 默认渲染图片
+        if (url == null) {
+            view.setImageResource(R.mipmap.ic_launcher);
+            return;
+        }
+        ServiceFactory.getNewsService().getBitmap(url).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.body() == null) {
+                    return;
+                }
+                view.setImageBitmap(BitmapFactory.decodeStream(response.body().byteStream()));
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
+
+    }
+}
+```
+
+创建ViewModel，声明绑定生命周期的可观测数据，新闻集合  
+创建加载方法，通过网络加载数据，并更新可观测数据
+
+```java
+public class SecViewModel extends AndroidViewModel {
+    public MutableLiveData<List<News>> newsList = new MutableLiveData<>();
+    private NewsService newsService = ServiceFactory.getNewsService();
+    public SecViewModel(@NonNull Application application) {
+        super(application);
+    }
+
+    public void loadNews() {
+        newsService.listNews().enqueue(new Callback<NewsDTO>() {
+            @Override
+            public void onResponse(Call<NewsDTO> call, Response<NewsDTO> response) {
+                if (response.body() == null) {
+                    return;
+                }
+                List<News> news = response.body().newsList;
+                newsList.setValue(news);
+            }
+
+            @Override
+            public void onFailure(Call<NewsDTO> call, Throwable t) {
+
+            }
+        });
+    }
+}
+
+```
+
+修改layout布局，绑定VM，添加recycleview  
+
+创建recycleview的adapter，新闻集合属性，绑定item  
+
+修改activity代码，构造recycleview，绑定VM，绑定生命周期，监听网络返回的数据，通知adapter更新  
+
+```java
+public class SecActivity extends AppCompatActivity {
+    private static final String TAG = "SecActivity";
+    private RecyclerView recyclerView;
+    private ActivitySecBinding binding;
+    private SecViewModel viewModel;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_sec);
+        // 提出recycle初始化代码
+        initRecyclerView();
+        // 构造VM，
+        viewModel = ViewModelProviders.of(this).get(SecViewModel.class);
+        binding.setVm(viewModel);
+        binding.setLifecycleOwner(this);
+
+        SecRecyclerAdapter adapter = new SecRecyclerAdapter();
+        recyclerView.setAdapter(adapter);
+
+        // 监听MV中数据更新，注入结果
+        viewModel.newsList.observe(this, news -> {
+            // 将最新数据交由adapter渲染
+            adapter.setCurrentNewsList(news);
+            adapter.notifyDataSetChanged();
+            // 更新到顶部
+            recyclerView.scrollToPosition(0);
+        });
+
+        binding.actSecButton.setOnClickListener(v -> {
+            Intent i = new Intent(SecActivity.this, ThirdActivity.class);
+            startActivity(i);
+        });
+    }
+
+    private void initRecyclerView() {
+        // 基于ID名称直接获取绑定视图上的组件，无需findviewbyid()方法
+        recyclerView = binding.actSecRecylerview;
+        // 指定一个默认的布局管理器
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        viewModel.loadNews();
+    }
+}
+
+```
+
+
+
+###### Post Request
+
+在接口添加post请求  
+
+```java
+/**
+     * 即使没有返回值，也必须封装一个空类型Void
+     * @param n
+     * @return
+     */
+    @POST("news")
+    Call<ResponseBody> post(@Body News n); //Call<Void> post(@Body News n);
+```
+
+创建第三个activity，实现2个输入框，1个button  
+实现当点击button时，调用post请求向服务器发送数据  
+ 重写SecActivity onStart()方法，调用VM中的网络数据加载方法，确保从暂停状态恢复，重新加载  
+
+```java
+public class ThirdActivity extends AppCompatActivity {
+    private static final String TAG = "ThirdActivity";
+    private EditText title;
+    private EditText subtitle;
+    private Button submit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_thrid);
+        title = findViewById(R.id.act_third_edittext_title);
+        subtitle = findViewById(R.id.act_third_edittext_subtitle);
+        findViewById(R.id.act_third_button).setOnClickListener(v -> {
+            News n = new News();
+            n.title = "" + title.getText().toString();
+            n.subtitle = "" + subtitle.getText().toString();
+            // 不能仅执行post()方法，必须执行enqueue()方法添加至执行队列
+            ServiceFactory.getNewsService().post(n).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    //  结束此activity
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                }
+            });
+        });
+    }
+}
+
+```
+
