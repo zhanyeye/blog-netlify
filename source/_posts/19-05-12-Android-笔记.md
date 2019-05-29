@@ -2008,3 +2008,509 @@ public class ThirdActivity extends AppCompatActivity {
 
 ```
 
+
+
+---
+
+
+
+##### Example 14 Room
+
+###### Query
+
+SQLite数据库，SQLite操作无需系统权限  
+
+启动/引入数据绑定，VM，等     引用Room依赖  
+
+```xml
+android {
+	dataBinding {
+        enabled = true
+    }
+}
+dependencies {
+    def lifecycle_version = "2.0.0"
+    def room_version = "2.0.0"
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    implementation "android.arch.persistence.room:runtime:$room_version"
+}
+```
+
+自定义引入application备用 （在AndroidManifest中引入） 
+
+创建实体类  
+
+```java
+@Entity
+public class Course {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    public String name;
+    public String detail;
+}
+```
+
+创建操作实体类的DAO层接口  
+
+```java
+@Dao
+public interface CourseDao {
+    @Query("SELECT * FROM Course")
+    List<Course> list();
+
+    @Query("SELECT * FROM Course c WHERE c.id=:id")
+    Course find(int id);
+
+    /**
+     * 支持指定的封装属性，而非全部属性
+     * @return
+     */
+    @Query("SELECT c.id, c.name FROM Course c")
+    List<Course> listName();
+
+    @Insert
+    @Transaction
+    void insert(Course... course); //支持同时传入多个course
+}
+```
+
+创建数据库工厂，封装构造过程，暴露DAO接口(代理类)  
+
+```java
+/**
+ * 自动在data/data/应用包/下，创建databases目录
+ */
+@Database(entities = {Course.class}, version = 1, exportSchema = false)
+public abstract class DatabaseFactory extends RoomDatabase {
+    /**
+     * 声明的是抽查类，以及抽象方法，而不是接口！～
+     * android自动实现抽象方法，并动态生成接口代理类
+     * @return
+     */
+    public abstract CourseDao courseDao();
+
+    /**
+     * 基于全局context，数据库配置类(就是此类)，数据库名称，构建数据库工厂
+     */
+    private static DatabaseFactory dataBaseFactory = Room
+            .databaseBuilder(MyApplication.getInstance(), DatabaseFactory.class, "database")
+            // 默认SQLite数据库查询操作在子线程异步执行，添加/修改/删除在主线程，可强制全部使用主线程
+            .allowMainThreadQueries()     //允许主线程，可以取消，在子线程中postvalue(),传给子线程
+            .build();
+
+    /**
+     * 仅对外暴露自动创建的接口代理对象
+     * @return
+     */
+    public static CourseDao getCourseDao() {
+        return dataBaseFactory.courseDao();
+    }
+}
+
+```
+
+创建VM，从数据库获取数据，加载到observer对象 
+
+```java
+public class MainViewModel extends AndroidViewModel {
+    private static final String TAG = "MainViewModel";
+    public MutableLiveData<List<Course>> coursesM = new MutableLiveData<>();
+
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+    }
+
+    public void loadFromRoom() {
+        List<Course> courses = DatabaseFactory.getCourseDao().listName();
+        coursesM.setValue(courses);
+        //coursesM.postValue(courses);    //如果是子线程
+    }
+}
+```
+
+创建item layout，recyclerview adapter，完成基本绑定操作  
+
+修改activity代码，完成初始化，数据监听等操作  
+
+###### Insert   & Snackbar
+
+创建VM，声明绑定数据，声明添加方法，调用接口实现数据的插入  
+
+```java
+public class InsertCourseViewModel extends AndroidViewModel {
+    public MutableLiveData<Course> courseM = new MutableLiveData<>();
+    public InsertCourseViewModel(@NonNull Application application) {
+        super(application);
+        courseM.setValue(new Course());    //因为是双向绑定，所以即便开始没有数据也要要传一个，不然会空指针
+    }
+
+    public void insert() {
+        DatabaseFactory.getCourseDao().insert(courseM.getValue());
+    }
+}
+```
+
+视图双向绑定VM数据，执行VM插入方法  
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="insertVM"
+            type="com.example.example14.viewmodel.InsertCourseViewModel" />
+    </data>
+    <LinearLayout ... >
+        <EditText
+            ...
+            android:hint="课程名称"
+            android:text="@={insertVM.courseM.name}"/>
+        <EditText
+            ...
+            android:hint="课程介绍"
+            android:text="@={insertVM.courseM.detail}"/>
+        <Button
+			...
+            android:text="提交"
+            android:onClick="insert"/>
+    </LinearLayout>
+</layout>
+```
+
+创建展示详细信息activity，修改adapter，绑定item点击监听，传递被点击item对应的数据ID参数跳转  
+
+```java
+public class InsertCourseActivity extends AppCompatActivity {
+    private InsertCourseViewModel vm;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        vm = ViewModelProviders.of(this).get(InsertCourseViewModel.class);
+        ActivityInsertCourseBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_course);
+        binding.setInsertVM(vm);
+        binding.setLifecycleOwner(this);
+    }
+
+    public void insert(View view) {
+        // 调用VM方法实现添加
+        vm.insert();
+        /**
+         * Snackbar,需引入material依赖；
+         * Toast，浮动显示，即使activity等已退出依然显示
+         * snackbar，需要一个view对象，在当前视图显示；
+         * 支持像Toast显示short/long时间自动收回
+         * 支持定义互交操作
+         */
+        Snackbar.make(view, "课程添加成功", Snackbar.LENGTH_INDEFINITE)
+                .setAction("确定", v -> {
+                    finish();    //结束当前activity
+                }).show();
+    }
+}
+```
+
+```java
+public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.MyViewHolder> {
+    private Context context;
+    public MainRecyclerViewAdapter(Context context) {
+        this.context = context;
+    }
+    
+    ...
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        holder.binding.setCourse(courseList.get(position));
+        holder.itemView.setOnClickListener(v -> {   //绑定一个点击事件
+            Intent i = new Intent(context, CourseDetailActivity.class);
+            i.putExtra("id", courseList.get(position).id);
+            context.startActivity(i);
+        });
+    }
+    ...
+        
+}
+```
+
+展示详细信息  
+
+```java
+<layout>
+    <data>
+        <variable
+            name="vm"
+            type="com.example.example14.viewmodel.CourseDetailViewModel" />
+    </data>
+<LinearLayout ...>
+    <TextView
+        ...
+        android:text="@{vm.courseM.name}"/>
+    <TextView
+        ...
+        android:text="@{vm.courseM.detail}"/>
+</LinearLayout>
+</layout>
+//--------
+public class CourseDetailViewModel extends AndroidViewModel {
+    public MutableLiveData<Course> courseM = new MutableLiveData<>();
+    public CourseDetailViewModel(@NonNull Application application) {
+        super(application);
+        courseM.setValue(new Course());
+    }
+
+    public void getCourse(int id) {
+        Course c = DatabaseFactory.getCourseDao().find(id);
+        courseM.setValue(c);
+    }
+}
+//--------
+public class CourseDetailActivity extends AppCompatActivity {
+    /**
+     * 如果是单activity切换fragment，就不用这么麻烦了
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityCourseDetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_course_detail);
+        CourseDetailViewModel vm = ViewModelProviders.of(this).get(CourseDetailViewModel.class);
+        binding.setVm(vm);
+        binding.setLifecycleOwner(this);
+        vm.getCourse(getIntent().getIntExtra("id", 0));
+    }
+}
+```
+
+Snackbar的引入
+
+```xml
+implementation 'com.google.android.material:material:1.0.0'
+```
+
+
+
+##### Example 15 External Storage
+
+###### Internal Storage
+
+内存储，其他应用无法访问的应用程序的独立空间，使用无需声明权限  
+文件随应用删除而删除，空间有限，放应用必须文件  
+getFilesDir()   拿files 中的文件夹  
+getCacheDir()  拿缓存中的文件夹     
+
+都是上下文的方法
+
+/data/data/packagename/files
+
+###### External Storage
+
+外存储私有空间，无需声明权限，随应用卸载删除，放普通文件，缓存文件  
+挂载到，/mnt/sdcard/android/data/packname/files  
+getExternalFilesDir()/getExternalCacheDir()
+
+外存储公共空间，Android公共目录，音乐，图片等等，需声明权限  
+挂载到，/mnt/sdcard/  
+Environment.getExternalStoragePublicDirectory()
+
+manifest 中： `<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />`
+
+
+
+-----
+
+
+
+##### Example 16 External Storage
+
+构造[AlertDialog](https://developer.android.google.cn/guide/topics/ui/dialogs#AlertDialog)  
+自定义确认、取消、中性等按钮回调  
+单选项  
+单选项带确认按钮  
+自定义布局样式  
+多选项带确认按钮  
+DatePickerDialog，minsdk 24  
+
+```java
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Button button;
+    private Button button2;
+    private Button button3;
+    private Button button4;
+    private Button button5;
+    private Button button6;
+    private Button button7;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        button = findViewById(R.id.button1);
+        button2 = findViewById(R.id.button2);
+        button3 = findViewById(R.id.button3);
+        button4 = findViewById(R.id.button4);
+        button5 = findViewById(R.id.button5);
+        button6 = findViewById(R.id.button6);
+        button7 = findViewById(R.id.button7);
+        button.setOnClickListener(this);
+        button2.setOnClickListener(this);
+        button3.setOnClickListener(this);
+        button4.setOnClickListener(this);
+        button5.setOnClickListener(this);
+        button6.setOnClickListener(this);
+        button7.setOnClickListener(this);
+    }
+
+    String[] arrayFruit = new String[]{"苹果", "橘子", "草莓", "香蕉"};
+    boolean[] checkedItems = new boolean[arrayFruit.length];
+    int selectIndex = 0;
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button1:
+                // 用于警告等，合理基于设备返回键
+                // 基于builder模式构建
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("标题");
+                dialog.setMessage("内容");
+                dialog.setIcon(R.mipmap.ic_launcher);
+                dialog.show();   //show 已经实现了 build()
+                break;
+            case R.id.button2:
+                AlertDialog.Builder dialog2 = new AlertDialog.Builder(this);
+                dialog2.setTitle("删除");
+                dialog2.setMessage("确定删除吗?");
+                // 确认按钮回调
+                dialog2.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                // 取消回调
+                dialog2.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                // 中间回调
+                dialog2.setNeutralButton("详细内容", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog2.show();
+                break;
+            case R.id.button3:
+                // 单选按钮组
+                AlertDialog.Builder dialog3 = new AlertDialog.Builder(this);
+                dialog3.setTitle("水果");
+                dialog3.setItems(arrayFruit, new DialogInterface.OnClickListener() {
+                    // 传入的which为被选中的位置
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, arrayFruit[which], Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+                dialog3.show();
+                break;
+            case R.id.button4:
+                // 单选，添加确认按钮
+                AlertDialog.Builder dialog4 = new AlertDialog.Builder(this);
+                dialog4.setTitle("水果");
+                //传入selectIndex，否则要是final,
+                dialog4.setSingleChoiceItems(arrayFruit, selectIndex, new DialogInterface
+                        .OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectIndex = which;
+                    }
+                });
+                dialog4.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    // which不是被选中项目，按钮与选项无关
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, arrayFruit[selectIndex], Toast
+                                .LENGTH_SHORT).show();
+                    }
+                });
+                dialog4.show();
+                break;
+            case R.id.button5:
+                // 自定义样式填充
+                AlertDialog.Builder dialog5 = new AlertDialog.Builder(this);
+                LayoutInflater inflater = LayoutInflater.from(this);
+            View rootView = inflater.inflate(R.layout.dialog_login, null); //因为弹出一个窗口，所以没有root,null
+                dialog5.setTitle("登录");
+                dialog5.setView(rootView);
+                dialog5.show();
+                break;
+            case R.id.button6:
+                // 多选，带确认按钮
+                AlertDialog.Builder dialog6 = new AlertDialog.Builder(this);
+                dialog6.setTitle("多选");
+                dialog6.setIcon(R.mipmap.ic_launcher);
+                dialog6.setMultiChoiceItems(arrayFruit, checkedItems, new DialogInterface
+                        .OnMultiChoiceClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        String string;
+                        if (isChecked) {
+                            string = "被选中了";
+                        } else {
+                            string = "被取消了";
+                        }
+                        Toast.makeText(MainActivity.this, arrayFruit[which] + string, Toast
+                                .LENGTH_SHORT).show();
+                    }
+                });
+                dialog6.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StringBuffer buffer = new StringBuffer();
+                        for (int i = 0; i < arrayFruit.length; i++) {
+                            if (checkedItems[i]) {
+                                buffer.append(arrayFruit[i]);
+                            }
+                        }
+                        Toast.makeText(MainActivity.this, "被选中的水果: " + buffer.toString(), Toast
+                                .LENGTH_SHORT).show();
+                    }
+                });
+                dialog6.show();
+                break;
+            case R.id.button7:
+                // DatePickerDialog minsdk最低版本24，此处只有在系统版本大于24时执行有效
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    DatePickerDialog dialog7 = new DatePickerDialog(this);
+                    final Calendar calendar = Calendar.getInstance();
+                    dialog7.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            calendar.set(Calendar.YEAR, year);
+                            calendar.set(Calendar.MONTH, month);
+                            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            String result = "日期: "
+                                    + calendar.get(Calendar.YEAR) + "-"
+                                    + calendar.get(Calendar.MONTH) + "-"
+                                    + calendar.get(Calendar.DAY_OF_MONTH);
+                            Toast.makeText(MainActivity.this, result , Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialog7.show();
+                }
+                break;
+        }
+    }
+}
+
+```
+
+
+
