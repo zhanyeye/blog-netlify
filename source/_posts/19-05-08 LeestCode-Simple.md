@@ -1,5 +1,5 @@
 ---
-title: 10-05-08 LeestCode-Simple
+title: LeestCode-Simple
 date: 2019-05-08 21:21:58
 tags:
 categories:
