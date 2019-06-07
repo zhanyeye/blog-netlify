@@ -14,15 +14,15 @@ categories:
 在AS中新建project 时，请勾上：
 
 + This project will support instant apps
-+ use androidx.* artifacts 避免版本依赖的问题
++ `use androidx.* artifacts`    避免版本依赖的问题
 
 
 
 ##### Example 01 UI
 
-> dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等
-> sp，描述字体大小
-> px，像素，相对的绝对单元，与CSS相似等，图片等
+> dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等    (记：device)
+> sp，描述**字体**大小    (记：script)
+> px，像素，相对的绝对单元，与CSS相似等，图片等  (记：Pixel)
 
 
 
@@ -30,14 +30,20 @@ RelativeLayout: 相对布局
 LinearLayout: 线性布局
 ConstraintLayout: 约束布局
 
+###### Relative Layout & Linear Layout
 
+Linear与Relative布局的区别: 如果层级多的使用RelativeLayout
+![1559872811899](C:/Users/zhany/AppData/Roaming/Typora/typora-user-images/1559872811899.png)
 
 LinearLayout 主要属性
 
 + android:orientation，LinearLayout方向
-+ android:layout_gravity，控件本身的显示位置。仅在LinearLayout内有效，受android:orientation属性影响
-+ android:gravity，控件内内容的显示位置
-+ android:layout_weight，比重，android:orientation相应方向的值需设为0dp
+  `vertical` ,  `horizontal`
++ android:layout_gravity，**相对于**该控件的**父组件**，控件本身的显示位置。仅在LinearLayout内有效，受android:orientation属性影响
+  `bottom` , `center`
++ android:gravity，**控件内**内容的显示位置
++ android:layout_weight，比重，android:orientation **相应方向的值需设为0dp**
+  `android:layout_width="0dp"   android:layout_weight="1"`
 
 
 
@@ -49,6 +55,40 @@ LinearLayout 主要属性
 
 ```
 implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+```
+
+与Relative的区别：**仅对相同位置/方向进行相对的约束**
+![](https://raw.githubusercontent.com/zhanyeye/Figure-bed/img/img/20190607091106.png)
+
+
+![](https://raw.githubusercontent.com/zhanyeye/Figure-bed/img/img/20190607092539.png)
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout  ...>
+    <TextView
+        android:id="@+id/textView"
+        android:text="TextView_A"
+        ...
+        tools:layout_editor_absoluteX="189dp"
+        tools:layout_editor_absoluteY="253dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:text="TextView_B"
+        ...
+        android:layout_marginBottom="56dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        tools:layout_editor_absoluteX="280dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:text="TextView_C"
+		...
+        android:layout_marginBottom="72dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        tools:layout_editor_absoluteX="101dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
 
@@ -2513,4 +2553,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 ```
 
 
+
+##### Example 17 Capture & Gallery
+
+声明外存储写入权限  
+`<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />`
+
+在配置中通过screenOrientation属性，将Activity强制设为横向或纵向屏幕，防止手机晃动后activity重置  
+
+```xml
+<activity android:name=".MainActivity" android:screenOrientation="portrait">   ...
+```
+
+在xml资源目录下，创建共享目录配置  
+
+```xml
+res/xml/files_path
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 相当于Environment.getExternalStorageDirectory()获取的公共空间根路径，被替换 -->
+    <external-path name="public_path" path="/" />
+    <!-- 还可声明其他私有、缓存、外存储得到空间 -->
+</paths>
+```
+
+在项目配置注册provider，并引用共享配置  
+
+```xml
+AndroidManifest
+<!-- authorities一般与applicationId相同，即应用包名称 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.example17"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+```
+
+
+
+在activity自定义照相请求码，写入权限码  
+在公共空间/DCIM/Camera/下，创建一个指定名称的图片文件，用于保存照片  
+创建拍照方法，基于FileProvider获取图片URI地址  
+启动需要结果的照相intent，封装请求吗及强制文件存储的URI地址    
+重写onActivityResult()方法，基于请求码判断返回的执行请求  
+未防止OOM，将图片按1/4渲染  
+
+Android6以后，要求运行时动态申请权限(类似iOS)  
+https://developer.android.google.cn/training/permissions/requesting  
+重写onRequestPermissionsResult()方法，在用户授权后执行拍照方法  
+刷新相册(可选)  
+
+模拟器，可通过按住alt+鼠标移动镜头，wasd控制方向  Capture
+
+
+
+
+
+##### Example 18 Notification
 
