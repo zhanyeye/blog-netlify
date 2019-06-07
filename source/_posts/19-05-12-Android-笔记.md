@@ -32,7 +32,7 @@ ConstraintLayout: 约束布局
 
 ###### Relative Layout & Linear Layout
 
-Linear与Relative布局的区别: 如果层级多的使用RelativeLayout
+Linear与Relative布局的区别: 如果层级多的使用RelativeLayout  
 ![](https://raw.githubusercontent.com/zhanyeye/Figure-bed/img/img/20190607101909.png)
 
 LinearLayout 主要属性
