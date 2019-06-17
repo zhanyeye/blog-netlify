@@ -335,7 +335,7 @@ Intent在Android中的核心作用就是“跳转”,同时可以携带必要的
 //在第二个页面拿到数据
    getIntent().getStringExtra("extra_data");
    ```
-   
+
 3. implicit intent : specifies an action that can invoke any app on the device able to perform the action
 
    ```java
@@ -1903,7 +1903,7 @@ adapter对外提供自己的更新方法
 初始化recycleview，adapter等
 监听自定义viewmodel中的数据更新，等有更新时，调用adapter提供的更新方法，通知其更新
 
-## Two-way data binding
+###### Two-way data binding
 
 双向绑定要比vue复杂。例如，封装在可观测数据内，数据的改变无法直接响应
 
