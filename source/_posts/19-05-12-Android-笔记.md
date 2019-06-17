@@ -1602,7 +1602,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
 ##### Example 12 DataBinding & ViewModel & LiveData
 
-- [x] 复习完成 :link:[link](<https://github.com/zhanyeye/android-examples/tree/master/example12/src/main/java/com/example/example12>)
+复习完成 ​-> ​[link](<https://github.com/zhanyeye/android-examples/tree/master/example12/src/main/java/com/example/example12>)
 
 > 在项目gradle配置中，启动dataBinding
 >
