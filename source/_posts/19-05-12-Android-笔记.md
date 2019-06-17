@@ -20,7 +20,7 @@ categories:
 
 ##### Example 01 UI
 
-- [x] 复习完成
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/blob/master/example01/src/main/res/layout/activity_main.xml>)
 
 > dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等    (记：device)
 > sp，描述**字体**大小    (记：script)
@@ -101,6 +101,8 @@ implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
 ##### Example 02 Common Widgets
 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/blob/master/example02/src/main/res/layout/activity_main.xml>)
+
 android:id属性，声明组件ID; 后端可以通过ID值获取组件对象
 
 + @+id，创建一个新ID
@@ -132,7 +134,9 @@ other: imageview; progressBar; Seekbar; RatingBar;
 
 
 
-##### Example 03 UI-Events
+##### Example 03 UI & Events
+
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/blob/master/example03/src/main/java/com/example/example03/MainActivity.java>)
 
 > 后端仅基于ID名称获取组件，无法基于不同布局文件区分组件ID，也无法区分组件类型。
 > 调用到不是当前布局上组件，运行时才能发现错误。 
@@ -204,7 +208,9 @@ editTextNameChange.addTextChangedListener(new TextWatcher() {
 
 
 
-##### Example 04 App Resources
+##### Example 04 App Resources & R
+
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example04/src/main/res>)
 
 **各文件目录放置的资源?**
 
@@ -273,6 +279,8 @@ button = findViewById(R.id.act_main_button);
 
 ##### Example 05 Activities
 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example05/src/main/java/com/example/example05>)
+
 ###### Activities
 
 > [`Activity`](https://developer.android.google.cn/guide/components/activities.html)是一个应用组件，用户可与其提供的屏幕进行交互（相当于一个页面）
@@ -319,7 +327,16 @@ Intent在Android中的核心作用就是“跳转”,同时可以携带必要的
    startActivity(intent);   //startActivity方法
    ```
 
-2. implicit intent : specifies an action that can invoke any app on the device able to perform the action
+2. 传递数据 : `intent.putExtra(key, value)` 上一个活动向下一个活动传递数据
+
+   ```java
+   //在第一个页面将数据装进Intent
+   intent.putExtra("extra_data", "dafadfadfa");   //键值对
+//在第二个页面拿到数据
+   getIntent().getStringExtra("extra_data");
+   ```
+   
+3. implicit intent : specifies an action that can invoke any app on the device able to perform the action
 
    ```java
    // Create the text message with a string
@@ -334,17 +351,6 @@ Intent在Android中的核心作用就是“跳转”,同时可以携带必要的
    }
    ```
 
-3. 传递数据 : `intent.putExtra(key, value)` 上一个活动向下一个活动传递数据
-
-   ```java
-   //在第一个页面将数据装进Intent
-   intent.putExtra("extra_data", "dafadfadfa");   //键值对
-//在第二个页面拿到数据
-   getIntent().getStringExtra("extra_data");
-   ```
-   
-   
-
 **Starting an Activity**
 内容：Activity的切换方法；切换时前后Activity经历的生命周期过程；通过Intent在跳转切换时传递参数；Bundle；
 要求：实现全部生命周期回调函数，在跳转时观察activity的状态，传递并接收参数。
@@ -357,6 +363,7 @@ Intent在Android中的核心作用就是“跳转”,同时可以携带必要的
 2. 主类中实现OnClickListener接口: 
    
    > 在主类中实现OnClickListener接口并重写onClick方法
+   > button.setOnClickListener(this);
 3. 匿名内部类:
    
    > 当按钮较少或只有一个按钮时，可以直接创建OnClickListener的匿名内部类传入按钮的setOnClickListener参数中
@@ -1604,19 +1611,19 @@ protected void onCreate(Bundle savedInstanceState) {
 
 复习完成 ​-> ​[link](<https://github.com/zhanyeye/android-examples/tree/master/example12/src/main/java/com/example/example12>)
 
-> 在项目gradle配置中，启动dataBinding
->
-> ```json
-> dataBinding {
->         enabled = true
-> }
-> ```
->
-> 添加整合了viewmodel livedata的依赖lifecycle-extensions
->
-> ```json
-> implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-> ```
+ 在项目gradle配置中，启动dataBinding
+
+```json
+dataBinding {
+        enabled = true
+}
+```
+
+添加整合了viewmodel livedata的依赖lifecycle-extensions
+
+```
+implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+```
 
 + **官方推荐一个activity对应绑定一个ViewModel**
 
@@ -1770,7 +1777,9 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-###### **整合recycleview的实现，基于secactivity**
+
+
+###### 整合recycleview的实现，基于secactivity
 
 创建[实体类](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/entity/News.java>)，创建[VM](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/viewmodel/SecViewModel.java>)
 
@@ -1826,17 +1835,64 @@ public class SecViewModel extends AndroidViewModel {
 }
 ```
 
+创建recycleview_item[布局](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/res/layout/recyclerview_news.xml>)，绑定实体类中属性
 
-创建recycleview item布局，绑定实体类中属性
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+    	<variable name = "news" type="com....News"/>
+    </data>
+    <LinearLayout>
+    	...
+    </LinearLayout>
+</layout>
+```
 
-修改layout，绑定VM，绑定VM中更新方法
-创建自定义adapter，初始化数据集合，重写基本方法
+修改[layout](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/res/layout/activity_sec.xml>)，绑定VM，绑定VM中更新方法
+
+```xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable name="secVM" type="com.example.example12.viewmodel.SecViewModel" />
+    </data>
+    <LinearLayout 
+        ...
+        tools:context=".SecActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/act_sec_recyclerview" />
+
+        <Button
+            android:onClick="@{() -> secVM.loadNews()}"
+            android:text="更新" />
+        <Button
+            android:onClick="toThird"
+            android:text="双向绑定" />
+    </LinearLayout>
+</layout>
+```
+
+创建自定义[adapter](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/adapter/SecAdapter.java>)，初始化数据集合，重写基本方法
+
 创建viewholder
+
+> viewholder不再holder控件，而是每一个itemview对应的binding对象
+> 通过binding对象绑定集合中的数据
+
 重写onCreateViewHolder()方法，动态创建数据绑定对象
+
+> 为每个item创建binding对象，复用
+
 修改viewholder hold绑定对象
+
+> 返回的 viewholder 基于绑定对象创建：`return new MyViewHolder(binding.getRoot(), binding);`
+
 重写onBindViewHolder()方法，将当前viewholder的binding对象绑定对应的集合数据
 
-
+> binding 对象的set方法
 
 **DiffUtil.Callback**
 自定义DiffUtil.Callback类，重写相关方法，实现更新adapter时的计算依据
@@ -1850,7 +1906,6 @@ adapter对外提供自己的更新方法
 ## Two-way data binding
 
 双向绑定要比vue复杂。例如，封装在可观测数据内，数据的改变无法直接响应
-
 
 
 
