@@ -20,6 +20,8 @@ categories:
 
 ##### Example 01 UI
 
+- [x] 复习完成
+
 > dp，像素密度，设备屏幕尺寸无关的，描述控件间距离等    (记：device)
 > sp，描述**字体**大小    (记：script)
 > px，像素，相对的绝对单元，与CSS相似等，图片等  (记：Pixel)
@@ -143,13 +145,13 @@ other: imageview; progressBar; Seekbar; RatingBar;
 
 **Android中Callback的设计与使用 ? 理解掌握2种实现监听的方法?**
 
-+ 匿名内部类、 lambda表达式 (set language level to 8)
-
-  
++ 匿名内部类
++ lambda表达式 (set language level to 8)
 
 `View.OnClickListener: onClick()`
 
 ```java
+//onCreate()中
 buttonSubmit = findViewById(R.id.act_main_button_submit);
 //匿名内部类
 buttonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -170,8 +172,9 @@ buttonSubmit.setOnClickListener(v -> {
 `EditText: TextChangedListener `
 
 ```java
+//onCreate()中
 editTextNameChange = findViewById(R.id.act_main_editText_change);
-
+//匿名内部类
 editTextNameChange.addTextChangedListener(new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -195,7 +198,7 @@ editTextNameChange.addTextChangedListener(new TextWatcher() {
 `View.OnTouchListener: onTouch()`
 `View.OnKeyListener: onKey()`
 
-
+...
 
 ----
 
@@ -348,7 +351,7 @@ Intent在Android中的核心作用就是“跳转”,同时可以携带必要的
 
 **知识点1**：[实现`OnClickListener`接口的三种方法](https://blog.csdn.net/markshz/article/details/80762818)
 
-1. 创建内部类
+1. 创建内部类    ~（麻烦）~
    
    > 创建一个内部类实现OnClickListener接口并重写onClick方法
 2. 主类中实现OnClickListener接口: 
@@ -643,6 +646,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
 ```
+
 
 
 
@@ -1129,31 +1133,6 @@ implementation "androidx.navigation:navigation-ui:$nav_version"
 
 > new -> fragment -> 勾选 Create Layout XML; 下面的2个include 选项不要勾选 (在创建 fragment 类的同时 创建布局文件)
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/foodFragment">
-    <fragment
-        android:id="@+id/foodFragment"
-        android:name="com.example.example09.FoodFragment"
-        android:label="fragment_food"
-        tools:layout="@layout/fragment_food" >
-        <action
-            android:id="@+id/action_foodFragment_to_foodDetailFragment"
-            app:destination="@id/foodDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/foodDetailFragment"
-        android:name="com.example.example09.FoodDetailFragment"
-        android:label="fragment_food_detail"
-        tools:layout="@layout/fragment_food_detail" />
-    ...
-    ...
-</navigation>
-```
 
 ```java
 public class FoodFragment extends Fragment {
@@ -1181,20 +1160,48 @@ public class FoodFragment extends Fragment {
 
 > 在导航视图中引入fragment，声明导航规则
 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/foodFragment">
+    <fragment
+        android:id="@+id/foodFragment"
+        android:name="com.example.example09.FoodFragment"
+        android:label="fragment_food"
+        tools:layout="@layout/fragment_food" >
+        <action
+            android:id="@+id/action_foodFragment_to_foodDetailFragment"
+            app:destination="@id/foodDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodDetailFragment"
+        android:name="com.example.example09.FoodDetailFragment"
+        android:label="fragment_food_detail"
+        tools:layout="@layout/fragment_food_detail" />
+    ...
+    ...
+</navigation>
+```
 
-
-在导航视图中引入fragment，声明导航规则
+修改activity_main布局，添加NavHostFragment容器，，引用导航视图，声明必须属性
 
 ```xml
-<fragment
-    android:id="@+id/my_nav_host_fragment"
-    android:name="androidx.navigation.fragment.NavHostFragment"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    app:defaultNavHost="true"
-    app:navGraph="@navigation/nav_graph" />
+ //activity_main
+<!-- 声明一个NavHostFragment容器 -->
+    <fragment
+        android:id="@+id/my_nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 ```
+
+
 
 ###### BottomNavigationView
 
@@ -1593,19 +1600,261 @@ protected void onCreate(Bundle savedInstanceState) {
 
 
 
-##### Example 12
+##### Example 12 DataBinding & ViewModel & LiveData
 
-setValue()  主线程 中更新数据 
-postValue()  在子线程 中更新数据
+- [x] 复习完成 :link:[link](<https://github.com/zhanyeye/android-examples/tree/master/example12/src/main/java/com/example/example12>)
 
-vm 不能绑定组件，应为可能已经被销毁了
+> 在项目gradle配置中，启动dataBinding
+>
+> ```json
+> dataBinding {
+>         enabled = true
+> }
+> ```
+>
+> 添加整合了viewmodel livedata的依赖lifecycle-extensions
+>
+> ```json
+> implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+> ```
 
-setContentView 删去，
++ **官方推荐一个activity对应绑定一个ViewModel**
 
+
+
+###### 基本实现，基于mainactivity
+
+创建实体类
+
+创建自定义viewmodel类
+
+声明 `页面数据绑定`/`生命周期绑定`的MutableLiveData类型数据
+
+创建修改方法，在子线程中修改数据
+
++ `setValue()`  在主线程 中更新数据 
++ `postValue()`  在子线程 中更新数据 : **自动通知主线程修改**
++ `getValue()`
+
+```java
+public class MainViewModel extends AndroidViewModel {
+    private static final String TAG = "MainViewModel";
+    // 将预在页面绑定的数据，声明为与页面生命周期绑定的MutableLiveData可变类型
+    // 可以想象为一个能够绑定到视图页面的容器
+    public MutableLiveData<User> userLiveData = new MutableLiveData<>();
+
+    /**
+     * 必须声明的构造函数
+     * 自动注入application对象，便于后期使用
+     * @param application
+     */
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+        User user = new User("BO");
+        userLiveData.setValue(user); //在主线程 中更新数据 
+    }
+
+    /**
+     * 在子线程中异步操作修改绑定数据，而非主线程
+     * 因此必须使用postValue()方法，自动通知主线程修改
+     */
+    public void change() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                User u = userLiveData.getValue();
+                u.name = "SUN";
+                // 也可重新重新创建一个user对象，置入
+                userLiveData.postValue(u);
+            } catch (InterruptedException e) {
+            }
+        }).start();
+    }
+}
+
+```
+
+修改layout文件，添加数据绑定标签`<data><variable/></data>`
+
+绑定自定义的ViewModel类
+
+在控件，通过表达式绑定数据，或方法 
 
 双向绑定 `@={}`
 
-对象中的属性改变时，更新不会通知
+**对象中的属性改变时，更新不会通知**
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="mianVM"
+            type="com.example.example12.viewmodel.MainViewModel" />
+    </data>
+    <LinearLayout 
+        ...
+        tools:context=".MainActivity">
+
+        <TextView
+            ...
+            android:text="@{mianVM.userLiveData.name}" />
+        
+        <!-- VM方法不能耦合view对象 -->
+        <Button
+            android:onClick="@{() -> mianVM.change()}"
+            android:text="异步改变值" />
+        
+        <!-- 直接调用activity中的方法 -->
+        <Button
+            ...
+            android:onClick="onButtonClick"
+            android:text="To SecActivity" />
+
+    </LinearLayout>
+</layout>
+```
+
+修改activity代码，获取自定义动态创建的binding对象，获取自定义viewmodel对象
+
+将vm绑定到UI页面
+
+将绑定数据绑定到activity生命周期
+
++ Activity 的`onCreate()` 中基于layout文件生成绑定对象 (setContentView 删去)
+
++ 绑定类会基于 layout 中生成的变量,自动生成 getter/setter 方法
+
++ 绑定自定义的 ViewModel 类 ：`binding.setMianVM(mainViewModel);`
+
++ 将绑定数据，与当前activity生命周期绑定：`binding.setMianVM(mainViewModel);` 如，当数据改变时，且activity可见时，自动更新页面
+
++ activity有处理UI，跳转更新等操作，业务逻辑操作由vm负责
+
+  > vm 不能绑定组件，应为可能已经被销毁了
+
+```java
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // 取消默认调用setContentView()方法代码：设置该activity 要渲染的布局UI
+
+        /**
+         * 必须先在layout中使用data标签声明变量
+         * 才能基于layout文件的命名，动态自动生成ActivityMainBinding类
+         * The Data Binding Library generates binding classes that are used to access the layout's variables and views. 
+         */
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        // 必须通过工具类获取VM对象，不能手动创建
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        // 基于layout中声明的变量，自动生成属性变量的getter/setter方法
+        binding.setMianVM(mainViewModel);
+        /**
+         * 将绑定数据，与当前activity生命周期绑定
+         * 例如，当数据改变时，且activity可见时，自动更新页面
+         */
+        binding.setLifecycleOwner(this);
+    }
+    /**
+     * activity有处理UI，跳转更新等操作，业务逻辑操作由vm负责
+     * @param view
+     */
+    public void onButtonClick(View view) {
+        Log.i(TAG, "onButtonClick: ");
+        Intent intent = new Intent(this, SecActivity.class);
+        startActivity(intent);
+    }
+}
+```
+
+###### **整合recycleview的实现，基于secactivity**
+
+创建[实体类](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/entity/News.java>)，创建[VM](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/viewmodel/SecViewModel.java>)
+
+创建更新可观测数据
+
+初始化时，异步更新可观测数据
+
+创建方法，异步更新可观测数据
+
+```java
+public class SecViewModel extends AndroidViewModel {
+    private static final String TAG = "SecViewModel";
+    // 模拟每次获取的新数据，不是加上旧的全部数据
+    public MutableLiveData<List<News>> newsLoad = new MutableLiveData<>();
+
+    public SecViewModel(@NonNull Application application) {
+        super(application);
+        // 加载的同时发出异步获取更新数据请求
+        initNews();
+    }
+
+    /**
+     *  模拟异步请求并获取最新的数据
+     */
+    private void initNews() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                News n1 = new News(1, "阿根廷VS波黑", "小组赛F组 阿根廷VS波黑");
+                List<News> news = new ArrayList<>();
+                news.add(n1);
+                // 将数据异步更新绑定
+                newsLoad.postValue(news);
+            } catch (InterruptedException e) {
+            }
+        }).start();
+    }
+
+    public void loadNews() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                News n1 = new News(1, "荷兰VS西班牙", "小组赛F组 荷兰VS西班牙");
+                List<News> news = new ArrayList<>();
+                news.add(n1);
+                newsLoad.postValue(news);
+
+            } catch (InterruptedException e) {
+
+            }
+        }).start();
+    }
+}
+```
+
+
+创建recycleview item布局，绑定实体类中属性
+
+修改layout，绑定VM，绑定VM中更新方法
+创建自定义adapter，初始化数据集合，重写基本方法
+创建viewholder
+重写onCreateViewHolder()方法，动态创建数据绑定对象
+修改viewholder hold绑定对象
+重写onBindViewHolder()方法，将当前viewholder的binding对象绑定对应的集合数据
+
+
+
+**DiffUtil.Callback**
+自定义DiffUtil.Callback类，重写相关方法，实现更新adapter时的计算依据
+adapter对外提供自己的更新方法
+基于自定义Callback类，实现高效的，仅针对需更新项的，支持动画效果的，动态更新
+
+修改activity代码，获取binding/viewmodel对象，绑定生命周期等
+初始化recycleview，adapter等
+监听自定义viewmodel中的数据更新，等有更新时，调用adapter提供的更新方法，通知其更新
+
+## Two-way data binding
+
+双向绑定要比vue复杂。例如，封装在可观测数据内，数据的改变无法直接响应
+
+
+
+
+
 
 
 
