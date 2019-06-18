@@ -472,37 +472,33 @@ public class SecActivity extends AppCompatActivity {
 
 ##### Example 06  [RecyclerView](https://www.jianshu.com/p/4f9591291365)
 
-
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example06/src/main/java/com/example/example06>)
 
 > The views in the list are represented by *view holder*(视图持有者) objects. These objects are instances of a class you define by extending `RecyclerView.ViewHolder`. Each view holder is in charge of displaying a single item with a view. 
 > The `RecyclerView`creates only as many view holders as are needed to display the on-screen portion of the dynamic content, plus a few extra. As the user scrolls through the list, the `RecyclerView` takes the off-screen views and rebinds them to the data which is scrolling onto the screen.
 
-配置
+###### create RecyclerView
 
-在对应的 `build.gradle`   文件中dependencies加上   
+配置：在对应的 `build.gradle`   文件中dependencies加上   
 
 ```
 implementation 'androidx.recyclerview:recyclerview:1.0.0'
 ```
 
-布局
-
-Activity布局文件 activity_main.xml
-RecyclerView中item布局文件 item_1.xml
-	news_pic; news_title; news_subtitle
-
-
+创建RecyclerView中[item布局样式](<https://github.com/zhanyeye/android-examples/blob/master/example06/src/main/res/layout/recyclerview_news.xml>)
 
 创建实体类news封装数据  
 
 > 实体类属性 public ?     :谷歌虚拟机没有使用内联，减少损耗   故不建议使用 get/set ， 直接public
 
-
-
 创建自定义adapter
 
 + 在adapter中创建viewholder (在Adapter中创建一个**继承RecyclerView.ViewHolder**的静态内部类，记为VH)
+
++ adapter添加news集合属性, 添加有参构造函数
+
 + adapter继承RecyclerView.Adapter，并声明VH泛型为自定义的VH类型
+
 + 在**Adapter中实现3个方法**
   
   1. **onCreateViewHolder()**
@@ -523,6 +519,8 @@ RecyclerView中item布局文件 item_1.xml
 重写onBindViewHolder()方法，当视图item滚动，绑定对应数据到item中的相应控件  
 重写onCreateViewHolder()方法，声明item布局样式，并将view item对象，交由viewholder持有  
 RecyclerView默认不包含点击事件及点击动画，需手动实现  
+
+
 
 ```java
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
@@ -671,7 +669,7 @@ android:focusable="true"
 ```
 
 ```java
-//在适配器中，自定义监听接口
+//在适配器中，自定义监听接口,实现在activity等的点击监听
 public interface OnItemClickListener {
     void onItemClick(View view, int position, News news);
 }
@@ -706,10 +704,8 @@ button.setOnClickListener(new View.OnClickListener() {
 
 
 ###### SwipeRefreshLayout
-+ 添加下拉刷新功能，将RecyclerView嵌入SwipeRefreshLayout  
++ 添加下拉刷新功能，将RecyclerView嵌入[SwipeRefreshLayout](<https://github.com/zhanyeye/android-examples/blob/master/example06/src/main/res/layout/activity_third.xml>)  
 + 通过Handler模拟耗时操作，添加元素  
-
-
 
 ```xml
 //将RecyclerView嵌入SwipeRefreshLayout 
@@ -725,11 +721,11 @@ button.setOnClickListener(new View.OnClickListener() {
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 ```
 
-
-
-通过Handler模拟耗时操作，添加元素  
+通过Handler模拟耗时操作，[添加元素](<https://github.com/zhanyeye/android-examples/blob/master/example06/src/main/java/com/example/example06/ThirdActivity.java>)
 
 ```java
+private SwipeRefreshLayout swipe;
+swipe = findViewById(R.id.act_third_swipe);
 swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
     @Override
     public void onRefresh() {
@@ -738,7 +734,7 @@ swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             //取消刷新动画
             swipe.setRefreshing(false);
             news.add(0, new News(1, "阿根廷VS波黑" + news.size(), "小组赛F组 阿根廷VS波黑"));
-                adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged(); //通知适配器数据改变
             }, 2000);
         }
 });
@@ -752,20 +748,23 @@ swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 ##### Example 07 ItemTouchHelper
 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example07/src/main/java/com/example/example07/adapter>)
+
 ItemTouchHelper，用来协助处理RecyclerView中item的移动/滑动/拖拽等操作  
 
 > Callback内部类(非回调接口)，继承实现各种操作  
 > 重写getMovementFlags()方法，决定拖拽滑动在哪个方向是被允许  
 > 重写onSwiped()方法，Item横向滑动时回调，删除item  
 > DefaultItemAnimator类定义recyclerView item操作动画  
-> adapter添加/移除item必须通过notifyItemInserted()/notifyItemRemoved()方法，才有动画效果  
-> 互交。重写onSwiped()方法可删除item，但无法删除数据，通过自定义回调接口实现  
+> adapter添加/移除item必须通过notifyItemInserted()/notifyItemRemoved()方法，才有动画互交效果  
+> 重写onSwiped()方法可删除item，但无法删除数据，通过自定义回调接口实现  
 > 依然通过SwipeRefreshLayout下拉刷新
 
 
 
-
 ItemTouchHelper[使用步骤](https://blog.csdn.net/u014133119/article/details/80942932#commentBox)：
+
+> 自定义callback继承 ItemTouchHelper.Callback -> 在内部写一个数据操作接口 -> 重写触发方法调用接口 -> 适配器实现数据操作接口，重新方法 -> acctivity 中附着 recyclerview
 
 1. 创建 `MyCallback` 继承 `ItemTouchHelper.Callback` 
 
@@ -782,7 +781,6 @@ ItemTouchHelper[使用步骤](https://blog.csdn.net/u014133119/article/details/8
    helper.attachToRecyclerView(recyclerView);
    ```
 
-   
 
 具体实现：
 
@@ -984,9 +982,9 @@ public class MainActivity extends AppCompatActivity {
 
 ##### Example 08 Appbar & Toolbar & Menu
 
-Appbar & Toolbar
+###### Appbar & Toolbar
 
-> 预使用功能丰富的appbar/toolbar，需先关闭android自带的title/actionbar  
+> 欲使用功能丰富的appbar/toolbar，需先关闭android自带的title/actionbar  
 > 自定义无title/actionbar样式的主题  
 > 在AndroidManifest配置中引入自定义主题  
 > 自定义独立的appbar布局文件，注意命名空间  
@@ -994,7 +992,7 @@ Appbar & Toolbar
 > 在activity中获取toolbar对象，可动态修改各种属性  
 > 动态置于ActionBar，开启左箭头(可选)等等  
 
-res/values/styles.xml 中
+自定义无title/actionbar样式的主题 : res/values/styles.xml 中
 
 ```xml
  <!-- 自定义无title/actionbar样式 -->
@@ -1004,7 +1002,7 @@ res/values/styles.xml 中
 </style>
 ```
 
-在AndroidManifest配置中引入自定义主题: 
+在[AndroidManifest](<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/AndroidManifest.xml>)配置中引入自定义主题: 
 
 `android:theme="@style/AppTheme.NoActionBar">`
 
@@ -1034,11 +1032,7 @@ res/values/styles.xml 中
 ```xml
 ---->> activity_main.xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout ...
     tools:context=".MainActivity">
 
     <include layout="@layout/appbar"></include>
@@ -1064,47 +1058,8 @@ public class MainActivity extends AppCompatActivity {
         // 显示左箭头
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    /**
-     * 重写，加载menu布局
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    /**
-     * 重写，监听menu点击事件
-     * @param item
-     * @return
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String msg = "";
-        switch (item.getItemId()) {
-            case R.id.menu_add:
-                msg = "add";
-                break;
-            // 点击左箭头，返回，即关闭当前activity
-            case android.R.id.home:
-                msg = "home";
-                finish();
-            case R.id.menu_send:
-                msg = "send";
-                break;
-            case R.id.menu_edit:
-                msg = "edit";
-                break;
-            case R.id.menu_del:
-                msg = "delete";
-                break;
-        }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        return super.onOptionsItemSelected(item);
-    }
+	...
+    ...    
 }
 ```
 
