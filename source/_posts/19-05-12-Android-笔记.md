@@ -982,6 +982,8 @@ public class MainActivity extends AppCompatActivity {
 
 ##### Example 08 Appbar & Toolbar & Menu
 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example08/src/main>)
+
 ###### Appbar & Toolbar
 
 > 欲使用功能丰富的appbar/toolbar，需先关闭android自带的title/actionbar  
@@ -1063,6 +1065,64 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+###### Menu
+
+创建menu资源目录; 创建menu布局文件; 设置item title，icon等属性: [link](<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/res/menu/menu.xml>)
+
++ app:showAsAction属性: always, collapseActionView, ifRoom, never, withText
+
+重写activity onCreateOptionsMenu()方法，加载menu布局 [link](<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java>)
+
+```java
+    ...
+    /**
+     * 重写，加载menu布局
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+```
+
+重写activity onOptionsItemSelected()方法，监听item点击事件 link(<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java>)
+
+```java
+    ...
+    /**
+     * 重写，监听menu点击事件
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String msg = "";
+        switch (item.getItemId()) {
+            case R.id.menu_add:
+                msg = "add";
+                break;
+            // 点击左箭头，返回，即关闭当前activity
+            case android.R.id.home:
+                msg = "home";
+                finish();
+            case R.id.menu_send:
+                msg = "send";
+                break;
+            case R.id.menu_edit:
+                msg = "edit";
+                break;
+            case R.id.menu_del:
+                msg = "delete";
+                break;
+        }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
+    }
+    ...
+```
+
 
 
 -------
@@ -1071,7 +1131,9 @@ public class MainActivity extends AppCompatActivity {
 
 ##### Example 09 Navigation & BottomNavigationView
 
-###### Fragment
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example09/src/main>)
+
+###### Fragment & Navigation
 
 > 在module gradle配置引入navigation-fragment，navigation-ui依赖  
 > (不直接声明依赖，创建导航视图文件时也可自动引入，但AS会卡住假死)  
@@ -1105,6 +1167,7 @@ public class FoodFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_food, container, false);
     }
+    //fragment中组件初始化写在 onViewCreated() 中
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -1118,9 +1181,9 @@ public class FoodFragment extends Fragment {
 
 
 
-创建navigation资源目录，创建nav_graph导航视图文件
+创建navigation资源目录，创建nav_graph[导航视图文件](<https://github.com/zhanyeye/android-examples/blob/master/example09/src/main/res/navigation/nav_graph.xml>)
 
-> 在导航视图中引入fragment，声明导航规则
+> 在导航视图中引入fragment，声明导航规则 : **设置指定的id 导航到指定的 fragment类 和 它的布局**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1148,7 +1211,7 @@ public class FoodFragment extends Fragment {
 </navigation>
 ```
 
-修改activity_main布局，添加NavHostFragment容器，，引用导航视图，声明必须属性
+修改[activity_main布局](<https://github.com/zhanyeye/android-examples/blob/master/example09/src/main/res/layout/activity_main.xml>)，添加NavHostFragment容器，，引用导航视图，声明必须属性
 
 ```xml
  //activity_main
@@ -1197,7 +1260,7 @@ public class FoodFragment extends Fragment {
 </menu>
 ```
 
-在activity布局声明引入底部导航BottomNavigationView控件，引用menu
+在[activity布局](<https://github.com/zhanyeye/android-examples/blob/master/example09/src/main/res/layout/activity_main.xml>)声明引入底部导航BottomNavigationView控件，引用menu
 
 ```xml
 <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -1207,7 +1270,7 @@ public class FoodFragment extends Fragment {
     app:menu="@menu/menu_bottom_nav" />
 ```
 
-在Activity类中获取NavController对象及并绑定BottomNavigationView对象
+在[Activity类](<https://github.com/zhanyeye/android-examples/blob/master/example09/src/main/java/com/example/example09/MainActivity.java>)中获取NavController对象及并绑定BottomNavigationView对象
 
 ```java
 public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener {
@@ -1247,7 +1310,7 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
 ##### Example 10 DrawerLayout & NavigationView
 
-checkable 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example10/src/main/res/layout>)
 
 > 基于DrawerLayout创建抽屉布局，从内向外逐层构建  
 > 引入com.google.android.material:material:1.0.0依赖  
@@ -1270,37 +1333,29 @@ implementation 'com.google.android.material:material:1.0.0'
 
 创建基本主内容布局，声明layout_behavior属性避免被appbar覆盖
 
+> 可声明使用showIn属性，增加预览效果 (预览该布局在外层layout中的效果)
+
 ```xml
 ------->> content.xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout ...
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
     tools:showIn="@layout/appbar">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="左拉抽屉；单activity开发，用navfragmenthost替换"
-        android:textSize="40sp" />
+        ...
+        android:text="左拉抽屉；单activity开发，用navfragmenthost替换" />
 
 </LinearLayout>
 ```
 
 创建appbar布局，声明toolbar，引入主内容布局 (需在AndroidManifest.xml和style.xml声明使用AppTheme.NoActionBar样式)
+`<include layout = "">`引入 content 布局
 
 ```xml
 ------>> appbar.xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<LinearLayout ...
     tools:showIn="@layout/activity_main">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -1320,7 +1375,7 @@ implementation 'com.google.android.material:material:1.0.0'
 
 ```
 
-基于menu创建抽屉导航选项
+基于[menu创建抽屉导航选项](<https://github.com/zhanyeye/android-examples/blob/master/example10/src/main/res/menu/menu_drawer.xml>)
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1468,6 +1523,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 ##### Example 11 SharedPreferences 接口
 
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example11/src/main/java/com/example/example11/util>)
+
 > Saving Key-Value Sets:  
 > https://developer.android.google.cn/training/data-storage/shared-preferences  
 > 基本的保存键值对数据的实现  
@@ -1499,7 +1556,7 @@ public class MyApplication extends Application {
 }
 ```
 
-修改AndroidManifest配置启动自定义application  
+修改AndroidManifest[配置](<https://github.com/zhanyeye/android-examples/blob/master/example11/src/main/AndroidManifest.xml>)启动自定义application  
 `android:name=".util.MyApplication"`
 
 创建SharedPreferences操作工具类
@@ -1577,6 +1634,8 @@ dataBinding {
 添加整合了viewmodel livedata的依赖lifecycle-extensions
 
 ```
+def lifecycle_version = "2.0.0"
+// ViewModel and LiveData
 implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 ```
 
@@ -1662,7 +1721,7 @@ public class MainViewModel extends AndroidViewModel {
             ...
             android:text="@{mianVM.userLiveData.name}" />
         
-        <!-- VM方法不能耦合view对象 -->
+        <!-- VM方法不能耦合view对象:vm 不能绑定组件，应为可能已经被销毁了 -->
         <Button
             android:onClick="@{() -> mianVM.change()}"
             android:text="异步改变值" />
@@ -1830,12 +1889,23 @@ public class SecViewModel extends AndroidViewModel {
 </layout>
 ```
 
-创建自定义[adapter](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/adapter/SecAdapter.java>)，初始化数据集合，重写基本方法
+**创建自定义[adapter](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/adapter/SecAdapter.java>)，初始化数据集合，重写基本方法**
 
 创建viewholder
 
 > viewholder不再holder控件，而是每一个itemview对应的binding对象
 > 通过binding对象绑定集合中的数据
+
+```java
+static class MyViewHolder extends RecyclerView.ViewHolder {
+    private RecyclerviewNewsBinding binding;
+
+    public MyViewHolder(@NonNull View itemView, RecyclerviewNewsBinding binding) {
+        super(itemView);
+        this.binding = binding;
+    }
+}
+```
 
 重写onCreateViewHolder()方法，动态创建数据绑定对象
 
@@ -1845,28 +1915,45 @@ public class SecViewModel extends AndroidViewModel {
 
 > 返回的 viewholder 基于绑定对象创建：`return new MyViewHolder(binding.getRoot(), binding);`
 
+```java
+@NonNull
+@Override
+public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+    // 为每个item创建binding对象，复用
+    RecyclerviewNewsBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.recyclerview_news, parent, false);
+    return new MyViewHolder(binding.getRoot(), binding);
+}
+```
+
 重写onBindViewHolder()方法，将当前viewholder的binding对象绑定对应的集合数据
 
 > binding 对象的set方法
 
-**DiffUtil.Callback**
+```java
+@Override
+public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    holder.binding.setNews(currentNewsList.get(position));
+}
+```
+
+[DiffUtil.Callback](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/adapter/SecAdapter.java>)
 自定义DiffUtil.Callback类，重写相关方法，实现更新adapter时的计算依据
 adapter对外提供自己的更新方法
 基于自定义Callback类，实现高效的，仅针对需更新项的，支持动画效果的，动态更新
 
+[Activity](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/java/com/example/example12/SecActivity.java>)
 修改activity代码，获取binding/viewmodel对象，绑定生命周期等
 初始化recycleview，adapter等
 监听自定义viewmodel中的数据更新，等有更新时，调用adapter提供的更新方法，通知其更新
 
+
+
 ###### Two-way data binding
 
-双向绑定要比vue复杂。例如，封装在可观测数据内，数据的改变无法直接响应
+[双向绑定](<https://github.com/zhanyeye/android-examples/blob/master/example12/src/main/res/layout/activity_third.xml>)要比vue复杂。例如，封装在可观测数据内，数据的改变无法直接响应
 
-
-
-
-
-
+双向绑定 `@={}`
 
 
 
