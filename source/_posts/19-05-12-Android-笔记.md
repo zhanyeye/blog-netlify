@@ -1947,6 +1947,24 @@ adapter对外提供自己的更新方法
 初始化recycleview，adapter等
 监听自定义viewmodel中的数据更新，等有更新时，调用adapter提供的更新方法，通知其更新
 
+```java
+	...
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+		...
+        // 监听MV中数据更新，注入结果
+        viewModel.newsLoad.observe(this, news -> {
+                Log.i(TAG, "onChanged");
+                // 将最新数据交由adapter渲染
+                adapter.updateNews(news);
+                // 更新到顶部
+                recyclerView.scrollToPosition(0);
+        });
+     ...
+```
+
+
+
 
 
 ###### Two-way data binding
@@ -1961,9 +1979,9 @@ adapter对外提供自己的更新方法
 
 
 
-##### Example 13
+##### Example 13 Connecting to the Network
 
-
+复习完成 -> [link](<https://github.com/zhanyeye/android-examples/tree/master/example13/src/main/java/com/example/example13>)
 
 ###### Network Request/Response & Image Resources
 
@@ -2013,7 +2031,7 @@ implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 
 创建实体类
 
-创建封装响应数据的DTO类  (Data To Object)
+创建封装响应数据的DTO类  (data transfer object)
 
 ```java
 /**
@@ -2070,14 +2088,6 @@ public interface NewsService {
 
 构造封装请求接口类型对象，并对外暴露
 
-+ 小小知识点： **Builder 设计模式**
-
-  + 在类中加一个静态内部类
-  + 静态内部类中有public方法设置属性
-  + 最后build() 方法，返回外部的类的对象
-
-  > Builder模式通常作为配置类的构建器将配置的构建和表示分离开来，同时也是将配置从目标类中隔离出来，避免作为过多的setter方法，并且隐藏内部的细节。Builder模式比较常见的实现形式是通过链式调用，这样使得代码更加简洁、易懂。缺点是，内部类与外部类相互引用，可能会导致内存消耗比较大，不过鉴于现在的手机内存来讲，这点几乎影响不大。
-
 ```java
 public class ServiceFactory {
     // 默认retrofit将请求的图片置于缓存，当向相同地址请求图片时，自动加载缓存的图片
@@ -2090,9 +2100,9 @@ public class ServiceFactory {
             // 本地测试不能使用localhost，使用本地IP
             // 根路径必须已，/，结束
             // .baseUrl("http://192.168.1.3:8080/api/")
-            .baseUrl("http://www.whyman.site/api/")
+            .baseUrl("http://www.whyman.site/api/") //设置网络请求的Url地址
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create()) //设置数据解析
             .build();
 
     // retrofit自动创建接口的代理类
@@ -2101,6 +2111,16 @@ public class ServiceFactory {
     }
 }
 ```
+
++ 小小知识点： **Builder 设计模式**
+
+  + 在类中加一个静态内部类
+  + 静态内部类中有public方法设置属性
+  + 最后build() 方法，返回外部的类的对象
+
+  > Builder模式通常作为配置类的构建器将配置的构建和表示分离开来，同时也是将配置从目标类中隔离出来，避免作为过多的setter方法，并且隐藏内部的细节。Builder模式比较常见的实现形式是通过链式调用，这样使得代码更加简洁、易懂。缺点是，内部类与外部类相互引用，可能会导致内存消耗比较大，不过鉴于现在的手机内存来讲，这点几乎影响不大。
+
+
 
 编写布局文件  
 监听事件，调用retrofit完成异步的网络请求，并将结果渲染到视图  
@@ -2283,28 +2303,14 @@ public class SecViewModel extends AndroidViewModel {
 
 创建recycleview的adapter，新闻集合属性，绑定item  
 
-修改activity代码，构造recycleview，绑定VM，绑定生命周期，监听网络返回的数据，通知adapter更新  
+修改[activity代码](<https://github.com/zhanyeye/android-examples/blob/master/example13/src/main/java/com/example/example13/SecActivity.java>)，构造recycleview，绑定VM，绑定生命周期，监听网络返回的数据，通知adapter更新  
 
 ```java
 public class SecActivity extends AppCompatActivity {
-    private static final String TAG = "SecActivity";
-    private RecyclerView recyclerView;
-    private ActivitySecBinding binding;
-    private SecViewModel viewModel;
-    @Override
+    ...
+    ...
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_sec);
-        // 提出recycle初始化代码
-        initRecyclerView();
-        // 构造VM，
-        viewModel = ViewModelProviders.of(this).get(SecViewModel.class);
-        binding.setVm(viewModel);
-        binding.setLifecycleOwner(this);
-
-        SecRecyclerAdapter adapter = new SecRecyclerAdapter();
-        recyclerView.setAdapter(adapter);
-
+        ...
         // 监听MV中数据更新，注入结果
         viewModel.newsList.observe(this, news -> {
             // 将最新数据交由adapter渲染
@@ -2313,23 +2319,9 @@ public class SecActivity extends AppCompatActivity {
             // 更新到顶部
             recyclerView.scrollToPosition(0);
         });
-
-        binding.actSecButton.setOnClickListener(v -> {
-            Intent i = new Intent(SecActivity.this, ThirdActivity.class);
-            startActivity(i);
-        });
+		...
     }
-
-    private void initRecyclerView() {
-        // 基于ID名称直接获取绑定视图上的组件，无需findviewbyid()方法
-        recyclerView = binding.actSecRecylerview;
-        // 指定一个默认的布局管理器
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-    }
-
+    ...
     @Override
     protected void onStart() {
         super.onStart();
@@ -2346,7 +2338,7 @@ public class SecActivity extends AppCompatActivity {
 在接口添加post请求  
 
 ```java
-/**
+	/**
      * 即使没有返回值，也必须封装一个空类型Void
      * @param n
      * @return
@@ -2376,6 +2368,7 @@ public class ThirdActivity extends AppCompatActivity {
             News n = new News();
             n.title = "" + title.getText().toString();
             n.subtitle = "" + subtitle.getText().toString();
+            
             // 不能仅执行post()方法，必须执行enqueue()方法添加至执行队列
             ServiceFactory.getNewsService().post(n).enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -2957,7 +2950,39 @@ https://developer.android.google.cn/training/permissions/requesting
 
 
 
-
-
 ##### Example 18 Notification
+
+<https://developer.android.google.cn/training/notify-user/build-notification> 构造Notification，声明必须属性
+创建PendingIntent对象，封装点击通知intent
+基于版本构造NotificationChannel
+发送通知
+
+
+
+##### Example 19 Service
+
+<https://developer.android.google.cn/guide/components/services.html>
+<https://developer.android.google.cn/guide/components/bound-services.html>
+<https://developer.android.google.cn/training/run-background-service/create-service.html>
+
+自定义服务，封装操作值
+重写onCreate()方法，创建子线程执行操作
+自定义Binder子类，重写onBind()方法
+重写onStartCommand()方法，接收初始化参数
+修改项目配置，注册自定义服务
+
+在activity中，自定义类实现ServiceConnection接口
+基于自定义ServiceConnection服务连接类获取绑定对象
+与服务互交，完成操作
+
+
+
+##### Example 20 BroadcastReceiver
+
+<https://developer.android.google.cn/reference/android/content/BroadcastReceiver.html>
+
+自定义接收器，重写onReceive()方法，监听指定action操作
+自定义服务，在服务中注册/注销接收器，并声明监听的action
+在项目配置中，注册服务，接收器
+在activity中启动服务，监听action变化
 
