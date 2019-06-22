@@ -2453,7 +2453,7 @@ public interface CourseDao {
 }
 ```
 
-创建数据库工厂，封装构造过程，暴露DAO接口(代理类)  
+创建[数据库工厂](<https://github.com/zhanyeye/android-examples/blob/master/example14/src/main/java/com/example/example14/repository/DatabaseFactory.java>)，封装构造过程，暴露DAO接口(代理类)  
 
 ```java
 /**
@@ -2698,7 +2698,7 @@ manifest 中： `<uses-permission android:name="android.permission.WRITE_EXTERNA
 
 
 
-##### Example 16 External Storage
+##### Example 16 Dialogs
 
 构造[AlertDialog](https://developer.android.google.cn/guide/topics/ui/dialogs#AlertDialog)  
 自定义确认、取消、中性等按钮回调  
