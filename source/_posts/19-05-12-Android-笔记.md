@@ -1087,7 +1087,7 @@ public class MainActivity extends AppCompatActivity {
     }
 ```
 
-重写activity onOptionsItemSelected()方法，监听item点击事件 link(<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java>)
+重写activity onOptionsItemSelected()方法，监听item点击事件 [link](<https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java>)
 
 ```java
     ...
