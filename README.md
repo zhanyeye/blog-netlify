@@ -10,3 +10,6 @@
 + [算法笔记](https://zhanyeye.netlify.com/categories/%E7%AE%97%E6%B3%95/)  
 + [LeetCode笔记](https://zhanyeye.netlify.com/categories/leetcode/)
 
+---
+注意事项：
++ 编辑数学公式需要在 `Front-matter` 里打开mathjax开关: `mathjax: true`
