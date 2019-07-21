@@ -15,7 +15,7 @@ Git 要求对本地仓库关联的每个远程主机都必须指定一个主机�
 
 #### Git 基础操作
 
-![](https://doc.shiyanlou.com/document-uid310176labid9805timestamp1548755776759.png/wm)
+![](https://raw.githubusercontent.com/zhanyeye/Figure-bed/deepin-pic/imgwm)
 
 ##### 一次修改提交推送操作
 
