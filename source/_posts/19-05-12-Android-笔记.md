@@ -16,7 +16,7 @@ categories:
 + This project will support instant apps
 + `use androidx.* artifacts`    避免版本依赖的问题
 
-
+<!--more-->
 
 ##### Example 01 UI
 
