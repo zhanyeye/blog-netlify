@@ -21,6 +21,8 @@ An input string is valid if:
 
 Note that an empty string is also considered valid.
 
+<!--more-->
+
 **Example 1:**
 
 ```

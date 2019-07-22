@@ -14,7 +14,7 @@ categories:
   + One端使用@OneToMany声明与Many端关系，设置**mappedBy**属性声明在另一端映射的**属性名称**
   + Many端使用@ManyToOne声明与One端关系
 
-  
+  <!--more-->
 
 User.java + Address.java
 
