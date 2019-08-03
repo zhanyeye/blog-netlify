@@ -1,5 +1,5 @@
 ---
-title: 19-07-21 git和Github入门实践
+title: git和Github入门实践
 date: 2019-07-21 08:37:15
 tags:
 - git
