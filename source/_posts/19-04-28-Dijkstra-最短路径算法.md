@@ -5,6 +5,7 @@ tags:
 - 图
 categories:
 - 算法
+mathjax: true
 ---
 
 ###### 单源最短路问题
@@ -27,6 +28,9 @@ categories:
 
 ######  算法流程
 
++ **一直维护一个还没有确定最短路的点的集合, 每次从集合中选出一个最小的点去更新其他的点**
++ **不能处理负权图**: 贪心正确的前提是没有负权
+
 我们定义带权图 *G* 所有顶点的集合为 *V*，接着我们再定义**已确定从源点出发的最短路径的顶点集合**为 *U*，初始集合 *U* 为空，记**从源点 *s* 出发到每个顶点 *v* 的距离**为 *dist_v*，初始 *dist_s*=0，其他*dist_v*为∞。接着执行以下操作：
 
 1. 从 *V*−*U* 中找出一个距离源点最近的顶点 *v*，将 *v* 加入集合 *U*。
@@ -36,65 +40,6 @@ categories:
 如果最后V !=U，说明有顶点无法从源点到达；否则每个 dist_i表示从 *s* 出发到顶点 *i* 的最短距离。
 
 Dijkstra 算法的时间复杂度为O(*V*^2)，其中 *V* 表示顶点的数量。
-
-
-
->  算法演示
->
-> 接下来，我们用一个例子来说明这个算法。
->
-> ![img](https://res.jisuanke.com/img/upload/20170428/15072f3ce9f3e53579a6c2e02d87ef57d56cb3fe.png)
->
-> 
->
-> 初始每个顶点的 dist 设置为无穷大 inf，源点 *M* 的 dist_M 设置为 0。
->
-> 1. 当前*U*=∅，*V*−*U* 中 dist 最小的顶点是 M。
->
-> 2. 从顶点 M 出发，更新相邻点的 dist。
->
-> ![](https://res.jisuanke.com/img/upload/20170428/02b208d277615bebf57d9a796e46bc96900181a3.png)
->
-> 
->
-> 更新完毕，此时 *U*={*M*}，
->
-> 1. *V*−*U* 中 dist 最小的顶点是 *W*。
-> 2. 从 *W* 出发，更新相邻点的 dist。
->
-> ![img](https://res.jisuanke.com/img/upload/20170428/a310ffeebb4ebd561660aeed7cf81db5448b98cc.png)
->
-> 
->
-> 更新完毕，此时 *U*={*M*,*W*}，
->
-> 1. *V*−*U* 中 dist 最小的顶点是 *E*。
->
-> 2. 从 *E* 出发，更新相邻顶点的 dist。
->
-> ![img](https://res.jisuanke.com/img/upload/20170428/18bf6b9ce78f61fa85ce4b6563b8d3508b2b0470.png)
->
-> 
->
-> 更新完毕，此时 *U*={*M*,*W*,*E*}，
->
-> 1. V*−*U* 中 dist最小的顶点是 *X*。
-> 2. 从 *X* 出发，更新相邻顶点的 dist。
->
-> ![img](https://res.jisuanke.com/img/upload/20170428/39744d7c33d595558c4c79205c7778b3ae476a01.png)
->
-> 
->
-> 更新完毕，此时 *U*={*M*,*W*,*E*,*X*}，
->
-> 1. V*−*U* 中 dist 最小的顶点是 *D*。
-> 2. 从 *D* 出发，没有其他不在集合 *U* 中的顶点。
->
-> [![img](https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png)](https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png)
->
-> 此时*U*=*V*，算法结束，单源最短路计算完毕。
-
-
 
 ```c++
 #include <iostream>
@@ -188,7 +133,15 @@ int main() {
 
 
 
+再回顾一下 Dijkstra 算法的核心思想，就是一直维护一个还没有确定最短路的点的集合，然后每次从这个集合中选出一个最小的点去更新其他的点。
 
+**堆优化**
+
+如果每次暴力枚举选取距离最小的元素，则总的时间复杂度是 $\mathcal{O}(V^2)$。
+
+结合之前学习的数据结构，如果考虑用堆优化，用一个`set`来维护点的集合，这样的时间复杂度就优化到了 $\mathcal{O}((V+E)\log V)$，对于稀疏图的优化效果非常好。
+
+小根堆优化的 Dijkstra 示例代码如下：
 
 ```c++
 #include <iostream>
@@ -275,3 +228,57 @@ int main() {
 }
 ```
 
+
+
+> 算法演示
+>
+> 接下来，我们用一个例子来说明这个算法。
+>
+> ![img](https://res.jisuanke.com/img/upload/20170428/15072f3ce9f3e53579a6c2e02d87ef57d56cb3fe.png)
+>
+> 
+>
+> 初始每个顶点的 dist 设置为无穷大 inf，源点 *M* 的 dist_M 设置为 0。
+>
+> 1. 当前*U*=∅，*V*−*U* 中 dist 最小的顶点是 M。
+> 2. 从顶点 M 出发，更新相邻点的 dist。
+>
+> ![](https://res.jisuanke.com/img/upload/20170428/02b208d277615bebf57d9a796e46bc96900181a3.png)
+>
+> 
+>
+> 更新完毕，此时 *U*={*M*}，
+>
+> 1. *V*−*U* 中 dist 最小的顶点是 *W*。
+> 2. 从 *W* 出发，更新相邻点的 dist。
+>
+> ![img](https://res.jisuanke.com/img/upload/20170428/a310ffeebb4ebd561660aeed7cf81db5448b98cc.png)
+>
+> 
+>
+> 更新完毕，此时 *U*={*M*,*W*}，
+>
+> 1. *V*−*U* 中 dist 最小的顶点是 *E*。
+> 2. 从 *E* 出发，更新相邻顶点的 dist。
+>
+> ![img](https://res.jisuanke.com/img/upload/20170428/18bf6b9ce78f61fa85ce4b6563b8d3508b2b0470.png)
+>
+> 
+>
+> 更新完毕，此时 *U*={*M*,*W*,*E*}，
+>
+> 1. V*−*U* 中 dist最小的顶点是 *X*。
+> 2. 从 *X* 出发，更新相邻顶点的 dist。
+>
+> ![img](https://res.jisuanke.com/img/upload/20170428/39744d7c33d595558c4c79205c7778b3ae476a01.png)
+>
+> 
+>
+> 更新完毕，此时 *U*={*M*,*W*,*E*,*X*}，
+>
+> 1. V*−*U* 中 dist 最小的顶点是 *D*。
+> 2. 从 *D* 出发，没有其他不在集合 *U* 中的顶点。
+>
+> [![img](https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png)](https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png)
+>
+> 此时*U*=*V*，算法结束，单源最短路计算完毕。
