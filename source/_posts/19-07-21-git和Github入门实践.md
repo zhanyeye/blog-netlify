@@ -5,6 +5,28 @@ tags:
 - git
 ---
 
+#### 常用操作
+
+##### 设置git使用socks5代理
+
+```shell
+git config --global http.proxy socks5://127.0.0.1:1080
+git config --global https.proxy socks5://127.0.0.1:1080
+
+# 取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+# 只对github进行代理
+git config --global http.https://github.com.proxy socks5://127.0.0.1:1080
+git config --global https.https://github.com.proxy socks5://127.0.0.1:1080
+
+```
+
+
+
+
+
 #### Git 与 GitHub 简介
 
 当我们在 GitHub 上创建一个仓库时，同时生成了仓库的默认主机名 origin，并创建了默认分支 master。GitHub 可以看成是免费的 Git 服务器，在 GitHub 上创建仓库，会自动生成一个仓库地址，主机就是指代这个仓库，主机名就等于这个仓库地址。克隆一个 GitHub 仓库（也叫远程仓库）到本地，本地仓库则会自动关联到这个远程仓库，执行 `git remote -v` 命令可以查看本地仓库所关联的远程仓库信息
@@ -55,22 +77,6 @@ Git 要求对本地仓库关联的每个远程主机都必须指定一个主机�
 - `user.name`：你自己的 GitHub 账号名字
 
 `git config -l`可以查看配置信息
-
-[git 设置和取消代理](https://www.cnblogs.com/xueweihan/p/7242577.html)
-
-```shell
- 设置ss
-git config --global http.proxy 'socks5://127.0.0.1:1080'
-git config --global https.proxy 'socks5://127.0.0.1:1080'
-
-# 设置代理
-git config --global https.proxy http://127.0.0.1:1080
-git config --global https.proxy https://127.0.0.1:1080
-
-# 取消代理
-git config --global --unset http.proxy
-git config --global --unset https.proxy
-```
 
 统自动生成 Git 的配置文件，就是家目录中的隐藏文件 `.gitconfig` 
 
@@ -206,6 +212,8 @@ git config --global --unset https.proxy
 #### Git tag
 
 > 在一个项目中，我们可能需要阶段性地发布一个版本，比如 `V1.0`、`V1.0.2`、`V3.2 Beta` 之类的，Git 的标签可以满足这个需求。在一个长期大型项目中，可能会有数千个提交版本，我们可能需要对重要的节点性提交打个记号，这时也可以使用 Git 的标签功能。在一些项目相关的书籍中，我们会看到 “执行 xxx 命令签出这个版本以查看对应的代码” ，这也是使用 Git 的标签功能做到的。
+
+
 
 ----------///下面的估计段时间见内不会接触,暂且不总结
 
