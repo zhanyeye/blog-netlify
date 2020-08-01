@@ -30,7 +30,8 @@
     "login": "zhanyeye",
     "repo": "blog",
     "mdNameFormat": "title",
-    "postPath": "source/_posts",
+    "postPath": "source/_posts/yuque",
+    "adapter": "hexo",
     "onlyPublished": false
   }
 }
