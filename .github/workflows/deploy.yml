@@ -19,8 +19,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    # check it to your workflow can access it
+    # from: https://github.com/actions/checkout
+    - name: Checkout Repository master branch
+      uses: actions/checkout@master
     
     # from: https://github.com/actions/setup-node
     - name: Setup Node.js 10.x
@@ -37,13 +39,6 @@ jobs:
         npm install yuque-hexo -g
         npm install
         npm run start
-    
-
-    # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
     
     # from https://github.com/peaceiris/actions-gh-pages
     - name: Deploy
