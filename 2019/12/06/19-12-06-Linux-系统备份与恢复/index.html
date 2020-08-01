@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="内容来自实验楼 备份概述几乎所有的备份工具都支持两种不同的备份类型：完整备份和增量备份。 对于完整备份而言，包含的是一个文件系统的全部内容。而增量备份只包括相对于上一次备份之后，发生变化的文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-12-06 Linux 系统备份与恢复">
+<meta property="og:url" content="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="内容来自实验楼 备份概述几乎所有的备份工具都支持两种不同的备份类型：完整备份和增量备份。 对于完整备份而言，包含的是一个文件系统的全部内容。而增量备份只包括相对于上一次备份之后，发生变化的文件。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206222225.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206223834.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206223139.png">
+<meta property="article:published_time" content="2019-12-06T13:58:57.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.517Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206222225.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-12-06 Linux 系统备份与恢复 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD"><span class="nav-number">1.</span> <span class="nav-text">备份</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#dump"><span class="nav-number">1.2.</span> <span class="nav-text">dump</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D"><span class="nav-number">2.</span> <span class="nav-text">恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#restore"><span class="nav-number">2.1.</span> <span class="nav-text">restore</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B6%E5%AE%83%E5%A4%87%E4%BB%BD%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">其它备份工具</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#tar"><span class="nav-number">3.1.</span> <span class="nav-text">tar</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dd"><span class="nav-number">4.</span> <span class="nav-text">dd</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-12-06 Linux 系统备份与恢复
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-06 21:58:57" itemprop="dateCreated datePublished" datetime="2019-12-06T21:58:57+08:00">2019-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>内容来自<a target="_blank" rel="noopener" href="https://www.shiyanlou.com/">实验楼</a></p>
+<h5 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h5><h6 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h6><p>几乎所有的备份工具都支持两种不同的备份类型：完整备份和增量备份。</p>
+<p>对于完整备份而言，包含的是一个文件系统的全部内容。而增量备份只包括相对于上一次备份之后，发生变化的文件。</p>
+<a id="more"></a>
+
+<h6 id="dump"><a href="#dump" class="headerlink" title="dump"></a>dump</h6><p>Linux <code>dump</code> 命令用于备份文件系统。对于 GNU 版本的 <code>dump</code> 来说，默认支持的是 <code>ext2/3/4</code> 文件系统的备份。如果需要备份其它文件系统，需要下载指定版本的 <code>dump</code>。</p>
+<p>在当前实验环境中，需要安装 <code>dump</code> ，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install dump</span><br></pre></td></tr></table></figure>
+
+<p>在使用 dump 命令的时候，需要指定一个备份级别。对于以前的 <code>dump</code> 程序最多支持 0~9 级备份。在最新的版本中已经没有这个限制。</p>
+<p>对于 <code>dump</code> 的备份等级为 <code>0</code> 时，将会把整个文件系统进行备份，称为<code>完整备份</code> 。而 <code>1</code> 则是相对与备份等级为 <code>0</code> 时所有修改的文件进行备份，这时备份方式被称为<code>增量备份</code>。</p>
+<p>下面我们简单介绍一些常用的参数：</p>
+<ul>
+<li><code>-level#</code> 指定备份等级，例如 <code>-0</code> 备份整个文件系统</li>
+<li><code>-f</code> 指定备份设备</li>
+<li><code>-n</code> 当备份工作需要管理员介入时，向所有”operator”群组中的使用者发出通知</li>
+<li><code>-T</code> 指定备份的时间</li>
+</ul>
+<p>将当前系统的整个文件系统进行备份，即 <code>/</code> 目录，备份到 <code>/home/test.dump</code> 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dump -0 -f &#x2F;home&#x2F;test.dump  &#x2F;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>由于实验环境是 Docker 容器，缺乏必要的权限，dump 时会失败。如果有本地环境，可在本地操作。</p>
+</blockquote>
+<p>进入到<code>/home</code> 目录下，我们可以看到对应的备份文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd &#x2F;home</span><br><span class="line">$ ls</span><br><span class="line">$ file test.dump</span><br></pre></td></tr></table></figure>
+
+<h5 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h5><p>从备份的文件中提取文件，我们称为恢复，而对于恢复而言，也可以指定仅恢复一小部分文件和恢复整个文件系统</p>
+<h6 id="restore"><a href="#restore" class="headerlink" title="restore"></a>restore</h6><p>与 <code>dump</code> 命令对应的命令为 <code>restore</code>，在安装了 <code>dump</code> 后，就可以使用 <code>restore</code> 命令了。</p>
+<p><code>restore</code> 命令有几种常用的模式，并且不能混用，下面简单说明：</p>
+<ul>
+<li><code>-C</code> 比较备份的内容与当前实际的内容的区别</li>
+<li><code>-i</code> 交互模式，可以仅还原部分内容</li>
+<li><code>-r</code> 还原整个文件系统</li>
+<li><code>-t</code> 可以查看备份的内容</li>
+</ul>
+<p>除了几种模式外，还有一些其它的参数，将会通过示例介绍。</p>
+<p>例如，我们可以通过 <code>-C</code> 参数来比较备份的文件系统与当前文件系统的区别。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># -f 指定备份文件，-D 指定需要比较的文件系统</span><br><span class="line">$ sudo restore -C -f test.dump -D &#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>此时，我们将备份的内容进行恢复，使用如下命令（<code>不建议运行，参考示例运行截图</code>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># -T 指定需要恢复的路径</span><br><span class="line"></span><br><span class="line">$ sudo restore -r -f test.dump -T &#x2F;home</span><br></pre></td></tr></table></figure>
+
+<p>除了恢复整个文件系统，我们还可以仅恢复部分文件，例如，我在 <code>/home</code> 目录下创建了一个文件，进行增量备份后，然后将其删除，通过备份文件将其恢复：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 创建示例文件</span><br><span class="line">sudo touch shiyanlou.txt</span><br><span class="line"></span><br><span class="line"># 进行增量备份</span><br><span class="line">sudo dump -1 -f &#x2F;test1.dump &#x2F;</span><br><span class="line"></span><br><span class="line"># 删除示例文件</span><br><span class="line">sudo rm shiyanlou.txt</span><br><span class="line"></span><br><span class="line"># 部分恢复</span><br><span class="line">sudo restore -i -f test1.dump</span><br></pre></td></tr></table></figure>
+
+<h5 id="其它备份工具"><a href="#其它备份工具" class="headerlink" title="其它备份工具"></a>其它备份工具</h5><p>在大多数时候，对于一个Linux 系统来讲，并不是所有的内容都是需要备份的。有些时候我们只需要对于一些关键数据进行备份。</p>
+<p>例如 <code>/tmp</code> 临时目录，这里面的数据我们是没有必要去备份的。而对于需要备份的数据可能会根据实际的情况有所不同，例如，当前系统主要提供的是数据库存储等服务，那么重要的就是你的数据库文件，以及一些重要的配置信息。</p>
+<p>而对于仅仅备份部分内容，这里我们将不再介绍使用 <code>dump</code> 工具进行操作，介绍一些其它的内容</p>
+<h6 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h6><p><code>tar</code> 命令在前面的课程中我们就已经简单介绍过，<code>tar</code> 是用于创建文件档案的命令行工具，也用于备份文件。</p>
+<p><code>tar</code> 命令也可以进行 <code>增量备份</code>，这里我们当前用户 <code>shiyanlou</code> 的用户目录的内容进行简单示例。</p>
+<p>进行增量备份时 ，<code>tar</code> 需要使用到 <code>-g</code> 参数。</p>
+<ul>
+<li><code>-g</code> 或者 <code>--listed-incremental</code> 参数指示 <code>tar</code> 进行增量归档操作，并且将额外的元数据存储在快照文件中，而此文件的作用是记录上次归档以来，哪些文件被更改，添加或者删除，以便下一次增量备份时将只包含已经修改的文件。</li>
+</ul>
+<p>这时，我们将 <code>/home/shiyanlou/Desktop</code> 目录的内容进行增量备份</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 查看 Desktop 的内容</span><br><span class="line">$ ls Desktop</span><br><span class="line"></span><br><span class="line"># 如下所示，-g 指定快照文件，-c 指示建立归档，-f 指定归档文件名称，-v 显示详情</span><br><span class="line">$ sudo tar -c -v -f shiyanlou1.tar -g metadata &#x2F;home&#x2F;shiyanlou&#x2F;Desktop</span><br></pre></td></tr></table></figure>
+
+<p>执行命令后，当前 <code>/home/shiyanlou</code> 目录会有对应的归档文件和快照文件。</p>
+ <img width="400" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206222225.png">
+
+<p>接下来我们在 <code>/home/shiyanlou/Desktop</code> 目录中创建两个测试文件，进行增量备份，命令如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 创建测试文件</span><br><span class="line">$ touch &#x2F;home&#x2F;shiyanlou&#x2F;Desktop&#x2F;test1.txt  &#x2F;home&#x2F;shiyanlou&#x2F;Desktop&#x2F;test2.txt</span><br><span class="line"></span><br><span class="line"># 查看创建的测试文件</span><br><span class="line">$ ls Desktop</span><br><span class="line"></span><br><span class="line">$ 创建增量备份</span><br><span class="line">$ sudo tar -c -v -f shiyanlou2.tar -g metadata &#x2F;home&#x2F;shiyanlou&#x2F;Desktop</span><br><span class="line"></span><br><span class="line">$ ls</span><br></pre></td></tr></table></figure>
+
+ <img width="600" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206223834.png">
+
+<p>命令执行结束后，上图中的 <code>shiyanlou2.tar</code> 则为相对于 <code>shiyanlou1.tar</code> 的增量备份，即包含创建的两个测试文件。最后，我们可以还原 <code>shiyanlou2.tar</code> 的内容，来确认这一结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo tar -xvf shiyanlou2.tar -C .&#x2F;test&#x2F;  </span><br></pre></td></tr></table></figure>
+
+<p>如下所示，在最后我们可以看到刚刚创建的测试文件出现:</p>
+ <img width="400" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206223139.png">
+
+<h5 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h5><p>Linux <code>dd</code> 命令是用于复制和转换<strong>文件</strong>。利用 <code>dd</code> 命令我们可以复制文件系统，这里我们只是简单介绍 <code>dd</code> 命令的使用。</p>
+<p><code>dd</code> 命令默认从标准输入读取，并且输出到标准输出。但是可以通过 <code>if</code> 和 <code>of</code> 分别重定向输入和输出到文件。</p>
+<p>如下示例，我们将 <code>/etc/hosts</code> 复制到当前目录下的 <code>hosts</code> 中，就可以使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dd if&#x3D;&#x2F;etc&#x2F;hosts of&#x3D;hosts</span><br></pre></td></tr></table></figure>
+
+<p>而对于复制文件系统，只需要将 <code>if=</code> 的参数修改为 <code>dev</code> 下对应文件系统的设备即可。</p>
+<p>除此之外，对于 <code>dd</code> 命令，有时我们还用于临时创建 <code>swap</code> 交换分区。命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dd if&#x3D;&#x2F;dev&#x2F;zero of&#x3D;test_swap bs&#x3D;1M count&#x3D;1024</span><br><span class="line"></span><br><span class="line">$ sudo mkswap test_swap</span><br><span class="line"></span><br><span class="line">$ sudo swapon test_swap  #在线环境中不能启用交换分区，这个命令无须输入</span><br></pre></td></tr></table></figure>
+
+<p><code>dd</code> 命令可以使用 <code>bs</code> 设置输入输出块的大小，而<code>count</code>则是复制对应数目的块。这里的 <code>/dev/zero</code> 在Linux中属于一个特殊的文件，对应的有 <code>/dev/null</code>。<code>/dev/zero</code> 会不断输出 of= <code>0</code>，即为 <code>空</code>，而对应的 <code>/dev/null</code> 会将所有重定向到 <code>/dev/null</code> 的输出全部抛弃。对于上面的命令而言，则是通过 <code>/dev/zero</code> 复制创建一个文件大小为 <code>1M*1024=1024M=1G</code> 的名为 <code>test_swap</code> 的空文件。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/06/19-12-06-Linux-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/" rel="prev" title="19-12-06 Linux 磁盘管理">
+      <i class="fa fa-chevron-left"></i> 19-12-06 Linux 磁盘管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/07/19-12-07-Linux-%E4%BB%BB%E5%8A%A1%E8%AE%A1%E5%88%92/" rel="next" title="19-12-07 Linux 任务计划">
+      19-12-07 Linux 任务计划 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

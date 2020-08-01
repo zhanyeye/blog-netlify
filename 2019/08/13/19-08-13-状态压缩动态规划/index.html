@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="若元素数量比较小（不超过 20）时，想要存储每个元素取或不取的状态时，可以借助位运算将状态压缩。 需要借助状态压缩过程的动态规划就是状态压缩 DP（很多地方会简称为 状压 DP）。 取若干元素，也就是对应的位置记为 1，其余位置记为 0。例如，一共有 5 个元素 a,b,c,d,e，我们分别用 1,2,4,8,16 表示这五个元素，则集合 {a,c,e} 可以用 $(10101)_2$&#x3D;21 来表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-08-13 状态压缩动态规划">
+<meta property="og:url" content="http://yoursite.com/2019/08/13/19-08-13-%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="若元素数量比较小（不超过 20）时，想要存储每个元素取或不取的状态时，可以借助位运算将状态压缩。 需要借助状态压缩过程的动态规划就是状态压缩 DP（很多地方会简称为 状压 DP）。 取若干元素，也就是对应的位置记为 1，其余位置记为 0。例如，一共有 5 个元素 a,b,c,d,e，我们分别用 1,2,4,8,16 表示这五个元素，则集合 {a,c,e} 可以用 $(10101)_2$&#x3D;21 来表">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-13T13:01:42.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.513Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/08/13/19-08-13-%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-08-13 状态压缩动态规划 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">例题</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">解析</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/13/19-08-13-%E7%8A%B6%E6%80%81%E5%8E%8B%E7%BC%A9%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-08-13 状态压缩动态规划
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-08-13 21:01:42" itemprop="dateCreated datePublished" datetime="2019-08-13T21:01:42+08:00">2019-08-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>若元素数量比较小（不超过 20）时，想要存储每个元素取或不取的状态时，可以借助位运算将状态压缩。</p>
+<p>需要借助状态压缩过程的动态规划就是状态压缩 DP（很多地方会简称为 <strong>状压 DP</strong>）。</p>
+<p>取若干元素，也就是对应的位置记为 1，其余位置记为 0。例如，一共有 5 个元素 a,b,c,d,e，我们分别用 1,2,4,8,16 表示这五个元素，则集合 {a,c,e} 可以用 $(10101)_2$=21 来表示，而集合 {b,c,d} 可以用 $(01110)_2=14$ 表示。</p>
+<p>对于元素个数为 n<em>n</em> 的情况，其空间复杂度为 $\mathcal{O}(2^n)$。</p>
+<p>如果不用状态压缩，那么我们状态需要开 5 维的<code>dp[2][2][2][2][2]</code>，这样不仅使得代码的实现变的很复杂，并且当 n 的大小不一样的时候，状态维度也不一样，不是很容易实现。</p>
+<p><strong>控件复杂度和状态数量没有变，变的是状态的表达方式</strong></p>
+<a id="more"></a>
+
+<h6 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h6><p>下面我们通过一个具体的题目来了解状态压缩动态规划。</p>
+<p>n 个人在做传递物品的游戏,编号为 1-n。</p>
+<p>游戏规则是这样的：开始时物品可以在任意一人手上，他可把物品传递给其他人中的任意一位；下一个人可以传递给未接过物品的任意一人。</p>
+<p>即物品只能经过同一个人一次，而且每次传递过程都有一个代价；不同的人传给不同的人的代价值之间没有联系。</p>
+<p>求当物品经过所有 n 个人后，整个过程的总代价是多少。</p>
+<h6 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h6><p>我们就可以将“当前传递过物品的人的集合、最后一个传递到的人”作为状态进行动态规划，用<code>dp[i][j]</code>表示这个状态的最小代价。</p>
+<p>这里，我们就要用到状态压缩：把“传递过物品的人的集合”压缩为一个整数。我们用二进制表示这个集合，比如一共5个人，第 0、3、4 个人被传递过（为了方便起见，序号从 0 开始），就用 $11001_{(2)}$表示，该集合的十进制表示为 25。</p>
+<p>注意到 j<em>j</em> 是最后一个被传递到的人，也就是说必须在传递集合 i<em>i</em> 中标记为 11，即合法状态必须满足<code>(i &amp; (1 &lt;&lt; j)) != 0</code>。如果从 j<em>j</em> 传递到 k<em>k</em>，那 k<em>k</em> 必须不在集合 i<em>i</em> 里，即必须满足<code>(i &amp; (1 &lt;&lt; k)) == 0</code>。</p>
+<p>转移方程为<code>dp[i | 1 &lt;&lt; k][k] = min(dp[i | 1 &lt;&lt; k][k], dp[i][j] + a[j][k])</code>，<br>其中<code>a[j][k]</code>为从 j 传递到 k 的代价。<br>其中<code>i | (1 &lt;&lt; k)</code>是将第k个人加入集合i中</p>
+<p>因为开始时物品可以在任意一人手上，所以把<code>dp[1 &lt;&lt; i][i]</code>置为 00，其它状态置为无穷大。</p>
+<p>总的时间复杂度为 \mathcal{O}(n^22^n)O(<em>n</em>22<em>n</em>)。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/13/19-08-13-201312-4%20%E6%9C%89%E8%B6%A3%E7%9A%84%E6%95%B0/" rel="prev" title="201312-4 有趣的数">
+      <i class="fa fa-chevron-left"></i> 201312-4 有趣的数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/04/19-10-04-python%E7%AE%80%E6%98%8E%E6%95%99%E7%A8%8B/" rel="next" title="19-10-04 python简明教程">
+      19-10-04 python简明教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

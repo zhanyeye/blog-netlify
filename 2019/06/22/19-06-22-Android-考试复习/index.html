@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="判断题(20分)单项选择题(30分)编程题(40分)论述题(10分)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 考试复习">
+<meta property="og:url" content="http://yoursite.com/2019/06/22/19-06-22-Android-%E8%80%83%E8%AF%95%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="判断题(20分)单项选择题(30分)编程题(40分)论述题(10分)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://developer.android.google.cn/images/activity_lifecycle.png">
+<meta property="article:published_time" content="2019-06-22T14:27:59.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.513Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://developer.android.google.cn/images/activity_lifecycle.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/06/22/19-06-22-Android-%E8%80%83%E8%AF%95%E5%A4%8D%E4%B9%A0/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Android 考试复习 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E6%9D%83%E9%99%90%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">需要权限的操作</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8activity%E5%8F%8A%E4%BC%A0%E5%8F%82%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">启动activity及传参的方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Activity%E7%9A%84%E4%B8%BB%E8%A6%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">Activity的主要生命周期回调函数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#LinearLayout%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%B8%83%E5%B1%80%E6%96%B9%E6%B3%95%EF%BC%9B%E5%9F%BA%E6%9C%AC%E6%8E%A7%E4%BB%B6%E5%B1%9E%E6%80%A7%EF%BC%8C%E9%AB%98%E5%AE%BD%EF%BC%8C%E6%AF%94%E9%87%8D%E7%AD%89"><span class="nav-number">4.</span> <span class="nav-text">LinearLayout的基本布局方法；基本控件属性，高宽，比重等</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9C%A8Activity%E4%B8%AD%E8%8E%B7%E5%8F%96%E5%B8%83%E5%B1%80%E6%8E%A7%E4%BB%B6%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">在Activity中获取布局控件的方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E4%BA%8B%E4%BB%B6%E5%9B%9E%E8%B0%83%E6%8E%A5%E5%8F%A3"><span class="nav-number">6.</span> <span class="nav-text">常用事件回调接口</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%8E%A7%E4%BB%B6%E5%8F%8A%E5%B1%9E%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text">基本控件及属性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%90%86%E8%A7%A3MVVM%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%9C%A8Android%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">8.</span> <span class="nav-text">理解MVVM设计模式，以及在Android中的应用</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E4%BF%9D%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8E%A5%E5%8F%A3%E5%8F%8A%E6%96%B9%E6%B3%95-SharedPreferences-%E6%8E%A5%E5%8F%A3"><span class="nav-number">9.</span> <span class="nav-text">基于键值对保存数据的接口及方法 (SharedPreferences 接口)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3ViewModel%E4%B8%AD%E5%A3%B0%E6%98%8E%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%B9%B6%E5%9C%A8%E5%B8%83%E5%B1%80%E7%BB%91%E5%AE%9A%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">了解ViewModel中声明可观测数据，并在布局绑定的方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E4%BE%A7%E6%BB%91%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="nav-number">11.</span> <span class="nav-text">了解侧滑的实现方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Menu%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">12.</span> <span class="nav-text">Menu的基本使用方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E9%80%9A%E7%9F%A5%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95"><span class="nav-number">13.</span> <span class="nav-text">了解通知的实现方法</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B"><span class="nav-number"></span> <span class="nav-text">编程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%82%B9%E5%87%BB%E6%8C%89%E9%92%AE%EF%BC%8C%E5%B0%86%E8%BE%93%E5%85%A5%E6%A1%86%E4%B8%AD%E7%9A%84%E5%80%BC%EF%BC%8C%E8%B5%8B%E5%80%BC%E7%BB%99%E8%BE%93%E5%87%BA%E6%8E%A7%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">点击按钮，将输入框中的值，赋值给输出控件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E4%B8%80%E4%B8%AA%E5%B8%A6%E7%82%B9%E5%87%BB%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E9%A1%B9%E5%AF%B9%E8%AF%9D%E6%A1%86"><span class="nav-number">2.</span> <span class="nav-text">构造一个带点击实现的单项对话框</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AARecyclerView-Adapter%EF%BC%8C%E8%87%AA%E5%AE%9A%E4%B9%89ViewHolder%EF%BC%8C%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E7%BB%99%E5%AE%9A%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%B8%83%E5%B1%80%E4%BF%A1%E6%81%AF%EF%BC%8C%E6%B8%B2%E6%9F%93RecyclerView"><span class="nav-number">3.</span> <span class="nav-text">创建一个RecyclerView.Adapter，自定义ViewHolder，实现基于给定数据与布局信息，渲染RecyclerView</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/22/19-06-22-Android-%E8%80%83%E8%AF%95%E5%A4%8D%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 考试复习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-06-22 22:27:59" itemprop="dateCreated datePublished" datetime="2019-06-22T22:27:59+08:00">2019-06-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%93%E4%B8%9A%E8%AF%BE/" itemprop="url" rel="index"><span itemprop="name">专业课</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>判断题(20分)<br>单项选择题(30分)<br>编程题(40分)<br>论述题(10分)   </p>
+<a id="more"></a>
+
+<h6 id="需要权限的操作"><a href="#需要权限的操作" class="headerlink" title="需要权限的操作"></a>需要权限的操作</h6><ol>
+<li><p>网络权限 </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在 AndroidManifest.xml 添加</span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">&quot;android.permission.INTERNET&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>外存储<strong>公共</strong>空间 </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">manifest 中声明外存储写入权限</span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：<br>Internal Storage (内存储)：  <strong>无需声明权限</strong>，其他应用无法访问的应用程序的独立空间。文件随应用删除而删除，空间有限，放应用必须文件  </p>
+<p>External Storage：   </p>
+<ul>
+<li>外存储<strong>私有</strong>空间: <strong>无需声明权限</strong>，随应用卸载删除，放普通文件、缓存文件。挂载到：<code>/mnt/sdcard/android/data/packname/files</code></li>
+<li>外存储<strong>公共</strong>空间: <strong>需声明权限</strong>，Android公共目录、音乐、图片等等。挂载到：挂载到:<code>/mnt/sdcard/</code></li>
+</ul>
+</li>
+</ol>
+<p>​    </p>
+<h6 id="启动activity及传参的方法"><a href="#启动activity及传参的方法" class="headerlink" title="启动activity及传参的方法"></a>启动activity及传参的方法</h6><ul>
+<li><code>Intent intent = new Intent(this, SecondActivity.class)</code></li>
+<li><code>intent.putExtra(&quot;value&quot;, &quot;dafadfadfa&quot;)</code></li>
+<li><code>startActivity(intent)</code></li>
+<li><code>String value = getIntent().getStringExtra(&quot;value&quot;)</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MainActivity中</span></span><br><span class="line"></span><br><span class="line">Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, SecondActivity.class);  //（上下文环境, 目的Activity）</span><br><span class="line">intent.putExtra(<span class="string">&quot;value&quot;</span>, <span class="string">&quot;dafadfadfa&quot;</span>);   <span class="comment">//在第一个页面以 键值对 将数据装进Intent   </span></span><br><span class="line">startActivity(intent);   <span class="comment">//startActivity方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//SecondActivity中</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_sec);</span><br><span class="line">    String value = getIntent().getStringExtra(<span class="string">&quot;value&quot;</span>);  <span class="comment">//在第二个页onCreate()面拿到数据 </span></span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="Activity的主要生命周期回调函数"><a href="#Activity的主要生命周期回调函数" class="headerlink" title="Activity的主要生命周期回调函数"></a>Activity的主要生命周期回调函数</h6><p><img src="https://developer.android.google.cn/images/activity_lifecycle.png"></p>
+<p>Activity 生命周期回调方法汇总表</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+<th>是否能事后终止？</th>
+<th>后接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>onCreate()</code></td>
+<td>首次创建 Activity 时调用。 您应该在此方法中执行所有正常的静态设置 — 创建视图、将数据绑定到列表等等。 系统向此方法传递一个 Bundle 对象，其中包含 Activity 的上一状态，不过前提是捕获了该状态。始终后接 <code>onStart()</code>。</td>
+<td>否</td>
+<td><code>onStart()</code></td>
+</tr>
+<tr>
+<td><code>onRestart()</code></td>
+<td>在 Activity 已停止并即将再次启动前调用。始终后接 <code>onStart()</code></td>
+<td>否</td>
+<td><code>onStart()</code></td>
+</tr>
+<tr>
+<td><code>onStart()</code></td>
+<td>在 Activity 即将对用户可见之前调用。如果 Activity 转入前台，则后接 <code>onResume()</code>，如果 Activity 转入隐藏状态，则后接 <code>onStop()</code>。</td>
+<td>否</td>
+<td><code>onResume()</code>  或 <code>onStop()</code></td>
+</tr>
+<tr>
+<td><code>onResume()</code></td>
+<td>在 Activity 即将开始与用户进行交互之前调用。 此时，Activity 处于 Activity 堆栈的顶层，并具有用户输入焦点。始终后接 <code>onPause()</code>。</td>
+<td>否</td>
+<td><code>onPause()</code></td>
+</tr>
+<tr>
+<td><code>onPause()</code></td>
+<td>当系统即将开始继续另一个 Activity 时调用。 此方法通常用于确认对持久性数据的未保存更改、停止动画以及其他可能消耗 CPU 的内容，诸如此类。 它应该非常迅速地执行所需操作，因为它返回后，下一个 Activity 才能继续执行。如果 Activity 返回前台，则后接 <code>onResume()</code>，如果 Activity 转入对用户不可见状态，则后接 <code>onStop()</code>。</td>
+<td><strong>是</strong></td>
+<td><code>onResume()</code>  或 <code>onStop()</code></td>
+</tr>
+<tr>
+<td><code>onStop()</code></td>
+<td>在 Activity 对用户不再可见时调用。如果 Activity 被销毁，或另一个 Activity（一个现有 Activity 或新 Activity）继续执行并将其覆盖，就可能发生这种情况。如果 Activity 恢复与用户的交互，则后接 <code>onRestart()</code>，如果 Activity 被销毁，则后接 <code>onDestroy()</code>。</td>
+<td><strong>是</strong></td>
+<td><code>onRestart()</code> 或 <code>onDestroy()</code></td>
+</tr>
+<tr>
+<td><code>onDestroy()</code></td>
+<td>在 Activity 被销毁前调用。这是 Activity 将收到的最后调用。 当 Activity 结束（有人对 Activity 调用了 <code>finish()</code>），或系统为节省空间而暂时销毁该 Activity 实例时，可能会调用它。 您可以通过 <code>isFinishing()</code> 方法区分这两种情形。</td>
+<td><strong>是</strong></td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h6 id="LinearLayout的基本布局方法；基本控件属性，高宽，比重等"><a href="#LinearLayout的基本布局方法；基本控件属性，高宽，比重等" class="headerlink" title="LinearLayout的基本布局方法；基本控件属性，高宽，比重等"></a>LinearLayout的基本布局方法；基本控件属性，高宽，比重等</h6><ul>
+<li>layout_width,layout_height 宽高：<code>match_parent(匹配父容器)</code>，<code>wrap_content(自适应)</code></li>
+</ul>
+<ul>
+<li>android:orientation：LinearLayout方向 : <code>vertical</code> , <code>horizontal</code></li>
+<li>android:layout_gravity ：<strong>相对于</strong>该控件的<strong>父组件</strong>，控件本身的显示位置。<br>仅在LinearLayout内有效，受android:orientation属性影响<br><code>bottom</code> , <code>center</code></li>
+<li>android:gravity：控件内<strong>内容</strong>的显示位置</li>
+<li>android:layout_weight：比重，android:orientation <strong>相应方向的值需设为0dp</strong><br><code>android:layout_width=&quot;0dp&quot; android:layout_weight=&quot;1&quot;</code></li>
+</ul>
+<h6 id="在Activity中获取布局控件的方法"><a href="#在Activity中获取布局控件的方法" class="headerlink" title="在Activity中获取布局控件的方法"></a>在Activity中获取布局控件的方法</h6><p><code>findViewById()</code>:基于ID名称获取组件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> EditText editTextUserName;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        editTextUserName = findViewById(R.id.act_main_editText_username);</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="常用事件回调接口"><a href="#常用事件回调接口" class="headerlink" title="常用事件回调接口"></a>常用事件回调接口</h6><p>2种实现监听的方法</p>
+<ul>
+<li>匿名内部类</li>
+<li>lambda表达式 (set language level to 8)</li>
+</ul>
+<p><code>View.OnClickListener: onClick()</code> : 点击监听回调函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//onCreate()中</span></span><br><span class="line">buttonSubmit = findViewById(R.id.act_main_button_submit);</span><br><span class="line"><span class="comment">//匿名内部类</span></span><br><span class="line">buttonSubmit.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        String string = editTextUserName.getText().toString();</span><br><span class="line">        textViewUserName.setText(string);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//lambda表达式</span></span><br><span class="line">buttonSubmit.setOnClickListener(v -&gt; &#123;</span><br><span class="line">    String string = editTextUserName.getText().toString();</span><br><span class="line">    textViewUserName.setText(string);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>EditText: TextChangedListener</code> : 文本变化监听函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//onCreate()中</span></span><br><span class="line">editTextNameChange = findViewById(R.id.act_main_editText_change);</span><br><span class="line"><span class="comment">//匿名内部类</span></span><br><span class="line">editTextNameChange.addTextChangedListener(<span class="keyword">new</span> TextWatcher() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeTextChanged</span><span class="params">(CharSequence s, <span class="keyword">int</span> start, <span class="keyword">int</span> count, <span class="keyword">int</span> after)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//变化前</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence s, <span class="keyword">int</span> start, <span class="keyword">int</span> before, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//变化时</span></span><br><span class="line">        textViewNamechange.setText(s);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterTextChanged</span><span class="params">(Editable s)</span> </span>&#123;</span><br><span class="line">        变化后</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><code>View.OnFocusChangeListener: onFocusChange()</code><br><code>View.OnTouchListener: onTouch()</code><br><code>View.OnKeyListener: onKey()</code>  </p>
+<h6 id="基本控件及属性"><a href="#基本控件及属性" class="headerlink" title="基本控件及属性"></a>基本控件及属性</h6><p>???</p>
+<h6 id="理解MVVM设计模式，以及在Android中的应用"><a href="#理解MVVM设计模式，以及在Android中的应用" class="headerlink" title="理解MVVM设计模式，以及在Android中的应用"></a>理解MVVM设计模式，以及在Android中的应用</h6><p><strong>View</strong><br> View层做的就是和UI相关的工作，我们只在XML和Activity或Fragment写View层的代码，View层不做和业务相关的事，也就是我们的Activity 不写和业务逻辑相关代码，也不写需要根据业务逻辑来更新UI的代码，因为更新UI通过Binding实现，更新UI在ViewModel里面做（更新绑定的数据源即可）<br><strong>简单的说：View层不做任何业务逻辑、不涉及操作数据、不处理数据、UI和数据严格的分开</strong>。</p>
+<p><strong>ViewModel</strong><br>ViewModel层做的事情刚好和View层相反，ViewModel 只做和业务逻辑和业务数据相关的事，不做任何和UI、控件相关的事，ViewModel 层不会持有任何控件的引用，更不会在ViewModel中通过UI控件的引用去做更新UI的事情。</p>
+<p><strong>Model</strong><br>Model 的职责很简单，基本就是实体模型（Bean）同时包括Retrofit 的Service </p>
+<h6 id="基于键值对保存数据的接口及方法-SharedPreferences-接口"><a href="#基于键值对保存数据的接口及方法-SharedPreferences-接口" class="headerlink" title="基于键值对保存数据的接口及方法 (SharedPreferences 接口)"></a>基于键值对保存数据的接口及方法 (SharedPreferences 接口)</h6><p><a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/tree/master/example11/src/main/java/com/example/example11/util">link</a></p>
+<p>Saving Key-Value Sets: </p>
+<p>自定义application，暴露获取application对象的静态方法 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> MyApplication instance;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> MyApplication <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        instance = <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改 AndroidManifest <a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/blob/master/example11/src/main/AndroidManifest.xml">配置</a>启动自定义application<br><code>android:name=&quot;.util.MyApplication&quot;</code></p>
+<p>创建 SharedPreferences 操作工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 有则直接使用，没有则创建名为为pre_my的XML配置文件</span></span><br><span class="line"><span class="comment"> * 位置data\data\packagename\shared_prefs</span></span><br><span class="line"><span class="comment"> * 声明使用范围</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SharedPreferencesUtils</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SharedPreferences sf = create();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PRE_FILE = <span class="string">&quot;pre_my&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String MYEDIT = <span class="string">&quot;myedit&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 封装SharedPreferences的构建过程，对外仅暴露允许修改的方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> SharedPreferences <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> MyApplication.getInstance()</span><br><span class="line">                .getSharedPreferences(PRE_FILE, Context.MODE_PRIVATE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putMyedit</span> <span class="params">(String myedit)</span> </span>&#123;</span><br><span class="line">        sf.edit().putString(MYEDIT, myedit).apply();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getMyedit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sf.getString(MYEDIT, <span class="string">&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在activity中将输入写入文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在Main_Activity.java 中</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line">    editText = findViewById(R.id.act_main_edittext);</span><br><span class="line">    textView = findViewById(R.id.act_main_textView);</span><br><span class="line">    button = findViewById(R.id.act_main_button);</span><br><span class="line">    <span class="comment">// 获取值，没有默认值为空</span></span><br><span class="line">    textView.setText(SharedPreferencesUtils.getMyedit());</span><br><span class="line"></span><br><span class="line">    button.setOnClickListener(v -&gt; &#123;</span><br><span class="line">        SharedPreferencesUtils.putMyedit(editText.getEditableText().toString());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="了解ViewModel中声明可观测数据，并在布局绑定的方法"><a href="#了解ViewModel中声明可观测数据，并在布局绑定的方法" class="headerlink" title="了解ViewModel中声明可观测数据，并在布局绑定的方法"></a>了解ViewModel中声明可观测数据，并在布局绑定的方法</h6><p> <a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/tree/master/example12/src/main/java/com/example/example12">link</a></p>
+<p> 在项目gradle配置中，启动dataBinding</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataBinding &#123;</span><br><span class="line">        enabled = true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加整合了viewmodel livedata 的依赖lifecycle-extensions</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def lifecycle_version &#x3D; &quot;2.0.0&quot;</span><br><span class="line">&#x2F;&#x2F; ViewModel and LiveData</span><br><span class="line">implementation &quot;androidx.lifecycle:lifecycle-extensions:$lifecycle_version&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>官方推荐一个activity对应绑定一个ViewModel</strong></li>
+</ul>
+<p>创建实体类</p>
+<p>创建自定义viewmodel类</p>
+<p>声明 <code>页面数据绑定</code>/<code>生命周期绑定</code>的MutableLiveData类型数据</p>
+<p>创建修改方法，在子线程中修改数据</p>
+<ul>
+<li><code>setValue()</code>  在主线程 中更新数据 </li>
+<li><code>postValue()</code>  在子线程 中更新数据 : <strong>自动通知主线程修改</strong></li>
+<li><code>getValue()</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainViewModel</span> <span class="keyword">extends</span> <span class="title">AndroidViewModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainViewModel&quot;</span>;</span><br><span class="line">    <span class="comment">// 将预在页面绑定的数据，声明为与页面生命周期绑定的MutableLiveData可变类型</span></span><br><span class="line">    <span class="comment">// 可以想象为一个能够绑定到视图页面的容器</span></span><br><span class="line">    <span class="keyword">public</span> MutableLiveData&lt;User&gt; userLiveData = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 必须声明的构造函数</span></span><br><span class="line"><span class="comment">     * 自动注入application对象，便于后期使用</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> application</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainViewModel</span><span class="params">(<span class="meta">@NonNull</span> Application application)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(application);</span><br><span class="line">        User user = <span class="keyword">new</span> User(<span class="string">&quot;BO&quot;</span>);</span><br><span class="line">        userLiveData.setValue(user); <span class="comment">//在主线程 中更新数据 </span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 在子线程中异步操作修改绑定数据，而非主线程</span></span><br><span class="line"><span class="comment">     * 因此必须使用postValue()方法，自动通知主线程修改</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">                User u = userLiveData.getValue();</span><br><span class="line">                u.name = <span class="string">&quot;SUN&quot;</span>;</span><br><span class="line">                <span class="comment">// 也可重新重新创建一个user对象，置入</span></span><br><span class="line">                userLiveData.postValue(u);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>修改layout文件，添加数据绑定标签<code>&lt;data&gt;&lt;variable/&gt;&lt;/data&gt;</code></p>
+<p>绑定自定义的ViewModel类</p>
+<p>在控件，通过表达式绑定数据，或方法 </p>
+<p>双向绑定 <code>@=&#123;&#125;</code></p>
+<p><strong>对象中的属性改变时，更新不会通知</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">layout</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">data</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">variable</span></span></span><br><span class="line"><span class="tag">            <span class="attr">name</span>=<span class="string">&quot;mianVM&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">type</span>=<span class="string">&quot;com.example.example12.viewmodel.MainViewModel&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">data</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">...</span></span></span><br><span class="line"><span class="tag">        <span class="attr">tools:context</span>=<span class="string">&quot;.MainActivity&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">            <span class="attr">...</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">&quot;@&#123;mianVM.userLiveData.name&#125;&quot;</span> /&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">&lt;!-- VM方法不能耦合view对象:vm 不能绑定组件，应为可能已经被销毁了 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:onClick</span>=<span class="string">&quot;@&#123;() -&gt; mianVM.change()&#125;&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">&quot;异步改变值&quot;</span> /&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">&lt;!-- 直接调用activity中的方法 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">            <span class="attr">...</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:onClick</span>=<span class="string">&quot;onButtonClick&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:text</span>=<span class="string">&quot;To SecActivity&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改activity代码，获取自定义动态创建的binding对象，获取自定义viewmodel对象</p>
+<p>将vm绑定到UI页面</p>
+<p>将绑定数据绑定到activity生命周期</p>
+<ul>
+<li><p>Activity 的<code>onCreate()</code> 中基于layout文件生成绑定对象 (setContentView 删去)</p>
+</li>
+<li><p>绑定类会基于 layout 中生成的变量,自动生成 getter/setter 方法</p>
+</li>
+<li><p>绑定自定义的 ViewModel 类 ：<code>binding.setMianVM(mainViewModel);</code></p>
+</li>
+<li><p>将绑定数据，与当前activity生命周期绑定：<code>binding.setMianVM(mainViewModel);</code> 如，当数据改变时，且activity可见时，自动更新页面</p>
+</li>
+<li><p>activity有处理UI，跳转更新等操作，业务逻辑操作由vm负责</p>
+<blockquote>
+<p>vm 不能绑定组件，应为可能已经被销毁了</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainActivity&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        <span class="comment">// 取消默认调用setContentView()方法代码：设置该activity 要渲染的布局UI</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 必须先在layout中使用data标签声明变量</span></span><br><span class="line"><span class="comment">         * 才能基于layout文件的命名，动态自动生成ActivityMainBinding类</span></span><br><span class="line"><span class="comment">         * The Data Binding Library generates binding classes that are used to access the layout&#x27;s variables and views. </span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ActivityMainBinding binding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</span><br><span class="line">        <span class="comment">// 必须通过工具类获取VM对象，不能手动创建</span></span><br><span class="line">        MainViewModel mainViewModel = ViewModelProviders.of(<span class="keyword">this</span>).get(MainViewModel.class);</span><br><span class="line">        <span class="comment">// 基于layout中声明的变量，自动生成属性变量的getter/setter方法</span></span><br><span class="line">        binding.setMianVM(mainViewModel);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 将绑定数据，与当前activity生命周期绑定</span></span><br><span class="line"><span class="comment">         * 例如，当数据改变时，且activity可见时，自动更新页面</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        binding.setLifecycleOwner(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * activity有处理UI，跳转更新等操作，业务逻辑操作由vm负责</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> view</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onButtonClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onButtonClick: &quot;</span>);</span><br><span class="line">        Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, SecActivity.class);</span><br><span class="line">        startActivity(intent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="了解侧滑的实现方法"><a href="#了解侧滑的实现方法" class="headerlink" title="了解侧滑的实现方法"></a>了解侧滑的实现方法</h6><p>ItemTouchHelper<a target="_blank" rel="noopener" href="https://blog.csdn.net/u014133119/article/details/80942932#commentBox">使用步骤</a>：</p>
+<blockquote>
+<p>自定义callback继承 ItemTouchHelper.Callback -&gt; 在内部写一个数据操作接口 -&gt; 重写触发方法调用接口 -&gt; 适配器实现数据操作接口，重新方法 -&gt; acctivity 中附着 recyclerview</p>
+</blockquote>
+<ol>
+<li><p>创建 <code>MyCallback</code> 继承 <code>ItemTouchHelper.Callback</code> </p>
+</li>
+<li><p>把数据操作部分抽象成一个接口 <code>AdapterCallback</code>,这个接口可以写在 <code>MyCallback</code> 内</p>
+<blockquote>
+<p>因为<code>ItemTouchHelper</code>在完成触摸的各种动作后，就要对<code>Adapter</code>的数据进行操作，比如侧滑删除操作</p>
+</blockquote>
+</li>
+<li><p>自定义 adapter 实现接口<code>MyCallback.AdapterCallback</code>, 重写相关方法</p>
+</li>
+<li><p>在<code>MainActivity</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ItemTouchHelper helper = <span class="keyword">new</span> ItemTouchHelper(<span class="keyword">new</span> MyCallback(adapter));</span><br><span class="line">helper.attachToRecyclerView(recyclerView);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>具体实现：</p>
+<p>MyCallback 及内部接口 AdapterCallback</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MyCallback 及内部接口 AdapterCallback</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyCallback</span> <span class="keyword">extends</span> <span class="title">ItemTouchHelper</span>.<span class="title">Callback</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MyCallback&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> AdapterCallback adapterCallback;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AdapterCallback</span> </span>&#123; <span class="comment">//数据操作接口</span></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> position)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyCallback</span><span class="params">(AdapterCallback adapterCallback)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.adapterCallback = adapterCallback;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该方法返回一个整数，用来指定拖拽和滑动在哪个方向是被允许的。</span></span><br><span class="line"><span class="comment">     * 在其中使用makeMovementFlags(int dragFlags, int swipeFlags)返回，</span></span><br><span class="line"><span class="comment">     * 该方法第一个参数用来指定拖动，第二个参数用来指定滑动。</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.UP  //滑动拖拽向上方向</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.DOWN//向下</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.LEFT//向左</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.RIGHT//向右</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.START//依赖布局方向的水平开始方向</span></span><br><span class="line"><span class="comment">     * ItemTouchHelper.END//依赖布局方向的水平结束方向</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> recyclerView</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> viewHolder</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMovementFlags</span><span class="params">(<span class="meta">@NonNull</span> RecyclerView recyclerView, <span class="meta">@NonNull</span> RecyclerView.ViewHolder viewHolder)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Log.i(TAG, &quot;&quot; + &quot;getMovementFlags&quot;);</span></span><br><span class="line">        <span class="comment">//允许上下的拖动</span></span><br><span class="line">        <span class="keyword">int</span> dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;</span><br><span class="line">        <span class="comment">//只允许从右向左侧滑</span></span><br><span class="line">        <span class="keyword">int</span> swipeFlags = ItemTouchHelper.LEFT;</span><br><span class="line">        <span class="keyword">return</span> makeMovementFlags(<span class="number">0</span>, swipeFlags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * onMove方法是拖拽的回调，参数viewHolder是拖动的Item，target是拖动的目标位置的Item,</span></span><br><span class="line"><span class="comment">     * 该方法如果返回true表示切换了位置，反之返回false。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> recyclerView</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> viewHolder</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onMove</span><span class="params">(<span class="meta">@NonNull</span> RecyclerView recyclerView, <span class="meta">@NonNull</span> RecyclerView.ViewHolder viewHolder, <span class="meta">@NonNull</span> RecyclerView.ViewHolder target)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * onSwiped方法为Item滑动回调，viewHolder为滑动的item，direction为滑动的方向。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> viewHolder</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> direction</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSwiped</span><span class="params">(<span class="meta">@NonNull</span> RecyclerView.ViewHolder viewHolder, <span class="keyword">int</span> direction)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (direction) &#123;</span><br><span class="line">            <span class="keyword">case</span> ItemTouchHelper.LEFT:</span><br><span class="line">                adapterCallback.remove(viewHolder.getAdapterPosition());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>自定义适配器并实现操作接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//自定义适配器并实现操作接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MainAdapter</span>.<span class="title">MyViewHolder</span>&gt; <span class="keyword">implements</span> <span class="title">MyCallback</span>.<span class="title">AdapterCallback</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainAdapter&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> List&lt;News&gt; news;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainAdapter</span><span class="params">(List&lt;News&gt; news)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.news = news;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(<span class="meta">@NonNull</span> ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        View itemView = LayoutInflater.from(parent.getContext())</span><br><span class="line">                .inflate(R.layout.recyclerview_news, parent, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyViewHolder(itemView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(<span class="meta">@NonNull</span> MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        holder.title.setText(news.get(position).title);</span><br><span class="line">        holder.suttitle.setText(news.get(position).subtitle);</span><br><span class="line">        holder.pic.setImageResource(R.mipmap.ic_launcher);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> news.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        news.remove(position);</span><br><span class="line">        <span class="comment">// 指定通知可提高渲染效率，同时支持动画</span></span><br><span class="line">        notifyItemRemoved(position);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        TextView title;</span><br><span class="line">        TextView suttitle;</span><br><span class="line">        ImageView pic;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(<span class="meta">@NonNull</span> View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">            title = itemView.findViewById(R.id.news_title);</span><br><span class="line">            suttitle = itemView.findViewById(R.id.news_subtitle);</span><br><span class="line">            pic = itemView.findViewById(R.id.news_pic);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>MainActivity配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainActivity&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> RecyclerView recyclerView;</span><br><span class="line">    <span class="keyword">private</span> MainAdapter adapter;</span><br><span class="line">    <span class="keyword">private</span> SwipeRefreshLayout swipe;</span><br><span class="line">    <span class="keyword">private</span> List&lt;News&gt; news = listNews();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        recyclerView = findViewById(R.id.act_main_recyclerview);</span><br><span class="line">        <span class="comment">// 指定一个默认的布局管理器</span></span><br><span class="line">        RecyclerView.LayoutManager mLayoutManager = <span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>);</span><br><span class="line">        recyclerView.setLayoutManager(mLayoutManager);</span><br><span class="line">        <span class="comment">// 指定item插入/移除动画</span></span><br><span class="line">        DefaultItemAnimator animator = <span class="keyword">new</span> DefaultItemAnimator();</span><br><span class="line">        <span class="comment">// 包含默认的操作动画事件，也可自定义动画时间</span></span><br><span class="line">        animator.setRemoveDuration(<span class="number">500</span>);</span><br><span class="line">        animator.setMoveDuration(<span class="number">500</span>);</span><br><span class="line">        recyclerView.setItemAnimator(animator);</span><br><span class="line">        <span class="comment">// 指定item分割线</span></span><br><span class="line">        recyclerView.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>, LinearLayoutManager.VERTICAL));</span><br><span class="line">        <span class="comment">// 指定适配器</span></span><br><span class="line">        adapter = <span class="keyword">new</span> MainAdapter(news);</span><br><span class="line">        recyclerView.setAdapter(adapter);</span><br><span class="line"></span><br><span class="line">        ItemTouchHelper helper = <span class="keyword">new</span> ItemTouchHelper(<span class="keyword">new</span> MyCallback(adapter));</span><br><span class="line">        helper.attachToRecyclerView(recyclerView);</span><br><span class="line"></span><br><span class="line">        swipe = findViewById(R.id.act_third_swipe);</span><br><span class="line">        swipe.setOnRefreshListener(<span class="keyword">new</span> SwipeRefreshLayout.OnRefreshListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="comment">//模拟耗时操作，子线程禁止直接修改主线程控件属性</span></span><br><span class="line">                <span class="keyword">new</span> Handler().postDelayed(() -&gt; &#123;</span><br><span class="line">                    <span class="comment">//取消刷新动画</span></span><br><span class="line">                    swipe.setRefreshing(<span class="keyword">false</span>);</span><br><span class="line">                    news.add(<span class="number">0</span>, <span class="keyword">new</span> News(<span class="number">1</span>, <span class="string">&quot;阿根廷VS波黑&quot;</span> + news.size(), <span class="string">&quot;小组赛F组 阿根廷VS波黑&quot;</span>));</span><br><span class="line">                    <span class="comment">// 指定通知可提高渲染效率，同时支持动画</span></span><br><span class="line">                    adapter.notifyItemInserted(<span class="number">0</span>);</span><br><span class="line">                    recyclerView.scrollToPosition(<span class="number">0</span>);</span><br><span class="line">                &#125;, <span class="number">500</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> List&lt;News&gt; <span class="title">listNews</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;News&gt; news = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        News n1 = <span class="keyword">new</span> News(<span class="number">1</span>, <span class="string">&quot;阿根廷VS波黑&quot;</span>, <span class="string">&quot;小组赛F组 阿根廷VS波黑&quot;</span>);</span><br><span class="line">        News n2 = <span class="keyword">new</span> News(<span class="number">2</span>, <span class="string">&quot;法国VS洪都拉斯&quot;</span>, <span class="string">&quot;小组赛E组 法国VS洪都拉斯&quot;</span>);</span><br><span class="line">        News n3 = <span class="keyword">new</span> News(<span class="number">3</span>, <span class="string">&quot;瑞士VS厄瓜多尔&quot;</span>, <span class="string">&quot;小组赛E组 瑞士VS厄瓜多尔&quot;</span>);</span><br><span class="line">        news.add(n1); news.add(n2); news.add(n3);</span><br><span class="line">        <span class="keyword">return</span> news;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="Menu的基本使用方法"><a href="#Menu的基本使用方法" class="headerlink" title="Menu的基本使用方法"></a>Menu的基本使用方法</h6><p>创建menu资源目录; 创建menu布局文件; 设置item title，icon等属性: <a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/res/menu/menu.xml">link</a></p>
+<ul>
+<li>app:showAsAction属性: always, collapseActionView, ifRoom, never, withText</li>
+</ul>
+<p>重写activity onCreateOptionsMenu()方法，加载menu布局 <a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java">link</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 重写，加载menu布局</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> menu</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">    getMenuInflater().inflate(R.menu.menu, menu);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重写activity onOptionsItemSelected()方法，监听item点击事件 <a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/blob/master/example08/src/main/java/com/example/example08/MainActivity.java">link</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 重写，监听menu点击事件</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> item</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">    String msg = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">switch</span> (item.getItemId()) &#123;</span><br><span class="line">        <span class="keyword">case</span> R.id.menu_add:</span><br><span class="line">            msg = <span class="string">&quot;add&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 点击左箭头，返回，即关闭当前activity</span></span><br><span class="line">        <span class="keyword">case</span> android.R.id.home:</span><br><span class="line">            msg = <span class="string">&quot;home&quot;</span>;</span><br><span class="line">            finish();</span><br><span class="line">        <span class="keyword">case</span> R.id.menu_send:</span><br><span class="line">            msg = <span class="string">&quot;send&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> R.id.menu_edit:</span><br><span class="line">            msg = <span class="string">&quot;edit&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> R.id.menu_del:</span><br><span class="line">            msg = <span class="string">&quot;delete&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Toast.makeText(<span class="keyword">this</span>, msg, Toast.LENGTH_SHORT).show();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h6 id="了解通知的实现方法"><a href="#了解通知的实现方法" class="headerlink" title="了解通知的实现方法"></a>了解通知的实现方法</h6><p><a target="_blank" rel="noopener" href="https://github.com/zhanyeye/android-examples/blob/master/example18/src/main/java/com/example/example18/MainActivity.java">link</a></p>
+<p>构造Notification，声明必须属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NotificationCompat.Builder builder = <span class="keyword">new</span> NotificationCompat.Builder(<span class="keyword">this</span>, <span class="string">&quot;default&quot;</span>);</span><br><span class="line"><span class="comment">// 通知必须包含：图标，标题，文本内容</span></span><br><span class="line">builder.setSmallIcon(R.mipmap.ic_launcher);</span><br><span class="line">builder.setContentTitle(editText.getText().toString());</span><br><span class="line">builder.setContentText(editText2.getText().toString());</span><br><span class="line"><span class="comment">// 设置提醒方法，震动、铃声等</span></span><br><span class="line">builder.setDefaults(Notification.DEFAULT_ALL);</span><br><span class="line"><span class="comment">// 读取后是否自动在通知栏删除</span></span><br><span class="line">builder.setAutoCancel(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<p>创建PendingIntent对象，封装点击通知intent</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当点击通知时的执行</span></span><br><span class="line">Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, ResultActivity.class);</span><br><span class="line">intent.putExtra(<span class="string">&quot;title&quot;</span>, editText.getText().toString());</span><br><span class="line">intent.putExtra(<span class="string">&quot;text&quot;</span>, editText2.getText().toString());</span><br><span class="line"><span class="comment">// 预处理intent，即延迟执行的intent</span></span><br><span class="line">PendingIntent pIntent = PendingIntent.getActivity(<span class="keyword">this</span>,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        intent,</span><br><span class="line">        PendingIntent.FLAG_UPDATE_CURRENT);  <span class="comment">// 更新当前通知内容，没有通知则创建</span></span><br><span class="line">builder.setContentIntent(pIntent);</span><br><span class="line">NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);</span><br></pre></td></tr></table></figure>
+
+<p>基于版本构造NotificationChannel</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//8.0 以后需要加上channelId 才能正常显示</span></span><br><span class="line"><span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) &#123;</span><br><span class="line">    String channelId = <span class="string">&quot;default&quot;</span>;</span><br><span class="line">    String channelName = <span class="string">&quot;默认通知&quot;</span>;</span><br><span class="line">    manager.createNotificationChannel(<span class="keyword">new</span> NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发送通知</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当发送ID相同的通知时，基于Pending设置，决定通知显示方法</span></span><br><span class="line">manager.notify(count, builder.build());</span><br><span class="line">count++;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h5><h6 id="点击按钮，将输入框中的值，赋值给输出控件"><a href="#点击按钮，将输入框中的值，赋值给输出控件" class="headerlink" title="点击按钮，将输入框中的值，赋值给输出控件"></a>点击按钮，将输入框中的值，赋值给输出控件</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> EditText editTextUserName;</span><br><span class="line"><span class="keyword">private</span> Button buttonSubmit;</span><br><span class="line"><span class="keyword">private</span> TextView textViewUserName;</span><br><span class="line"></span><br><span class="line">------------------------------------</span><br><span class="line"><span class="comment">//onCreate()中</span></span><br><span class="line">editTextNameChange  =findViewById(R.id.act_main_editText_change);</span><br><span class="line">textViewUserName = findViewById(R.id.act_main_textView_username);</span><br><span class="line">buttonSubmit = findViewById(R.id.act_main_button_submit);</span><br><span class="line"><span class="comment">//匿名内部类</span></span><br><span class="line">buttonSubmit.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        String string = editTextUserName.getText().toString();</span><br><span class="line">        textViewUserName.setText(string);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="构造一个带点击实现的单项对话框"><a href="#构造一个带点击实现的单项对话框" class="headerlink" title="构造一个带点击实现的单项对话框"></a>构造一个带点击实现的单项对话框</h6><p>单项???????</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单选按钮组</span></span><br><span class="line">AlertDialog.Builder dialog3 = <span class="keyword">new</span> AlertDialog.Builder(<span class="keyword">this</span>);</span><br><span class="line">dialog3.setTitle(<span class="string">&quot;水果&quot;</span>);</span><br><span class="line">dialog3.setItems(arrayFruit, <span class="keyword">new</span> DialogInterface.OnClickListener() &#123;</span><br><span class="line">    <span class="comment">// 传入的which为被选中的位置</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(DialogInterface dialog, <span class="keyword">int</span> which)</span> </span>&#123;</span><br><span class="line">        Toast.makeText(MainActivity.<span class="keyword">this</span>, arrayFruit[which], Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">dialog3.show();</span><br></pre></td></tr></table></figure>
+
+<p>如果是单选就不看这个了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">AlertDialog.Builder dialog2 &#x3D; new AlertDialog.Builder(this);</span><br><span class="line">dialog2.setTitle(&quot;删除&quot;);</span><br><span class="line">dialog2.setMessage(&quot;确定删除吗?&quot;);</span><br><span class="line">&#x2F;&#x2F; 确认按钮回调</span><br><span class="line">dialog2.setPositiveButton(&quot;确定&quot;, new DialogInterface.OnClickListener() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onClick(DialogInterface dialog, int which) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">&#x2F;&#x2F; 取消回调</span><br><span class="line">dialog2.setNegativeButton(&quot;取消&quot;, new DialogInterface.OnClickListener() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onClick(DialogInterface dialog, int which) &#123;</span><br><span class="line">        dialog.dismiss();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">&#x2F;&#x2F; 中间回调</span><br><span class="line">dialog2.setNeutralButton(&quot;详细内容&quot;, new DialogInterface.OnClickListener() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onClick(DialogInterface dialog, int which) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">dialog2.show();</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="创建一个RecyclerView-Adapter，自定义ViewHolder，实现基于给定数据与布局信息，渲染RecyclerView"><a href="#创建一个RecyclerView-Adapter，自定义ViewHolder，实现基于给定数据与布局信息，渲染RecyclerView" class="headerlink" title="创建一个RecyclerView.Adapter，自定义ViewHolder，实现基于给定数据与布局信息，渲染RecyclerView"></a>创建一个RecyclerView.Adapter，自定义ViewHolder，实现基于给定数据与布局信息，渲染RecyclerView</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">MainAdapter</span>.<span class="title">MyViewHolder</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainAdapter&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> List&lt;News&gt; news;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainAdapter</span><span class="params">(List&lt;News&gt; news)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.news = news;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于指定样式，渲染item，并将item对象绑定到viewholder</span></span><br><span class="line"><span class="comment">     * 当回收缓存区没有VH时，回调</span></span><br><span class="line"><span class="comment">     * 基于布局创建item对象，创建VH封装item对象，返回VH以复用</span></span><br><span class="line"><span class="comment">     * 因此，仅会回调有限次数。不同系统版本，不同屏幕尺寸等等均不同</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> parent</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> viewType</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyViewHolder <span class="title">onCreateViewHolder</span><span class="params">(<span class="meta">@NonNull</span> ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onCreateViewHolder&quot;</span>);</span><br><span class="line">        <span class="comment">// 每一个item对象</span></span><br><span class="line">        <span class="comment">//将一个xml布局文件转换成一个View</span></span><br><span class="line">        View itemView = LayoutInflater.from(parent.getContext())</span><br><span class="line">                .inflate(R.layout.recyclerview_news, parent, <span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// 由VM持有</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyViewHolder(itemView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当渲染指定位置item时，从回收缓存区注入一个相同布局类型的VH，以及item的位置</span></span><br><span class="line"><span class="comment">     * 从vm中获取持有的控件对象，将指定集合位置的数据加载到控件，渲染</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> holder</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> position</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(<span class="meta">@NonNull</span> MyViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onBindViewHolder: &quot;</span> + position + <span class="string">&quot;/&quot;</span> + news.get(position).title);</span><br><span class="line">        holder.title.setText(news.get(position).title);</span><br><span class="line">        holder.suttitle.setText(news.get(position).subtitle);</span><br><span class="line">        <span class="comment">// 模拟图片</span></span><br><span class="line">        holder.pic.setImageResource(R.mipmap.ic_launcher);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 必须指定初始化时item数量，后期可动态改变</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> news.size();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * VH的作用是保持item view上的控件对象的引用</span></span><br><span class="line"><span class="comment">     * 避免在复用item上反复findViewById</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MyViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        TextView title;</span><br><span class="line">        TextView suttitle;</span><br><span class="line">        ImageView pic;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyViewHolder</span><span class="params">(<span class="meta">@NonNull</span> View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">            title = itemView.findViewById(R.id.news_title);</span><br><span class="line">            suttitle = itemView.findViewById(R.id.news_subtitle);</span><br><span class="line">            pic = itemView.findViewById(R.id.news_pic);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/29/19-05-29-%E5%86%99%E4%BD%9C%E9%AB%98%E7%BA%A7%E8%AF%8D%E6%B1%87/" rel="prev" title="写作高级词汇">
+      <i class="fa fa-chevron-left"></i> 写作高级词汇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/06/29/19-06-29-%E6%AF%8F%E6%97%A5%E9%98%85%E8%AF%BB%E8%AF%8D%E6%B1%87/" rel="next" title="每日阅读词汇">
+      每日阅读词汇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

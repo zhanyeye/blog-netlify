@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="常见数据文件存储和读取 数据文件类型 数据文件读取 数据文件存储 JSON 解析 数据分块读取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-10-17-数据采集方法(数据分析与挖掘)">
+<meta property="og:url" content="http://yoursite.com/2019/10/18/19-10-17-%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E6%96%B9%E6%B3%95-%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%8C%96%E6%8E%98/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="常见数据文件存储和读取 数据文件类型 数据文件读取 数据文件存储 JSON 解析 数据分块读取">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191017215316.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191019103426.png">
+<meta property="og:image" content="https://doc.shiyanlou.com/document-uid214893labid7506timestamp1539841077489.png">
+<meta property="og:image" content="https://doc.shiyanlou.com/document-uid214893labid7506timestamp1539841198196.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191020102442.png">
+<meta property="og:image" content="https://doc.shiyanlou.com/courses/uid214893-20190421-1555818366987">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191025200118.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/deepin-pic/uid214893-20190828-1566986959762">
+<meta property="article:published_time" content="2019-10-18T08:52:09.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.513Z">
+<meta property="article:author" content="zhanyeye">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191017215316.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/10/18/19-10-17-%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E6%96%B9%E6%B3%95-%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%8C%96%E6%8E%98/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-10-17-数据采集方法(数据分析与挖掘) | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E5%92%8C%E8%AF%BB%E5%8F%96"><span class="nav-number">1.</span> <span class="nav-text">常见数据文件存储和读取</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">常用数据文件格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Excel%E5%92%8CCSV%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">Excel和CSV格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HDF5-%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">HDF5 格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#JSON-%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">JSON 格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#read-%E6%93%8D%E4%BD%9C%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.5.</span> <span class="nav-text">read_ 操作参数详解</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%86%E5%9D%97%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.6.</span> <span class="nav-text">分块读取数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SQL%E5%92%8CNoSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">SQL和NoSQL数据库基础</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#SQLite-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.</span> <span class="nav-text">SQLite  数据库</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#SQL-SELECT-%E8%AF%AD%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">SQL SELECT 语法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#MongoDB-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">MongoDB 数据库</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP-%E5%8D%8F%E8%AE%AE%E5%8F%8A-API-%E9%87%87%E9%9B%86%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">HTTP 协议及 API 采集数据</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#HTTP-%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">HTTP 请求方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-API-%E9%87%87%E9%9B%86%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.</span> <span class="nav-text">通过 API 采集数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E9%9D%9E%E5%85%AC%E5%BC%80-API-%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.</span> <span class="nav-text">获取非公开 API 数据</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E4%B8%8E%E5%86%85%E5%AE%B9%E8%A7%A3%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">网页数据采集与内容解析</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E7%BD%91%E9%A1%B5%E8%A1%A8%E6%A0%BC%E6%95%B0%E6%8D%AE"><span class="nav-number">4.1.</span> <span class="nav-text">解析网页表格数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#XPath%E8%A7%A3%E6%9E%90"><span class="nav-number">4.2.</span> <span class="nav-text">XPath解析</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#CSS-Selector-%E8%A7%A3%E6%9E%90"><span class="nav-number">4.3.</span> <span class="nav-text">CSS Selector 解析</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB%E9%87%87%E9%9B%86%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">网络爬虫采集数据的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E7%88%AC%E8%99%AB"><span class="nav-number">5.1.</span> <span class="nav-text">编写一个简单的爬虫</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Scrapy-%E7%AE%80%E4%BB%8B"><span class="nav-number">5.2.</span> <span class="nav-text">Scrapy 简介</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Scrapy-shell-%E4%BA%A4%E4%BA%92%E5%BC%8F%E7%8E%AF%E5%A2%83"><span class="nav-number">5.3.</span> <span class="nav-text">Scrapy shell 交互式环境</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Scrapy-%E5%86%85%E7%BD%AE-CSS-Selector"><span class="nav-number">5.4.</span> <span class="nav-text">Scrapy 内置 CSS Selector</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Scrapy-%E5%86%85%E7%BD%AE-XPath"><span class="nav-number">5.5.</span> <span class="nav-text">Scrapy 内置 XPath</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BB%93%E5%90%88%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">5.6.</span> <span class="nav-text">结合正则表达式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Scrapy-%E7%88%AC%E8%99%AB%E6%A1%86%E6%9E%B6%E5%9F%BA%E7%A1%80%E5%AE%9E%E8%B7%B5"><span class="nav-number">6.</span> <span class="nav-text">Scrapy 爬虫框架基础实践</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Scrapy-%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="nav-number">6.1.</span> <span class="nav-text">Scrapy 框架简介</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%88%AC%E8%99%AB%E9%A1%B9%E7%9B%AE"><span class="nav-number">6.2.</span> <span class="nav-text">初始化爬虫项目</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0-Item"><span class="nav-number">6.3.</span> <span class="nav-text">实现 Item</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%88%AC%E8%99%AB"><span class="nav-number">6.4.</span> <span class="nav-text">创建爬虫</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%88%AC%E8%99%AB"><span class="nav-number">6.5.</span> <span class="nav-text">测试爬虫</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Item-Pipeline-%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE"><span class="nav-number">6.6.</span> <span class="nav-text">Item Pipeline 处理数据</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E4%B8%BA%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6"><span class="nav-number">6.7.</span> <span class="nav-text">存储为数据文件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%88%AC%E5%8F%96%E5%A4%9A%E4%B8%AA%E9%A1%B5%E9%9D%A2%E6%95%B0%E6%8D%AE"><span class="nav-number">6.8.</span> <span class="nav-text">爬取多个页面数据</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/18/19-10-17-%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E6%96%B9%E6%B3%95-%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%8C%96%E6%8E%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-10-17-数据采集方法(数据分析与挖掘)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-10-18 16:52:09" itemprop="dateCreated datePublished" datetime="2019-10-18T16:52:09+08:00">2019-10-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h5 id="常见数据文件存储和读取"><a href="#常见数据文件存储和读取" class="headerlink" title="常见数据文件存储和读取"></a>常见数据文件存储和读取</h5><ul>
+<li>数据文件类型</li>
+<li>数据文件读取</li>
+<li>数据文件存储</li>
+<li>JSON 解析</li>
+<li>数据分块读取</li>
+</ul>
+<a id="more"></a>
+
+<h6 id="常用数据文件格式"><a href="#常用数据文件格式" class="headerlink" title="常用数据文件格式"></a>常用数据文件格式</h6><p> 当我们使用 Python 读取数据文件时，首先推荐的就是通过 Pandas 完成，Pandas 几乎支持所有常见的数据文件格式。 </p>
+<img src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191017215316.png" width="280" height="280" alt="图片名称" align=center>
+
+<h6 id="Excel和CSV格式"><a href="#Excel和CSV格式" class="headerlink" title="Excel和CSV格式"></a>Excel和CSV格式</h6><p> 由于 Excel 表格有最大的行数储存限制（16,384 列 × 1,048,576 行），所以更多时候我们会使用 CSV 来储存表格数据。 </p>
+<blockquote>
+<p> CSV 的英文是 Comma-Separated Values，其实就是通过字符分割数据并以纯文本形式存储。这里的分割字符我们一般会使用逗号，所以往往也称 CSV 文件为逗号分隔符文件。纯文本意味着该文件是一个字符序列，不含必须像二进制数字那样被解读的数据，也没有最大行数的储存限制。 </p>
+</blockquote>
+<p> 我们尝试读取 Excel 和 CSV 格式的示例数据文件。首先，我们需要生成不同类型的数据示例文件。下面这段代码直接点击运行即可，将会在目录下方生成两个最常用的数据文件 <code>test.csv</code> 和 <code>test.xlsx</code>。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成示例数据</span></span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">&#x27;A&#x27;</span>: np.random.randn(<span class="number">10</span>), <span class="string">&#x27;B&#x27;</span>: np.random.randn(<span class="number">10</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入数据文件</span></span><br><span class="line">df.to_csv(<span class="string">&#x27;test.csv&#x27;</span>, index=<span class="literal">None</span>)  <span class="comment"># CSV</span></span><br><span class="line">df.to_excel(<span class="string">&#x27;test.xlsx&#x27;</span>, index=<span class="literal">None</span>)  <span class="comment"># EXCEL</span></span><br><span class="line">print(<span class="string">&quot;*****示例文件写入成功*****&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p> 当你读取 Excel 文件时，首先需要安装 <code>openpyxl</code> 模块，不然就会报错。安装该模块的命令为：<code>pip install openpyxl</code>。</p>
+<p> 使用 Pandas 读取文件的方法，直接运用上面表格中的 API 即可。CSV 文件读取是 <code>read_csv</code> ，而 Excel 文件读取是 <code>read_excel</code> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.read_csv(&quot;test.csv&quot;)</span><br><span class="line">pd.read_excel(&#39;test.xlsx&#39;)</span><br></pre></td></tr></table></figure>
+
+<h6 id="HDF5-格式"><a href="#HDF5-格式" class="headerlink" title="HDF5 格式"></a>HDF5 格式</h6><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/HDF"> <em>HDF</em></a>（英语：Hierarchical Data Format）指一种为存储和处理大容量科学数据设计的文件格式及相应库文件。HDF5 格式的特点在于能存储多个数据集，并且支持 <code>metadata</code>。</p>
+<p>HDF5 文件包含两种基本数据对象：</p>
+<ul>
+<li>群组（group）：类似文件夹，可以包含多个数据集或下级群组。</li>
+<li>数据集（dataset）：数据内容，可以是多维数组，也可以是更复杂的数据类型。</li>
+</ul>
+<p>群组和数据集都支持元数据 <code>metadata</code>，用户可以自定义其属性，提供附加信息。元数据类似于「数据的数据」，它能够用来说明数据的特征和其他属性。</p>
+<p>HDF5 的好处在于，你不仅可以使用 Python 存储和读取，目前还被 Java，MATLAB/Scilab，Octave，IDL，Julia, R 等语言或商业软件支持。</p>
+<p>下面，我们同样尝试使用 Pandas 来存储和读取 HDF5 数据。和 Excel 文件读取相似，我们需要先安装一个依赖模块 PyTables，命令为：<code>pip install tables</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">df1 = pd.DataFrame(&#123;<span class="string">&#x27;A&#x27;</span>: np.random.randn(<span class="number">10</span>), <span class="string">&#x27;B&#x27;</span>: np.random.randn(<span class="number">10</span>)&#125;)  <span class="comment"># 随机数据</span></span><br><span class="line">df2 = pd.DataFrame(&#123;<span class="string">&#x27;C&#x27;</span>: np.random.randn(<span class="number">10</span>), <span class="string">&#x27;D&#x27;</span>: np.random.randn(<span class="number">10</span>)&#125;)  <span class="comment"># 随机数据</span></span><br><span class="line"></span><br><span class="line">df1.to_hdf(<span class="string">&#x27;test.h5&#x27;</span>, key=<span class="string">&#x27;df1&#x27;</span>)  <span class="comment"># 存储 df1</span></span><br><span class="line">df2.to_hdf(<span class="string">&#x27;test.h5&#x27;</span>, key=<span class="string">&#x27;df2&#x27;</span>, format=<span class="string">&#x27;table&#x27;</span>)  <span class="comment"># 存储 df2 </span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">会发现上面我们在存储示例数据时，df2 后面指定了 format=&#x27;table&#x27; 参数。这是因为，HDF 支持两种存储架构：fixed 和 table。默认为 fixed，因为其读取速度更快，但是 table 却支持查询操作。</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p> 我们通过指定 <code>key</code> 向 HDF 文件中存储了 2 个不同的数据集 <code>df1</code> 和 <code>df2</code>。那么，接下来我们尝试读取。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pd.read_hdf(<span class="string">&#x27;test.h5&#x27;</span>, key=<span class="string">&#x27;df1&#x27;</span>)  <span class="comment"># 读取 df1 </span></span><br><span class="line">pd.read_hdf(<span class="string">&#x27;test.h5&#x27;</span>, key=<span class="string">&#x27;df2&#x27;</span>, where=[<span class="string">&#x27;index &lt; 5&#x27;</span>]) <span class="comment"># 读取 df2 中 index &lt; 5 的数据</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> HDF5 既然支持存储多个数据集，是不是类似于数据库中的「表」呢？值得注意的是，HDF5 并不是数据库，如果多个使用者同时写入数据，数据文件会遭到破坏。 </p>
+</blockquote>
+<h6 id="JSON-格式"><a href="#JSON-格式" class="headerlink" title="JSON 格式"></a>JSON 格式</h6><blockquote>
+<p>JSON 数据格式与语言无关，脱胎于 JavaScript，但目前很多编程语言都支持 JSON 格式数据的生成和解析。JSON 的官方 MIME 类型是 <code>application/json</code>，文件扩展名是 <code>.json</code>。</p>
+<p>这里特别说到 JSON 格式，原因是其已经成为了 HTTP 请求过程中的标准数据格式。而后面的采集数据过程中，我们会学习到通过 API 请求数据，一般都会对 JSON 进行解析。所以，这里先行了解学习。</p>
+</blockquote>
+<p> JSON 数据中 <code>key</code> 必须是字符串类型，缺失值用 <code>null</code> 表示。其中还可能包含的基本类型有：字典，列表，字符串，数值，布尔值等。 </p>
+<p> DataFrame 的确是最佳的数据呈现格式。不过，由于 JSON 支持复杂的嵌套，有时候直接通过 <code>read_json</code> 读取到的 DataFrame 并不是我们想要的样子，例如某个键值是以字典或列表存在。此时，我们就会用其他的工具来解析 JSON 了。 </p>
+<p> Python 中有许多能够储存和解析 JSON 的库，这里推荐使用内建库 <code>json</code>。</p>
+<ul>
+<li><code>json.loads(obj)</code> ：将json文件中的字符串转化为Python 的数据类型（Python Object）</li>
+<li><code>json.dumps</code> 可以把 Python Object 转换为 JSON 类型 </li>
+</ul>
+<h6 id="read-操作参数详解"><a href="#read-操作参数详解" class="headerlink" title="read_ 操作参数详解"></a><code>read_</code> 操作参数详解</h6><ul>
+<li><code>path</code>：路径不仅仅可以读取本地文件，还支持远程 URL 链接。</li>
+<li><code>sep</code>：支持按特定字符分割。</li>
+<li><code>header</code>：可以指定某一行为列名，默认是第一行。</li>
+<li><code>names</code>：自定义列名。</li>
+<li><code>skiprows</code>：指定忽略某些行。</li>
+<li><code>na_values</code>：对空值进行指定替换操作。</li>
+<li><code>parse_dates</code>：尝试将数据解析为日期。</li>
+<li><code>nrows</code>：读取指定行数的数据。</li>
+<li><code>chunksize</code>：指定分块读取数据大小。</li>
+<li><code>encoding</code>：指定文件编码。</li>
+</ul>
+<blockquote>
+<p>如果你的 CSV 文件是使用分号 <code>;</code> 而不是逗号 <code>,</code> 分割，那么就可以通过 <code>sep=&#39;;&#39;</code> 让数据加载为正常的 DataFrame 格式。 </p>
+</blockquote>
+<blockquote>
+<p>像 <code>skiprows</code> 非常常用，它可以指定忽略某些行。，使得在加载数据时就可以对数据实现过滤，面对庞大且加载较慢的数据文件时特别好用 </p>
+</blockquote>
+<h6 id="分块读取数据"><a href="#分块读取数据" class="headerlink" title="分块读取数据"></a>分块读取数据</h6><p>在很多时候，手中的数据集都非常大。例如当我们直接读取一个 GB 级别的 CSV 文件时，不仅速度很慢，还有可能因为内存不足而报错。此时，通过分块读取的方式加载数据文件就非常方便了。</p>
+<p> 通过上面的 <code>read_</code> 参数可以看出，分块读取需要指定 <code>chunksize</code>，也就是每一块的大小 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">chunker = pd.read_csv(<span class="string">&quot;test.csv&quot;</span>, chunksize=<span class="number">2</span>)</span><br><span class="line">chunker</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">chunker 返回的 pandas.io.parsers.TextFileReader 是一个可迭代对象。你可以通过 get_chunk() 逐次返回每一个块状数据的内容。你可以尝试多次运行下方单元格，以查看每次迭代的结果。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">chunker.get_chunk() <span class="comment">#每次只读2行数据</span></span><br></pre></td></tr></table></figure>
+
+<p> 分块读取是解决大文件读取慢的有效手段，但需要注意 <code>chunksize</code> 并不是 Pandas 中每个 <code>read_</code> 操作都支持的参数，这需要你在使用时通过官方文档确认。 </p>
+<p> 另外，分块读取也不适宜用于解决读取部分数据的需求。例如，你需要读取某个数据的前 1 万条，应该直接使用切片，而非分块读取。当然，如果数据文件本身非常大，全部读取后切片会爆掉内存，此时才宜用分块读取进行解决。 </p>
+<h5 id="SQL和NoSQL数据库基础"><a href="#SQL和NoSQL数据库基础" class="headerlink" title="SQL和NoSQL数据库基础"></a>SQL和NoSQL数据库基础</h5><ul>
+<li>数据库连接</li>
+<li>操作 SQLite 数据库</li>
+<li>SQL 语法介绍</li>
+<li>MongoDB 数据库介绍</li>
+<li>对 MongoDB 数据库的增删改查</li>
+</ul>
+<blockquote>
+<p>除了数据文件，另外一种读取数据的途径就是直接连接数据库。Pandas 也支持直接连接 SQL 数据库以及 Google Big Query。SQL 数据库就是常见的关系型数据库，例如 MySQL，SQLite 等。而 BigQuery 是 Google 推出的可扩展性强、成本低廉的无服务器企业数据仓库，可让您的所有数据分析人员更加高效地工作。关于 BigQuery 的更多信息 <a target="_blank" rel="noopener" href="https://cloud.google.com/bigquery/"> <em>BigQuery 官网</em></a> </p>
+</blockquote>
+<img src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191019103426.png" width="210" height="75" alt="图片名称" align=center>
+
+<p>当我们连接数据库时，首先需要安装相应数据库的驱动程序库。例如 MySQL 需要安装 <code>pymysql</code>。由于 <strong>SQLite 是 Python 的标准库</strong>，所以下面我们通过 SQLite 来学习如何连接数据库。 </p>
+<h6 id="SQLite-数据库"><a href="#SQLite-数据库" class="headerlink" title="SQLite  数据库"></a>SQLite  数据库</h6><p> SQLite 是一个非常常用的关系型数据库。SQLite 具有很多优点，其中最突出的就是<strong>无需服务器、也无需配置</strong>。SQLite 是非常小且非常轻量，无需外部依赖，非常好用。 </p>
+<p> SQLite 是数据分析过程中非常推荐的数据库，当你需要备份或分享数据时，无需导入导出，直接将 SQLite 存储的 <code>.sqlite</code> 文件拷贝即可。 </p>
+<ol>
+<li><p>因为 SQLite 是 Python 标准库，只需要 <code>import sqlite3</code> 即可加载 SQLite <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/sqlite3.html"> <em>官方文档</em></a> </p>
+</li>
+<li><p><code>sqlite3.connect</code> 操作连接数据库，指定数据库名称之后，SQLite 会连接或创建相应的数据库文件 </p>
+</li>
+<li><p>接下来，我们就可以向 <code>test.sqlite</code> 中写入数据了。直接使用 Pandas 中的 <code>to_sql</code> 即可 </p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sqlite3</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果目录下已存在 SQLite 数据库，执行删除避免重复运行报错</span></span><br><span class="line"><span class="keyword">if</span> os.path.exists(<span class="string">&#x27;test.sqlite&#x27;</span>):</span><br><span class="line">    os.remove(<span class="string">&#x27;test.sqlite&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">sql_con = sqlite3.connect(<span class="string">&#x27;test.sqlite&#x27;</span>)  <span class="comment"># 连接数据库</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成示例数据</span></span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">&#x27;A&#x27;</span>: np.random.randn(<span class="number">50</span>), <span class="string">&#x27;B&#x27;</span>: np.random.randn(<span class="number">50</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 向数据库中写入示例数据，表名为 test_table</span></span><br><span class="line">df.to_sql(name=<span class="string">&#x27;test_table&#x27;</span>, con=sql_con, index=<span class="literal">None</span>)</span><br><span class="line">sql_con.close()  <span class="comment"># 关闭连接</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">值得注意的是，如果你重复运行上面的单元格会报错，原因是名为 test_table 数据表已经存在了。那么，你可以更改表的名字再写入数据即可。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p> 接下来，我们尝试通过 Pandas 来加载数据库中的数据。这个过程大致分为两个步骤，建立数据库连接，再使用 SQL 语句查询。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sql_con = sqlite3.connect(<span class="string">&#x27;test.sqlite&#x27;</span>)  <span class="comment"># 建立数据库连接</span></span><br><span class="line">sql_query = <span class="string">&quot;SELECT * FROM test_table&quot;</span>  <span class="comment"># SQL 查询语句，查询 test_table 表中全部数据</span></span><br><span class="line"></span><br><span class="line">pd.read_sql(sql_query, sql_con)  <span class="comment"># 执行查询并输出数据</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="SQL-SELECT-语法"><a href="#SQL-SELECT-语法" class="headerlink" title="SQL SELECT 语法"></a>SQL SELECT 语法</h6><p>详见：<a href="%5Bhttps://zhanyeye.netlify.com/19-07-21-mysql%E5%9F%BA%E7%A1%80%E8%AF%BE%E7%A8%8B/%5D(https://zhanyeye.netlify.com/19-07-21-mysql%E5%9F%BA%E7%A1%80%E8%AF%BE%E7%A8%8B/)">Mysql基础课程</a></p>
+<h6 id="MongoDB-数据库"><a href="#MongoDB-数据库" class="headerlink" title="MongoDB 数据库"></a>MongoDB 数据库</h6><img width='300px' src="https://doc.shiyanlou.com/document-uid214893labid7506timestamp1539841077489.png">
+
+<p> MongoDB 是非常流行的 NoSQL 数据库，支持自动化的水平扩展，同时也被称为文档数据库，因为数据按文档的形式进行存储（BSON 对象，类似于 JSON）。在 MongoDB 中数据存储的组织方式主要分为四级： </p>
+<ul>
+<li><p>数据库实例，比如一个 app 使用一个数据库；</p>
+</li>
+<li><p>collection 文档集合 ，一个数据库包含多个文档集合，类似于 MySQL 中的表；</p>
+</li>
+<li><p>document 文档，一个文档代表一项数据，类似于 JSON 对象，对应于 MySQL 表中的一条记录；</p>
+</li>
+<li><p>字段：一个文档包含多个字段；</p>
+<p>MongoDB 存储的数据可以是无模式的，比如在一个集合中的所有文档不需要有一致的结构。也就是说往同一个表中插入不同的数据时，这些数据之间不必有同样的字段。这和关系型数据库彻底不同，在关系型数据库中创建表时就已经确定了数据项的字段，向其中插入数据时，必须是相同的结构。 </p>
+<p>当我们使用 Python 操作 MongoDB 时，需要安装 <a target="_blank" rel="noopener" href="https://github.com/mongodb/mongo-python-driver"> <em>PyMongo</em></a>。安装命令为 ：<code>pip install pymongo</code></p>
+</li>
+</ul>
+<ol>
+<li><p>使用 PyMongo 的第一步是创建一个 MongoClient 来运行 MongoDB 实例，这里我们连接本地主机与默认端口号 <code>27017</code>。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pymongo <span class="keyword">import</span> MongoClient</span><br><span class="line"></span><br><span class="line">client = MongoClient(<span class="string">&#x27;localhost&#x27;</span>, <span class="number">27017</span>)</span><br><span class="line">client</span><br><span class="line">--------</span><br><span class="line">MongoClient(host=[<span class="string">&#x27;localhost:27017&#x27;</span>], document_class=dict, tz_aware=<span class="literal">False</span>, connect=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>一个 MongoDB 的实例可以操作多个独立的数据库，我们使用 PyMongo 的时候可以通过 MongoClient 的属性来获取不同的数据库。这里，我们来获取 <code>shiyanlou</code> 数据库。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db = client.shiyanlou</span><br><span class="line">db</span><br><span class="line">-------</span><br><span class="line">Database(MongoClient(host=[<span class="string">&#x27;localhost:27017&#x27;</span>], document_class=dict, tz_aware=<span class="literal">False</span>, connect=<span class="literal">True</span>), <span class="string">&#x27;shiyanlou&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MongoDB 中的集合用来保存一组文档，相当于关系型数据库中的数据表。这里我们获取 <code>shiyanlou_collection</code>。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.shiyanlou_collection</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>值得注意的是，上面的例子中，我们获取的 <code>shiyanlou</code> 数据库和 <code>shiyanlou_collection</code> 集合都是延迟创建的，也就是说执行上面的命令实际上不会在 MongoDB 的服务器端进行任何操作，只有当第一个文档插进去的时候，它们才会被创建。</p>
+</blockquote>
+</li>
+<li><p>MongoDB 存储的文档记录是一个 BSON 对象，类似于 JSON 对象，由键值对组成。比如一条用户记录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    name: &quot;Aiden&quot;,</span><br><span class="line">    age: 30,</span><br><span class="line">    email: &quot;luojin@simplecloud.cn&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每一个文档都有一个 <code>_id</code> 字段，该字段是主键，用于唯一的确定一条记录。如果往 MongoDB 中插入数据时没有指定 <code>_id</code> 字段，那么会自动产生一个 <code>_id</code> 字段，该字段的类型是 <a target="_blank" rel="noopener" href="https://docs.mongodb.com/manual/reference/bson-types/#objectid"> <em>ObjectId</em></a>，长度是 12 个字节。在 MongoDB 文档的字段支持字符串，数字，时间戳等类型。一个文档最大可以达到 16M, 可以存储相当多的数据。</p>
+</li>
+<li><p>接下来，使用 <code>insert_one()</code> 方法往 MongoDB 中插入一条数据： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">data = &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&quot;Aiden&quot;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="string">&#x27;email&#x27;</span>: <span class="string">&quot;luojin@simplecloud.cn&quot;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&quot;CD&quot;</span>, <span class="string">&quot;SH&quot;</span>]&#125;</span><br><span class="line"></span><br><span class="line">users = db.users <span class="comment"># 创建一个users集合，用来保存user文档</span></span><br><span class="line">users_id = users.insert_one(data).inserted_id</span><br><span class="line">users_id</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>插入第一个文档之后，集合 <code>users</code> 就被创建了，我们可以用 <code>list_collection_names</code> 查看数据库中已经创建好的集合： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.list_collection_names()</span><br><span class="line">------</span><br><span class="line">[<span class="string">&#x27;users&#x27;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来，我们向 <code>users</code> 集合中插入多条数据，可以使用 <code>insert_many</code> 方法： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = [&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;lxttx&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">28</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;BJ&#x27;</span>, <span class="string">&#x27;CD&#x27;</span>]&#125;,</span><br><span class="line">        &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jin&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">31</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanhah@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>:[<span class="string">&#x27;GZ&#x27;</span>, <span class="string">&#x27;SZ&#x27;</span>]&#125;,</span><br><span class="line">        &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;akk&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">26</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhand@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;NJ&#x27;</span>, <span class="string">&#x27;AH&#x27;</span>]&#125;</span><br><span class="line">       ]</span><br><span class="line">db.users.insert_many(data)</span><br><span class="line">-----</span><br><span class="line">&lt;pymongo.results.InsertManyResult at <span class="number">0x7f1cc2eb53c8</span>&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>MongoDB 中最常用的基本操作是 <code>find_one()</code>，这个方法返回查询匹配到的第一个文档，如果没有则返回 <code>None</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">users.find_one()  <span class="comment">#参数为空，来获取 users 集合中的第一个文档</span></span><br><span class="line">-----</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab08220e98f003263b302&#x27;</span>),</span><br><span class="line"> <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Aiden&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>,</span><br><span class="line"> <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;CD&#x27;</span>, <span class="string">&#x27;SH&#x27;</span>]&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">users.find_one(&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&quot;jin&quot;</span>&#125;)</span><br><span class="line">--------</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab37320e98f003263b306&#x27;</span>),</span><br><span class="line"> <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jin&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;age&#x27;</span>: <span class="number">31</span>,</span><br><span class="line"> <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanhah@qq.com&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;GZ&#x27;</span>, <span class="string">&#x27;SZ&#x27;</span>]&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为了查询多个文档，我们可以使用 <code>find()</code> 方法，<code>find()</code> 方法返回一个 Cursor 对象，使用这个对象可以遍历所有匹配的文档 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> user <span class="keyword">in</span> users.find():</span><br><span class="line">    print(user)</span><br><span class="line">------</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab08220e98f003263b302&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Aiden&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;CD&#x27;</span>, <span class="string">&#x27;SH&#x27;</span>]&#125;</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab08b20e98f003263b303&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Aiden&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;CD&#x27;</span>, <span class="string">&#x27;SH&#x27;</span>]&#125;</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab25b20e98f003263b304&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Aiden&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;CD&#x27;</span>, <span class="string">&#x27;SH&#x27;</span>]&#125;</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab37320e98f003263b305&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;lxttx&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">28</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanyeye@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;BJ&#x27;</span>, <span class="string">&#x27;CD&#x27;</span>]&#125;</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab37320e98f003263b306&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jin&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">31</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanhah@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;GZ&#x27;</span>, <span class="string">&#x27;SZ&#x27;</span>]&#125;</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab37320e98f003263b307&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;akk&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">26</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhand@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;NJ&#x27;</span>, <span class="string">&#x27;AH&#x27;</span>]&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> user <span class="keyword">in</span> users.find(&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&quot;jin&quot;</span>&#125;):</span><br><span class="line">    print(user)</span><br><span class="line">----</span><br><span class="line">&#123;<span class="string">&#x27;_id&#x27;</span>: ObjectId(<span class="string">&#x27;5daab37320e98f003263b306&#x27;</span>), <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jin&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">31</span>, <span class="string">&#x27;email&#x27;</span>: <span class="string">&#x27;zhanhah@qq.com&#x27;</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&#x27;GZ&#x27;</span>, <span class="string">&#x27;SZ&#x27;</span>]&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新数据主要通过 <code>db.users.update_one</code> 或者 <code>db.users.update_many</code> 方法，前者更新一条记录，后者更新多条记录 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update_one(filter=&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&quot;Aiden&quot;</span>&#125;, update=&#123;</span><br><span class="line">                    <span class="string">&#x27;$set&#x27;</span>: &#123;<span class="string">&#x27;age&#x27;</span>: <span class="number">29</span>, <span class="string">&#x27;addr&#x27;</span>: [<span class="string">&quot;CD&quot;</span>, <span class="string">&quot;SH&quot;</span>, <span class="string">&quot;BJ&quot;</span>]&#125;&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除数据也非常简单，可以通过 <code>db.users.delete_one</code> 或<code>db.users.delete_many</code> 方法 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.delete_many(&#123;<span class="string">&#x27;addr&#x27;</span>: <span class="string">&quot;CD&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>estimated_document_count()</code> 方法可以使用集合元数据估算此集合中的文档数</p>
+</li>
+</ol>
+<h5 id="HTTP-协议及-API-采集数据"><a href="#HTTP-协议及-API-采集数据" class="headerlink" title="HTTP 协议及 API 采集数据"></a>HTTP 协议及 API 采集数据</h5><ul>
+<li>GET 方法请求数据</li>
+<li>Response 响应分析</li>
+<li>请求 URL 的构造</li>
+<li>JSON 数据读取</li>
+<li>开发者工具的使用</li>
+</ul>
+<h6 id="HTTP-请求方法"><a href="#HTTP-请求方法" class="headerlink" title="HTTP 请求方法"></a>HTTP 请求方法</h6><p>  通过 HTTP 协议，就可以基于 TCP/IP 通信来传递数据，包括 HTML 文件（网页），图片文件，查询结果等。一般情况下，数据源网站提供获取数据的 API 都是基于 HTTP 协议运行。 </p>
+<img width='300px' src="https://doc.shiyanlou.com/document-uid214893labid7506timestamp1539841198196.png">
+
+<p> 当通过 HTTP 请求采集数据时，数据源肯定不会允许修改或删除数据。所以，我们通常只会用到 GET 方法，用来向指定的资源发出请求，读取相应的数据。 </p>
+<h6 id="通过-API-采集数据"><a href="#通过-API-采集数据" class="headerlink" title="通过 API 采集数据"></a>通过 API 采集数据</h6><p> 应用程序接口（Application Programming Interface）</p>
+<ol>
+<li>按照 API 文档中介绍的 HTTP 请求方法，来获取数据。Python 中，我们通常使用 <code>requests</code> 模块建立 HTTP 连接 </li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="comment"># 使用 GET 方法请求数据</span></span><br><span class="line">raw = requests.get(</span><br><span class="line">    <span class="string">&#x27;http://api.waqi.info/feed/chengdu/?token=d9c0f3c71143407d61c900d9dbb450489303e7e8&#x27;</span>)</span><br><span class="line">raw</span><br><span class="line">-------</span><br><span class="line">&lt;Response [<span class="number">200</span>]&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如上所示，我们可以将请求地址和参数组合成一个 URL，然后通过 GET 方法完成请求。一般情况下，请求地址和参数之间通过 <code>?</code> 连接，参数与参数之间会通过 <code>&amp;</code> 连接，当然这里只有 <code>token</code> 一个参数所以不存在 <code>&amp;</code></p>
+</li>
+<li><p>面返回 <code>Response [200]</code> 是 HTTP 请求状态码，即代表连接成功。你可以通过 <code>json()</code> 属性查看返回的 JSON 数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raw.json()  <span class="comment">#返回值是对应的python数据类型，不是json字符串！！！</span></span><br></pre></td></tr></table></figure>
+
+<details>
+<summary>展开</summary>
+<pre><code>
+&#123;'status': 'ok',
+ 'data': &#123;'aqi': 158,
+  'idx': 1450,
+  'attributions': [&#123;'url': 'http://www.schj.gov.cn/',
+    'name': 'Sichuan Province Environmental Protection Agency (四川省环保重点城市环境空气质量实时监测结果)'&#125;,
+   &#123;'url': 'http://www.cdepb.gov.cn/',
+    'name': 'Chengdu Environmental Protection Agency (成都市环境监测中心站_成都市环境监测中心站)'&#125;,
+   &#123;'url': 'http://106.37.208.233:20035/emcpublish/',
+    'name': 'China National Urban air quality real-time publishing platform (全国城市空气质量实时发布平台)'&#125;,
+   &#123;'url': 'https://china.usembassy-china.org.cn/embassy-consulates/chengdu/air-quality-monitor/',
+    'name': 'U.S. Consulate Chengdu Air Quality Monitor'&#125;,
+   &#123;'url': 'https://waqi.info/', 'name': 'World Air Quality Index Project'&#125;],
+  'city': &#123;'geo': [30.6250145, 104.0670559],
+   'name': 'Chengdu (成都)',
+   'url': 'https://aqicn.org/city/chengdu'&#125;,
+  'dominentpol': 'pm25',
+  'iaqi': &#123;'co': &#123;'v': 13&#125;,
+   'no2': &#123;'v': 32&#125;,
+   'o3': &#123;'v': 1.3&#125;,
+   'pm10': &#123;'v': 67&#125;,
+   'pm25': &#123;'v': 158&#125;,
+   'so2': &#123;'v': 1.6&#125;,
+   'w': &#123;'v': 1.5&#125;&#125;,
+  'time': &#123;'s': '2019-10-20 09:00:00', 'tz': '+08:00', 'v': 1571562000&#125;,
+  'debug': &#123;'sync': '2019-10-20T10:56:34+09:00'&#125;&#125;&#125;
+</code></pre>
+</details>
+</li>
+</ul>
+<ol start="2">
+<li><p>此时，我们可以直接使用 Pandas 把 JSON 读取为 DataFrame 数据类型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">pd.DataFrame(raw.json())</span><br></pre></td></tr></table></figure>
+<details>
+<img width='300px' src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191020102442.png">
+</details>
+
+
+</li>
+</ol>
+<ul>
+<li><p>你可能会有疑问，那就是为什么不使用 <code>read_json()</code> 读取？</p>
+<p>如果愿意自己尝试的话，你会发现 <code>pd.read_json(raw.json())</code> 会报错。原因是在于，这里的 <code>raw.json()</code> 返回了 JSON 样式的数据，而数据的类型却为 <code>dict</code>，而 <code>pd.read_json()</code> 只能读取 JSON 数据（字符串类型）。</p>
+</li>
+</ul>
+<ol start="3">
+<li><p>当然，由于源数据嵌套层数较多，直接读取的 DataFrame 并不美观，数据层次展示不清楚。你可以进一步解析 JSON 之后，再转化为 DataFrame。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(raw.json()[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;iaqi&#x27;</span>])</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h6 id="获取非公开-API-数据"><a href="#获取非公开-API-数据" class="headerlink" title="获取非公开 API 数据"></a>获取非公开 API 数据</h6><p> 上面这种情况是网站提供了相应的 API 可供调用，但很多时候你会遇到想采集数据的网站并不会提供 API。此时，也有一些技巧可以更方便地采集数据。 </p>
+<p> 例如，我们想采集实验楼课程的评论数据，然后以实验楼最热门的课程「Linux 基础入门」为例。 </p>
+<ol>
+<li><p>首先，我们需要 <a target="_blank" rel="noopener" href="https://www.shiyanlou.com/courses/1"> <em>打开课程页面</em></a>，这里以 Chrome 浏览器为例。 </p>
+</li>
+<li><p>然后，在页面调出浏览器的「开发者工具」 </p>
+</li>
+<li><p>接下来，切换到开发者工具（DevTools）的网络（Network）面板，刷新页面后就能捕捉到浏览器与服务器之间的全部通信。 </p>
+</li>
+<li><p>然后，在 Filter 导航中选中 <code>XHR</code> 选项,用来过滤无关的 HTTP 请求。此时，点击评论「下一页」执行翻页，Network 就能捕获评论数据 JSON。 <img width='600px' src="https://doc.shiyanlou.com/courses/uid214893-20190421-1555818366987"></p>
+</li>
+<li><p>你会发现有一个带 comment 关键词的链接返回了 JSON 格式的数据，并正好对应着评论的内容。你可以把该链接复制下来，即：<code>https://www.shiyanlou.com/api/v2/comments/?page_size=15&amp;topic_id=1&amp;topic_type=course&amp;cursor=bz0xNQ%3D%3D</code>。你可以发现，此链接和上面请求空气质量指数的 API 链接非常相似，且无需提供 <code>token</code>。</p>
+<p>接下来，我们就可以通过 Python 的 <code>requests</code> 模块与该链接建立 HTTP 通信，并获取返回的 JSON 内容。不过，链接中的游标参数 <code>cursor</code> 控制着页面位置（经验），删除之后就能得到首页的评论。</p>
+</li>
+<li><p>那么，你或许有了新的疑问。我们上面只获取到 15 条评论数据，更多的数据怎么办呢？</p>
+<p>如果你仔细观察上面的链接 <code>https://www.shiyanlou.com/api/v2/comments/?page_size=15&amp;topic_id=1&amp;topic_type=course</code> 就会发现，链接中有一个 <code>page_size=15</code> 的参数。其实，API 一般在设计时都是有规律的，你可以将其改为 <code>page_size=30</code> 试一试</p>
+</li>
+</ol>
+<h5 id="网页数据采集与内容解析"><a href="#网页数据采集与内容解析" class="headerlink" title="网页数据采集与内容解析"></a>网页数据采集与内容解析</h5><blockquote>
+<p>大多数情况下，各类网站为了保护自己的数据不轻易被别人获取，一般都不会轻易提供 API。而在这种情况下，我们拿到网页数据的常用方法就是直接解析页面数据 </p>
+</blockquote>
+<ul>
+<li>Pandas 模块自动解析表格</li>
+<li>表格数据的文本匹配</li>
+<li>XPath 节点的选择基本规则</li>
+<li>lxml 模块的使用</li>
+<li>BeautifulSoup 模块中 CSS 选择器的使用</li>
+<li>开发者工具中 XPath 和 CSS 的路径</li>
+</ul>
+<h6 id="解析网页表格数据"><a href="#解析网页表格数据" class="headerlink" title="解析网页表格数据"></a>解析网页表格数据</h6><ol>
+<li><p>一种快速解析网页表格数据的方法 </p>
+<blockquote>
+<p>如果一个网页上存在表格数据，也就是一个以 HTML 标签 <code>&lt;table&gt;</code> 标记的表格。那么，使用 Pandas 提供的 <code>read_html()</code> 是最快解析方法。<code>read_html()</code> 会自动提取网页上的表格，并处理成 DataFrame。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 中华人民共和国境内地区邮政编码列表页面</span></span><br><span class="line">url = <span class="string">&quot;http://labfile.oss.aliyuncs.com/courses/1145/wikipedia_postal_codes.htm&quot;</span></span><br><span class="line">tables = pd.read_html(url, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="comment"># utf-8 编码正确显示中文</span></span><br><span class="line"></span><br><span class="line">len(tables)  <span class="comment"># 页面表单的数量</span></span><br><span class="line"><span class="comment"># 上面得到的结果是 34，即代表页面有 34 个表格</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 接下来，就可以直接输出 DataFrame 的表格内容。</span></span><br><span class="line">tables[<span class="number">0</span>]  <span class="comment"># 输出第 1 个表格，索引为 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#事实上，你可以匹配包含特定文本的表，通过指定 match 参数完成</span></span><br><span class="line">chengdu = pd.read_html(url, match=<span class="string">&quot;成都市&quot;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>)  <span class="comment"># 查找包含成都市邮政编码的表格</span></span><br><span class="line">chengdu[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h6 id="XPath解析"><a href="#XPath解析" class="headerlink" title="XPath解析"></a>XPath解析</h6><blockquote>
+<p> XPath (XML Path Language) 是一门路径提取语言，最初被设计用来从 XML 文档中提取部分信息，现在它的这套提取方法也可以用于 HTML 文档上 </p>
+</blockquote>
+<ol>
+<li><p>在使用 XPath 前，大家首先要把几个概念弄明白。首先是 <code>节点(node)</code>，以上面的 HTML 文档为例子，每个标签都是一个节点，比如 </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;company&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span>腾讯<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;tencent.jpg&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;location&quot;</span>&gt;</span>深圳<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最外层的<code>div</code>是整个文档的一个子节点，</li>
+<li>里面包含的公司信息标签都是 <code>div</code> 的子节点 </li>
+<li>节点标签之间的内容称为这个节点的文本（text） </li>
+<li>节点标签内部称为节点的属性（attribute） </li>
+<li>每个标签都可以有 <code>class</code> 属性 （可以有多个对应的值）</li>
+</ul>
+</li>
+<li><p>接下来，就可以通过 Python 中的 <code>lxml</code> 模块对 HTML 应用 XPath 规则进行节点选择了 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> html</span><br><span class="line"></span><br><span class="line">example = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="string">&lt;html&gt;</span></span><br><span class="line"><span class="string">&lt;head&gt;</span></span><br><span class="line"><span class="string">  &lt;title&gt;xpath&lt;/title&gt;</span></span><br><span class="line"><span class="string">&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;body&gt;</span></span><br><span class="line"><span class="string">  &lt;div class=&quot;companies&quot;&gt;</span></span><br><span class="line"><span class="string">    &lt;div class=&quot;company&quot;&gt;</span></span><br><span class="line"><span class="string">      &lt;h2&gt;阿里巴巴&lt;/h2&gt;</span></span><br><span class="line"><span class="string">      &lt;a href=&quot;alibaba.com&quot;&gt;&lt;img src=&quot;alibaba.jpg&quot;&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="string">      &lt;p class=&quot;location&quot;&gt;杭州&lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div class=&quot;company&quot;&gt;</span></span><br><span class="line"><span class="string">      &lt;h2&gt;腾讯&lt;/h2&gt;</span></span><br><span class="line"><span class="string">      &lt;a href=&quot;qq.com&quot;&gt;&lt;img src=&quot;qq.jpg&quot;&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="string">      &lt;p class=&quot;location&quot;&gt;深圳&lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div class=&quot;company&quot;&gt;</span></span><br><span class="line"><span class="string">      &lt;h2&gt;Facebook&lt;/h2&gt;</span></span><br><span class="line"><span class="string">      &lt;a href=&quot;facebook.com&quot;&gt;&lt;img src=&quot;facebook.jpg&quot;&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="string">      &lt;p class=&quot;location&quot;&gt;硅谷&lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;div class=&quot;company&quot;&gt;</span></span><br><span class="line"><span class="string">      &lt;h2&gt;微软&lt;/h2&gt;</span></span><br><span class="line"><span class="string">      &lt;a href=&quot;microsoft.com&quot;&gt;&lt;img src=&quot;microsoft.jpg&quot;&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="string">      &lt;p class=&quot;location&quot;&gt;西雅图&lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  &lt;/div&gt;</span></span><br><span class="line"><span class="string">&lt;/body&gt;</span></span><br><span class="line"><span class="string">&lt;/html&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">tree = html.fromstring(example)  <span class="comment"># 将字符串解析为 HTML Element</span></span><br><span class="line">tree</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加载完 HTML 之后，我们说一说节点选择的基本规则： </p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nodename</td>
+<td>选取此节点的所有子节点。</td>
+</tr>
+<tr>
+<td>/</td>
+<td>从根节点选取。</td>
+</tr>
+<tr>
+<td>//</td>
+<td>从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置。</td>
+</tr>
+<tr>
+<td>.</td>
+<td>选取当前节点。</td>
+</tr>
+<tr>
+<td>..</td>
+<td>选取当前节点的父节点。</td>
+</tr>
+</tbody></table>
+   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># / 表示从根节点开始选取，想要选取 title 节点，就需要按标签的阶级关系来定位</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;/html/head/title&#x27;</span>)</span><br><span class="line">[&lt;Element title at <span class="number">0x7faf59e75d68</span>&gt;]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 上面已经获取到 Element title，在选择表达式后面加上 text() 来指定只返回文本</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;/html/head/title/text()&#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;xpath&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 而使用 // 就可以不必管标签在文档中的位置</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;//title/text()&#x27;</span>)  <span class="comment"># 返回网页标题文本</span></span><br><span class="line">[<span class="string">&#x27;xpath&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 当选取到的标签不止一个的时，返回一个列表，如我们选取所有公司的名称所在的 h2 标签</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;//h2/text()&#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;阿里巴巴&#x27;</span>, <span class="string">&#x27;腾讯&#x27;</span>, <span class="string">&#x27;Facebook&#x27;</span>, <span class="string">&#x27;微软&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 要选取属性值，在属性名称前面加上 @ 符号就可以了，如选取所有 img 的 src 属性：</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;//img/@src&#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;alibaba.jpg&#x27;</span>, <span class="string">&#x27;qq.jpg&#x27;</span>, <span class="string">&#x27;facebook.jpg&#x27;</span>, <span class="string">&#x27;microsoft.jpg&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以用属性来定位节点，如要选取所有 class 属性值为 location 的 p内的文本</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;//p[@class=&quot;location&quot;]/text()&#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;杭州&#x27;</span>, <span class="string">&#x27;深圳&#x27;</span>, <span class="string">&#x27;硅谷&#x27;</span>, <span class="string">&#x27;西雅图&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在节点名称后面加上 [n] ，n 是一个数字，可以获取到该节点下某个子节点的第 n 个</span></span><br><span class="line"><span class="comment"># 如要获取 div.companies 下的第二个 div 子 节点，也就是腾讯所在的 div 节点:</span></span><br><span class="line">tree.xpath(<span class="string">&#x27;//div[@class=&quot;companies&quot;]/div[2]/h2/text()&#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;腾讯&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h6 id="CSS-Selector-解析"><a href="#CSS-Selector-解析" class="headerlink" title="CSS Selector 解析"></a>CSS Selector 解析</h6><blockquote>
+<p>除了使用 XPath 语法解析 HTML 之外，还有一种常用的方法是使用 CSS Selector 选择。</p>
+</blockquote>
+<ol>
+<li><p>下面，我们通过 Python 中另一个支持 CSS 选择的模块 Beautiful Soup 进行演示。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">soup = BeautifulSoup(example, features=<span class="string">&quot;lxml&quot;</span>)  <span class="comment"># 加载 HTML</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 首先，你可以按层级依次向下选择，直到得到想要的内容。</span></span><br><span class="line"><span class="comment"># 例如，这里我们想得到各个公司的网站地址</span></span><br><span class="line">soup.select(<span class="string">&quot;html body div a[href]&quot;</span>)</span><br><span class="line"></span><br><span class="line">[&lt;a href=&quot;alibaba.com&quot;&gt;&lt;img src=&quot;alibaba.jpg&quot;/&gt;&lt;/a&gt;,</span><br><span class="line"> &lt;a href=&quot;qq.com&quot;&gt;&lt;img src=&quot;qq.jpg&quot;/&gt;&lt;/a&gt;,</span><br><span class="line"> &lt;a href=&quot;facebook.com&quot;&gt;&lt;img src=&quot;facebook.jpg&quot;/&gt;&lt;/a&gt;,</span><br><span class="line"> &lt;a href=&quot;microsoft.com&quot;&gt;&lt;img src=&quot;microsoft.jpg&quot;/&gt;&lt;/a&gt;]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此时，如果想要得到最终的地址，需要一个简单的处理过程</span></span><br><span class="line"><span class="keyword">for</span> link <span class="keyword">in</span> soup.select(<span class="string">&quot;html body div a[href]&quot;</span>):</span><br><span class="line">    print(link.get(<span class="string">&#x27;href&#x27;</span>))</span><br><span class="line">    </span><br><span class="line">alibaba.com</span><br><span class="line">qq.com</span><br><span class="line">facebook.com</span><br><span class="line">microsoft.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以通过一些独一无二的标签进行选择</span></span><br><span class="line"><span class="comment"># 如这里公司位置是通过 &lt;p class=&quot;location&quot;&gt;&lt;/p&gt; 标记的，而带有 class=&quot;location&quot; 的 p 标签是独一无二的。于是，就可以直接通过该标签解析到数据</span></span><br><span class="line">soup.select(<span class="string">&quot;p.location&quot;</span>)</span><br><span class="line"></span><br><span class="line">[&lt;p class=&quot;location&quot;&gt;杭州&lt;/p&gt;,</span><br><span class="line">    &lt;p class=&quot;location&quot;&gt;深圳&lt;/p&gt;,</span><br><span class="line">    &lt;p class=&quot;location&quot;&gt;硅谷&lt;/p&gt;,</span><br><span class="line">    &lt;p class=&quot;location&quot;&gt;西雅图&lt;/p&gt;]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同样，如果想要得到最终的内容，需要一个简单的处理过程</span></span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> soup.select(<span class="string">&quot;p.location&quot;</span>):</span><br><span class="line">    print(p.text)</span><br><span class="line">杭州</span><br><span class="line">深圳</span><br><span class="line">硅谷</span><br><span class="line">西雅图</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<p> Chrome 等浏览器的开发者模式提供了一个功能，那就是复制某个标签所在的 XPATH 路径 </p>
+<h5 id="网络爬虫采集数据的方法"><a href="#网络爬虫采集数据的方法" class="headerlink" title="网络爬虫采集数据的方法"></a>网络爬虫采集数据的方法</h5><ul>
+<li>构造 CSS 选择器路径</li>
+<li>获取不同页面的内容</li>
+<li>Scrapy 的安装使用</li>
+<li>Scrapy 提取数据方法</li>
+<li>Scrapy 内置方法</li>
+<li>正则匹配方法介绍</li>
+</ul>
+<h6 id="编写一个简单的爬虫"><a href="#编写一个简单的爬虫" class="headerlink" title="编写一个简单的爬虫"></a>编写一个简单的爬虫</h6><p> 我们需要先获取 HTML 内容。这里将使用到 <code>requests</code> 和 <code>BeautifulSoup</code> 模块。 </p>
+<blockquote>
+<p> 我们需要提到 URL 参数的概念。在发送 HTTP 请求时，一般可以附带传递 URL 参数。参数以问号开始并采用 <code>name=value</code> 的格式，多个参数以 <code>&amp;</code> 间隔; 参数和url之间用 <code>?</code>间隔。 </p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">course_name = []</span><br><span class="line">page_num = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> page <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">4</span>):</span><br><span class="line">    content = requests.get(<span class="string">f&quot;https://www.shiyanlou.com/courses/?page=<span class="subst">&#123;page&#125;</span>&quot;</span>)</span><br><span class="line">    soup = BeautifulSoup(content.text, features=<span class="string">&quot;lxml&quot;</span>)</span><br><span class="line">    course_name.extend(soup.select(<span class="string">&quot;h6.course-name&quot;</span>))</span><br><span class="line">    print(<span class="string">&quot;已爬取第&#123;&#125;页面&quot;</span>.format(page))</span><br><span class="line">print(<span class="string">&quot;*****************&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> course_name:</span><br><span class="line">    print(name.text.strip())</span><br></pre></td></tr></table></figure>
+
+<h6 id="Scrapy-简介"><a href="#Scrapy-简介" class="headerlink" title="Scrapy 简介"></a>Scrapy 简介</h6><p><code>pip3 install scrapy</code></p>
+<blockquote>
+<p> <code>Scrapy</code> 是使用 Python 实现的一个开源爬虫框架。秉承着「Don’t Repeat Yourself」的原则，<code>Scrapy</code> 提供了一套编写爬虫的基础框架和编写过程中常见问题的一些解决方案。 </p>
+</blockquote>
+<p> Scrapy 主要拥有下面这些功能和特点： </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> 内置数据提取器，支持 XPath 和 CSS Selector 语法，并且支持正则表达式，方便从网页提取信息。</span><br><span class="line"><span class="bullet">-</span> 交互式的命令行工具，方便测试 Selector 和 debugging 爬虫。</span><br><span class="line"><span class="bullet">-</span> 支持将数据导出为 JSON，CSV，XML 格式。</span><br><span class="line"><span class="bullet">-</span> 内置了很多拓展和中间件用于处理：</span><br><span class="line"><span class="bullet">  -</span> cookies 和 session</span><br><span class="line"><span class="bullet">  -</span> HTTP 的压缩，认证，缓存</span><br><span class="line"><span class="bullet">  -</span> robots.txt</span><br><span class="line"><span class="bullet">  -</span> 爬虫深度限制</span><br><span class="line"><span class="bullet">-</span> 可拓展性强，可运行自己编写的特定功能的插件</span><br></pre></td></tr></table></figure>
+
+<h6 id="Scrapy-shell-交互式环境"><a href="#Scrapy-shell-交互式环境" class="headerlink" title="Scrapy shell 交互式环境"></a>Scrapy shell 交互式环境</h6><p> <code>scrapy shell</code> 提供了一个交互式的 Python 环境方便我们测试和 Debug 爬虫</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scrapy shell [url]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 需要提供一个网页的 URL，执行命令后，Scrapy 会自动去下载这个 URL 对应的网页，将结果封装为 Scrapy 内部的一个 <code>response</code> 对象并注入到 Python shell 中。在这个 <code>response</code> 对象上，可以直接使用 Scrapy 内置的 CSS 和 XPATH 数据提取器。也就是说，我们无需再像前面解析 HTML 的实验，单独使用 lxml 和 Beautiful Soup 模块了。 </p>
+</blockquote>
+<p> 由于 Notebook 无法执行可交互的命令，我们通过下面的方法同样可以得到 Scrapy 的 <code>response</code> 对象。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scrapy.http <span class="keyword">import</span> TextResponse</span><br><span class="line">r = requests.get(<span class="string">&quot;http://doc.scrapy.org/en/latest/_static/selectors-sample1.html&quot;</span>)</span><br><span class="line">response = TextResponse(r.url, body=r.text, encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">response</span><br><span class="line">---------------------</span><br><span class="line">&lt;<span class="number">200</span> http://doc.scrapy.org/en/latest/_static/selectors-sample1.html&gt;</span><br></pre></td></tr></table></figure>
+
+<h6 id="Scrapy-内置-CSS-Selector"><a href="#Scrapy-内置-CSS-Selector" class="headerlink" title="Scrapy 内置 CSS Selector"></a>Scrapy 内置 CSS Selector</h6><p> CSS Selector 的使用前面已经介绍过了，但 Scrapy 内置的 CSS Selector 方法和 Beautiful Soup 稍有不同 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 要提取例子网页中 ID 为 images 的 div 下所有 a 标签的文本</span></span><br><span class="line">response.css(<span class="string">&#x27;div#images a::text&#x27;</span>).extract()</span><br><span class="line">[<span class="string">&#x27;Name: My image 1 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 2 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 3 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 4 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 5 &#x27;</span>]</span><br><span class="line"></span><br><span class="line">response.css(<span class="string">&#x27;div#images a::text&#x27;</span>).extract_first()</span><br><span class="line"><span class="string">&#x27;Name: My image 1 &#x27;</span></span><br><span class="line"></span><br><span class="line">response.css(<span class="string">&#x27;div#images p::text&#x27;</span>).extract_first(default=<span class="string">&#x27;默认值&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;默认值&#x27;</span></span><br><span class="line"></span><br><span class="line">response.css(<span class="string">&#x27;div#images a::attr(href)&#x27;</span>).extract()</span><br><span class="line">[<span class="string">&#x27;image1.html&#x27;</span>, <span class="string">&#x27;image2.html&#x27;</span>, <span class="string">&#x27;image3.html&#x27;</span>, <span class="string">&#x27;image4.html&#x27;</span>, <span class="string">&#x27;image5.html&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>div#images</code> 表示 <code>id</code> 为 <code>images</code> 的 <code>div</code></li>
+<li>如果是类名为 <code>images</code>，这里就是 <code>div.images</code></li>
+<li>如果 <code>div</code> 中有多个 <code>class</code> 的情况，用 CSS 提取器可以写为 <code>div[class=&quot;class1 class2&quot;]</code></li>
+<li><code>div a</code> 表示该 <code>div</code> 下所有 <code>a</code> 标签</li>
+<li><code>::text</code> 表示提取文本</li>
+<li><code>extract</code> 函数执行提取操作，返回一个列表</li>
+<li>如果只想要列表中第一个 <code>a</code> 标签下的文本，可以使用 <code>extract_first</code> 函数 </li>
+<li>任何标签的任意属性都可以用 <code>attr()</code> 提取 </li>
+</ul>
+<h6 id="Scrapy-内置-XPath"><a href="#Scrapy-内置-XPath" class="headerlink" title="Scrapy 内置 XPath"></a>Scrapy 内置 XPath</h6><p> 同样，XPath 的方法前面也已经学习了，与 Scrapy 内置方法唯一的区别在于，你需要使用 <code>.extract()</code> 才能把内容导出。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">response.xpath(<span class="string">&#x27;/html/head/title/text()&#x27;</span>).extract()</span><br><span class="line">[<span class="string">&#x27;Example website&#x27;</span>]</span><br><span class="line"></span><br><span class="line">response.xpath(<span class="string">&#x27;//*[@id=&quot;images&quot;]/a/@href&#x27;</span>).extract()</span><br><span class="line">[<span class="string">&#x27;image1.html&#x27;</span>, <span class="string">&#x27;image2.html&#x27;</span>, <span class="string">&#x27;image3.html&#x27;</span>, <span class="string">&#x27;image4.html&#x27;</span>, <span class="string">&#x27;image5.html&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h6 id="结合正则表达式"><a href="#结合正则表达式" class="headerlink" title="结合正则表达式"></a>结合正则表达式</h6><p> 除了 <code>extract()</code> 和 <code>extract_first()</code>方法， 还有 <code>re()</code> 和 <code>re_first()</code> 方法可以用于 <code>css()</code> 或者 <code>xpath()</code> 方法返回的对象。 </p>
+<ul>
+<li><code>re()</code> 方法中定义的正则表达式会作用到每个提取到的文本中，只保留正则表达式中的子模式匹配到的内容，也就是 <code>()</code> 内的匹配内容。 </li>
+<li><code>re_first()</code> 方法支持只作用于第一个文本： </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">response.css(<span class="string">&#x27;div#images a::text&#x27;</span>).extract()</span><br><span class="line">[<span class="string">&#x27;Name: My image 1 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 2 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 3 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 4 &#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;Name: My image 5 &#x27;</span>]</span><br><span class="line"></span><br><span class="line">response.css(<span class="string">&#x27;div#images a::text&#x27;</span>).re(<span class="string">&#x27;Name: (.+) &#x27;</span>)</span><br><span class="line">[<span class="string">&#x27;My image 1&#x27;</span>, <span class="string">&#x27;My image 2&#x27;</span>, <span class="string">&#x27;My image 3&#x27;</span>, <span class="string">&#x27;My image 4&#x27;</span>, <span class="string">&#x27;My image 5&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Scrapy-爬虫框架基础实践"><a href="#Scrapy-爬虫框架基础实践" class="headerlink" title="Scrapy 爬虫框架基础实践"></a>Scrapy 爬虫框架基础实践</h5><ul>
+<li>Scrapy Shell 常用命令</li>
+<li>Response 对象的处理</li>
+<li>Pipeline 处理数据</li>
+<li>数据存取与导出</li>
+<li>多页面数据爬取</li>
+</ul>
+<h6 id="Scrapy-框架简介"><a href="#Scrapy-框架简介" class="headerlink" title="Scrapy 框架简介"></a>Scrapy 框架简介</h6><blockquote>
+<p><a target="_blank" rel="noopener" href="https://scrapy.org/"> <em>Scrapy</em></a> 是 Python 开发的一个快速、高层次的 WEB 抓取框架，用于抓取 WEB 站点并从页面中提取结构化的数据。Scrapy 用途广泛，可以用于数据挖掘、监测和自动化测试。</p>
+</blockquote>
+<blockquote>
+<p>Scrapy 吸引人的地方在于它是一个框架，任何人都可以根据需求方便的修改。它也提供了多种类型爬虫的基类，如 BaseSpider，Sitemap 爬虫等，同时提供了 Web 2.0 爬虫的支持。Scrapy 的架构如下图所示</p>
+</blockquote>
+<img width="400" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191025200118.png">
+
+<p>从图中可以看到，Scapy 的组件包括：</p>
+<ol>
+<li>Scrapy Engine：处理系统数据流和事务的引擎。</li>
+<li>Scheduler 和 Scheduler Middlewares：调度引擎发过来的请求。</li>
+<li>Downloader 和 Downloader Middlewares：下载网页内容的下载器。</li>
+<li>Spider ：爬虫系统，处理域名解析规则及网页解析。</li>
+</ol>
+<p>Scrapy 的基本用法包括下面几个步骤：</p>
+<ol>
+<li>初始化 Scrapy 项目。</li>
+<li>实现 Item，用来存储提取信息的容器类。</li>
+<li>实现 Spider，用来爬取数据的爬虫类。</li>
+<li>从 HTML 页面中提取数据到 Item。</li>
+<li>实现 Item Pipeline 来保存 Item 数据。</li>
+</ol>
+<h6 id="初始化爬虫项目"><a href="#初始化爬虫项目" class="headerlink" title="初始化爬虫项目"></a>初始化爬虫项目</h6><blockquote>
+<p>根据上面启动 Scrapy 爬虫的流程，我们第一步是先初始化一个爬虫项目。初始化爬虫项目的目的在于减少代码编写工作，因为 Scrapy 会自动为我们生成一个代码目录结构。 </p>
+</blockquote>
+<p>创建项目的方法是使用 <code>scrapy startproject</code> 命令，打开终端并执行:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ scrapy startproject shiyanlou_course</span><br></pre></td></tr></table></figure>
+
+<p> 初始化之后，可以看到项目结构是这样的： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">└── shiyanlou_course       <span class="comment"># 部署项目文件夹</span></span><br><span class="line">    ├── scrapy.cfg         <span class="comment"># 部署配置文件</span></span><br><span class="line">    └── shiyanlou_course   <span class="comment"># 爬虫项目名称</span></span><br><span class="line">        ├── __init__.py </span><br><span class="line">        ├── items.py       <span class="comment"># 项目 items 定义在这里</span></span><br><span class="line">        ├── middlewares.py <span class="comment"># 一些下载组件，简单项目无需修改</span></span><br><span class="line">        ├── pipelines.py   <span class="comment"># 项目 pipelines 定义在这里</span></span><br><span class="line">        ├── settings.py    <span class="comment"># 项目配置文件</span></span><br><span class="line">        └── spiders        <span class="comment"># 所有爬虫写在这个目录下面</span></span><br><span class="line">            └── __init__.py</span><br></pre></td></tr></table></figure>
+
+<h6 id="实现-Item"><a href="#实现-Item" class="headerlink" title="实现 Item"></a>实现 Item</h6><blockquote>
+<p>爬虫的主要目标是从网页中提取结构化的信息，Scrapy 爬虫可以将爬取到的数据作为一个 Python 字典返回，但由于字典的无序性，所以它不太适合存放结构性数据。Scrapy 推荐使用 Item 容器来存放爬取到的数据。 </p>
+</blockquote>
+<blockquote>
+<p>本次实验，我们打算爬取实验楼免费课程的信息，并提取出每门课程的：课程名称、课程介绍、封面图片链接。那么，下面就可以定义这 3 个 Item。 </p>
+</blockquote>
+<blockquote>
+<p>所有的 Item 写在 <code>shiyanlou_course/shiyanlou_course/items.py</code> 中，下面为要爬取的课程定义一个 <code>Item</code>： </p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShiyanlouCourseItem</span>(<span class="params">scrapy.Item</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    定义 Item 非常简单，只需要继承 scrapy.Item 类，将每个要爬取</span></span><br><span class="line"><span class="string">    的数据声明为 scrapy.Field()。下面的代码是我们每个课程要爬取的 3 个数据。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    name = scrapy.Field() <span class="comment"># 课程名称</span></span><br><span class="line">    description = scrapy.Field() <span class="comment"># 课程介绍</span></span><br><span class="line">    image = scrapy.Field() <span class="comment"># 课程图片</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="创建爬虫"><a href="#创建爬虫" class="headerlink" title="创建爬虫"></a>创建爬虫</h6><p> 定义完 Item 后，就可以开始创建爬虫。 </p>
+<p> <code>scrapy</code> 的 <code>genspider</code> 命令可以快速初始化一个爬虫模版，使用方法如下： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scrapy genspider &lt;name&gt; &lt;domain&gt;</span><br><span class="line"><span class="comment"># name 这个爬虫的名称</span></span><br><span class="line"><span class="comment"># domain 指定要爬取的网站</span></span><br></pre></td></tr></table></figure>
+
+<p> 进入 Scrapy 爬虫所在的 <code>shiyanlou</code> 目录，运行下面的命令快速初始化一个爬虫模版： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd shiyanlou_course/shiyanlou_course/</span><br><span class="line">scrapy genspider courses shiyanlou.com</span><br></pre></td></tr></table></figure>
+
+<p><code>scrapy</code> 会在 <code>shiyanlou_course/shiyanlou_course/spiders</code> 目录下新建一个 <code>courses.py</code> 的文件，并且在文件中为我们初始化了代码结构：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoursesSpider</span>(<span class="params">scrapy.Spider</span>):</span></span><br><span class="line">    name = <span class="string">&#x27;courses&#x27;</span></span><br><span class="line">    allowed_domains = [<span class="string">&#x27;shiyanlou.com&#x27;</span>]</span><br><span class="line">    start_urls = [<span class="string">&#x27;http://shiyanlou.com/&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>allow_domains</code> 可以是一个列表或字符串，包含这个爬虫可以爬取的域名。假设我们要爬的页面是 <code>https://www.example.com/1.hml</code>, 那么就把<code>example.com</code> 添加到 allowed_domains。这个属性是可选的，这里可以保留也可以删除</li>
+<li> <code>start_urls</code> 则代表初始爬取的网站页面，我们这里准备爬取的是实验楼免费课程的信息，它的 URL 为：<code>https://www.shiyanlou.com/courses/?fee=free</code></li>
+<li><code>parse()</code> 是 Spider 的一个方法。 被调用时，每个初始 URL 完成下载后生成的 Response 对象将会作为唯一的参数传递给该函数。该方法负责解析返回的数据，提取数据（生成 Item）以及生成需要进一步处理的 URL 的 Request 对象。<code>parse()</code> 作为解析 Response 对象的方法，就要使用的我们前面学习过的 XPATH 或 CSS 选择语法了。</li>
+</ul>
+<p>与前面课程学习的内容一致，我们通过浏览器的开发者工具先来分析一下需要获取的数据网源代码，并找到 3 个 Item 对应的 XPATH 路径：</p>
+<details>
+<pre>
+&ltdiv
+  class="col-sm-12 col-md-3"
+  data-v-7b4a6760=""
+  data-v-722df677=""
+  data-v-33421895=""
+&gt
+  &ltdiv class="course-item-box" data-v-7b4a6760=""&gt
+    &lta href="/courses/1" class="link block" data-v-7b4a6760=""
+      &gt&ltdiv class="course-item" data-v-7b4a6760=""&gt
+        &ltdiv class="item-box-top relative" data-v-7b4a6760=""&gt
+          &ltdiv class="course-cover relative" data-v-7b4a6760=""&gt
+            &ltimg
+              src="https://dn-simplecloud.shiyanlou.com/ncn1.jpg"
+              alt="Linux 基础入门（新版）"
+              class="cover-image"
+              data-v-7b4a6760=""
+            /&gt
+          &lt/div&gt
+          &ltdiv class="status-info" data-v-7b4a6760=""&gt
+            &ltdiv class="inner overflow-auto" data-v-7b4a6760=""&gt
+              &lt!----&gt
+              &ltspan
+                class="follow-status float-right inline-block text-center color-red"
+                data-v-7b4a6760=""
+                &gt&lti class="fa fa-star-follow fa-star-o" data-v-7b4a6760=""&gt&lt/i
+              &gt&lt/span&gt
+            &lt/div&gt
+          &lt/div&gt
+        &lt/div&gt
+        &ltdiv class="item-box-bottom relative" data-v-7b4a6760=""&gt
+          &ltdiv class="course-info-wrapper relative" data-v-7b4a6760=""&gt
+            &lth6 class="course-name" data-v-7b4a6760=""&gt
+              Linux 基础入门（新版）
+            &lt/h6&gt
+            &ltdiv class="course-description" data-v-7b4a6760=""&gt
+              要在实验楼愉快地学习，先要熟练地使用 Linux，本实验介绍 Linux
+              基本操作，shell 环境下的常用命令。
+            &lt/div&gt
+          &lt/div&gt
+          &ltdiv class="course-meta-data" data-v-7b4a6760=""&gt
+            &ltdiv class="meta-data-inner" data-v-7b4a6760=""&gt
+              &ltspan class="students-count" data-v-7b4a6760=""
+                &gt&lti class="fa fa-users" data-v-7b4a6760=""&gt&lt/i&gt
+                &ltspan data-v-7b4a6760=""&gt229237&lt/span&gt&lt/span
+              &gt
+              &ltspan
+                class="course-type course-type-tag course-list-tag free"
+                data-v-7b4a6760=""
+              &gt
+                免费
+              &lt/span&gt
+            &lt/div&gt
+          &lt/div&gt
+        &lt/div&gt
+      &lt/div&gt&lt/a
+    &gt
+  &lt/div&gt
+&lt/div&gt
+</pre>
+</details>
+
+<p>那么，根据前面实验学习到的 XPATH 知识，就可以写出 3 个 Item 对应的 XPATH 路径如下：</p>
+<ul>
+<li>课程名称：<code>.//h6[@class=&quot;course-name&quot;]/text()</code></li>
+<li>课程介绍：<code>.//div[@class=&quot;course-description&quot;]/text()</code></li>
+<li>课程图片：<code>.//img[@class=&quot;cover-image&quot;]/@src</code></li>
+</ul>
+<p>接下来，我们就继续编写 <code>courses.py</code>，并从 <code>items</code> 中导入 <code>ShiyanlouCourseItem</code>。同时，将 XPATH 解析出来的数据封装成 <code>item</code> 返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> shiyanlou_course.items <span class="keyword">import</span> ShiyanlouCourseItem</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoursesSpider</span>(<span class="params">scrapy.Spider</span>):</span></span><br><span class="line">    name = <span class="string">&#x27;courses&#x27;</span></span><br><span class="line">    allowed_domains = [<span class="string">&#x27;shiyanlou.com&#x27;</span>]</span><br><span class="line">    start_urls = [<span class="string">&#x27;https://www.shiyanlou.com/courses/?fee=free&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="comment"># 解析当前页面各课程所在的 div, 将返回全部课程 Selector 列表</span></span><br><span class="line">        courses = response.xpath(<span class="string">&#x27;//div[@class=&quot;col-sm-12 col-md-3&quot;]&#x27;</span>)</span><br><span class="line">        <span class="comment"># 遍历每个课程, 解析名称, 描述, 图片</span></span><br><span class="line">        <span class="keyword">for</span> course <span class="keyword">in</span> courses:</span><br><span class="line">            <span class="comment"># 按定义好的 Item 结构返回数据</span></span><br><span class="line">            item = ShiyanlouCourseItem()</span><br><span class="line">            item[<span class="string">&#x27;name&#x27;</span>] = course.xpath(<span class="string">&#x27;.//h6[@class=&quot;course-name&quot;]/text()&#x27;</span>).extract_first().strip()</span><br><span class="line">            item[<span class="string">&#x27;description&#x27;</span>] = course.xpath(<span class="string">&#x27;.//div[@class=&quot;course-description&quot;]/text()&#x27;</span>).extract_first().strip()</span><br><span class="line">            item[<span class="string">&#x27;image&#x27;</span>] = course.xpath(<span class="string">&#x27;.//img[@class=&quot;cover-image&quot;]/@src&#x27;</span>).extract_first()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">yield</span> item</span><br></pre></td></tr></table></figure>
+
+<p>一般情况下，我们会将同一课程的信息集中返回，所以上面使用了循环结构。</p>
+<h6 id="测试爬虫"><a href="#测试爬虫" class="headerlink" title="测试爬虫"></a>测试爬虫</h6><p>接下来，我们就可以试运行爬虫了。启动爬虫的方法是进入爬虫部署项目文件夹（<code>scrapy.cfg</code> 文件所在文件夹），然后执行 <code>scrapy crawl</code> 命令，即：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd shiyanlou_course</span><br><span class="line">scrapy crawl courses</span><br></pre></td></tr></table></figure>
+
+<p>注意，这里执行的是爬虫的名称 <code>scrapy crawl courses</code>，而不是爬虫项目的名称。然后就可以看到 Item 的返回结果，截取一段如下：</p>
+<details>
+<pre>
+2022-01-01 11:11:11 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.shiyanlou.com/courses/?fee=free>
+{'description': '要在实验楼愉快地学习，先要熟练地使用 Linux，本实验介绍 Linux 基本操作，shell 环境下的常用命令。',
+ 'image': 'https://dn-simplecloud.shiyanlou.com/ncn1.jpg',
+ 'name': 'Linux 基础入门（新版）'}
+2022-01-01 11:11:12 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.shiyanlou.com/courses/?fee=free>
+{'description': '本实验主要通过介绍计算机相关技术的基础概念，实验楼的使用方法，面向完全没有编程经验的用户。从中我们将了解到实验楼的实验精神：“从实践切入，依靠交互性、操作性更强的课程，理论学习+动手实践共同激发你的创造力。”',
+ 'image': 'https://dn-simplecloud.shiyanlou.com/ncn63.jpg',
+ 'name': '新手指南之玩转实验楼'}
+2022-01-01 11:11:13 [scrapy.core.scraper] DEBUG: Scraped from <200 https://www.shiyanlou.com/courses/?fee=free>
+{'description': '本课程主要讲解了Python的Django框架的基础知识。通过学习本课程，可以熟悉Django框架的组成结构，并能在学习过程中了解Django的强大功能。',
+ 'image': 'https://dn-simplecloud.shiyanlou.com/course/1531706079197_【1127】-【Django 基础教程】.png',
+ 'name': 'Django 基础教程'}
+</pre>
+<details>
+上面虽然显示爬取到了数据，但要对数据进一步出来或存储下来，就需要借助 Item Pipeline 了。
+
+
+
+<h6 id="Item-Pipeline-处理数据"><a href="#Item-Pipeline-处理数据" class="headerlink" title="Item Pipeline 处理数据"></a>Item Pipeline 处理数据</h6><blockquote>
+<p>如果把 Scrapy 想象成一个产品线，Spider 负责从网页上爬取数据，Item 相当于一个包装盒，对爬取的数据进行标准化包装，然后把他们扔到Pipeline 流水线中。</p>
+</blockquote>
+<p><code>Pipeline</code> 主要对 <code>Item</code> 进行这几项处理：</p>
+<ul>
+<li>验证爬取到的数据，检查 Item 是否有特定的 Field。</li>
+<li>检查数据是否重复。</li>
+<li>存储到数据库。</li>
+</ul>
+<p>当创建项目时，Scrapy 已经在 <code>pipelines.py</code> 中为项目生成了一个 <code>pipline</code>模版：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShiyanlouCoursePipeline</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span>(<span class="params">self, item, spider</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        parse 出来的 item 会被传入这里，这里编写的处理代码会</span></span><br><span class="line"><span class="string">        作用到每一个 item 上面。这个方法必须要返回一个 item 对象。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> item</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">open_spider</span>(<span class="params">self, spider</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; 当爬虫被开启的时候调用</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">close_spider</span>(<span class="params">self, spider</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot; 当爬虫被关闭的时候调用</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们使用数据库存储数据，那么一般就把建立数据库链接写在 <code>open_spider</code> 中，而当爬取完数据后，就执行 <code>close_spider</code> 里面的关闭数据库链接。</p>
+<h6 id="存储为数据文件"><a href="#存储为数据文件" class="headerlink" title="存储为数据文件"></a>存储为数据文件</h6><p>例如，我们这里打算把爬取到的数据存入为 <code>.csv</code> 文件中，就可以借助于 Pandas 模块来修改 <code>pipelines.py</code>。</p>
+<p>修改 <code>pipelines.py</code> 如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShiyanlouCoursePipeline</span>(<span class="params">object</span>):</span></span><br><span class="line">    <span class="comment"># 爬虫工作时</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span>(<span class="params">self, item, spider</span>):</span></span><br><span class="line">        <span class="comment"># 读取 item 数据</span></span><br><span class="line">        name = item[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">        description = item[<span class="string">&#x27;description&#x27;</span>]</span><br><span class="line">        image = item[<span class="string">&#x27;image&#x27;</span>]</span><br><span class="line">        <span class="comment"># 每条数据组成临时 df_temp</span></span><br><span class="line">        df_temp = pd.DataFrame([[name, description, image]], columns=[<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;description&#x27;</span>, <span class="string">&#x27;image&#x27;</span>])</span><br><span class="line">        <span class="comment"># 将 df_temp 合并到 df</span></span><br><span class="line">        self.df = self.df.append(df_temp, ignore_index=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> item</span><br><span class="line"></span><br><span class="line">    <span class="comment">#当爬虫启动时</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">open_spider</span>(<span class="params">self, spider</span>):</span></span><br><span class="line">        <span class="comment"># 新建一个带列名的空白 df</span></span><br><span class="line">        self.df = pd.DataFrame(columns=[<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;description&#x27;</span>, <span class="string">&#x27;image&#x27;</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 当爬虫关闭时</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">close_spider</span>(<span class="params">self, spider</span>):</span></span><br><span class="line">        <span class="comment"># 将 df 存储为 csv 文件</span></span><br><span class="line">        pd.DataFrame.to_csv(self.df, <span class="string">&quot;courses.csv&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>此时，如果你再次启动爬虫，会发现数据并没有储存到 <code>courses.csv</code> 文件中。原因是 Item Pipeline 默认是未开启状态，需要到 <code>settings.py</code> 文件中自行开启。</p>
+<p>要开启 Item Pipeline，需要在 <code>settings.py</code> 将下面的代码取消注释：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认是被注释的</span></span><br><span class="line">ITEM_PIPELINES = &#123;</span><br><span class="line">    <span class="string">&#x27;shiyanlou.pipelines.ShiyanlouPipeline&#x27;</span>: <span class="number">300</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ITEM_PIPELINES</code> 里面配置需要开启的 <code>pipeline</code>，它是一个字典，<code>key</code> 表示 <code>pipeline</code> 的位置，值是一个数字，表示的是当开启多个 Pipeline 时它的执行顺序，值小的先执行，这个值通常设在 100~1000 之间。</p>
+<p>重新运行爬虫 <code>scrapy crawl courses</code>，<code>courses.csv</code> 文件就会出现在项目文件夹当中了。</p>
+<h6 id="爬取多个页面数据"><a href="#爬取多个页面数据" class="headerlink" title="爬取多个页面数据"></a>爬取多个页面数据</h6><p>我们刚刚只是爬取了第 1 页的免费课程，那么你可能想要爬取多个页面的数据，最简单的方法是寻找 URL 规律。如果你在上面的页面中点击第 2 页，就能看到 URL 变为了 <code>https://www.shiyanlou.com/courses/?page=2</code>。该 URL 最后的 <code>page=2</code> 实际上就是页码规律。</p>
+<p><code>scrapy.Spider</code> 类已经有了一个默认的 <code>start_requests</code> 方法。那么，只提供需要爬取的 <code>start_urls</code>，默认的 <code>start_requests</code> 方法会根据 <code>start_urls</code> 生成 Request 对象。所以，爬虫 <code>courses.py</code> 代码可以修改为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> shiyanlou_course.items <span class="keyword">import</span> ShiyanlouCourseItem</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CoursesSpider</span>(<span class="params">scrapy.Spider</span>):</span></span><br><span class="line">    name = <span class="string">&#x27;multipages&#x27;</span></span><br><span class="line">    allowed_domains = [<span class="string">&#x27;shiyanlou.com&#x27;</span>]</span><br><span class="line">    start_urls = [<span class="string">&#x27;https://www.shiyanlou.com/courses/?fee=free&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 装饰器</span></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">start_urls</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        start_urls 需要返回一个可迭代对象，所以，你可以把它写成一个列表、元组或者生成器，这里用的是生成器</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        url_temp = <span class="string">&quot;https://www.shiyanlou.com/courses/?page=&#123;&#125;&quot;</span></span><br><span class="line">        <span class="keyword">return</span> (url_temp.format(page+<span class="number">1</span>) <span class="keyword">for</span> page <span class="keyword">in</span> range(<span class="number">5</span>)) <span class="comment"># 1-5 页</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="comment"># 解析当前页面各课程所在的 div, 将返回全部课程 Selector 列表</span></span><br><span class="line">        courses = response.xpath(<span class="string">&#x27;//div[@class=&quot;col-sm-12 col-md-3&quot;]&#x27;</span>)</span><br><span class="line">        <span class="comment"># 遍历每个课程, 解析名称, 描述, 图片</span></span><br><span class="line">        <span class="keyword">for</span> course <span class="keyword">in</span> courses:</span><br><span class="line">            <span class="comment"># 按定义好的 Item 结构返回数据</span></span><br><span class="line">            item = ShiyanlouCourseItem()</span><br><span class="line">            item[<span class="string">&#x27;name&#x27;</span>] = course.xpath(<span class="string">&#x27;.//h6[@class=&quot;course-name&quot;]/text()&#x27;</span>).extract_first().strip()</span><br><span class="line">            item[<span class="string">&#x27;description&#x27;</span>] = course.xpath(<span class="string">&#x27;.//div[@class=&quot;course-description&quot;]/text()&#x27;</span>).extract_first().strip()</span><br><span class="line">            item[<span class="string">&#x27;image&#x27;</span>] = course.xpath(<span class="string">&#x27;.//img[@class=&quot;cover-image&quot;]/@src&#x27;</span>).extract_first()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">yield</span> item</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/deepin-pic/uid214893-20190828-1566986959762"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/08/19-10-08-TCP-IP%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80/" rel="prev" title="19-10-08 TCP/IP网络协议基础">
+      <i class="fa fa-chevron-left"></i> 19-10-08 TCP/IP网络协议基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/19/19-10-19-Pandas-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/" rel="next" title="19-10-19-Pandas 数据处理基础">
+      19-10-19-Pandas 数据处理基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

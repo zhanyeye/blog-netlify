@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="内容来自实验楼 查看设备信息系统信息Linux uname 命令可以打印正在运行的操作系统的一些信息。 常见的参数有：  -a or --all ：显示全部的信息 -m ：显示硬件类型 -n ：显示网络节点的主机名 -o ：显示操作系统的名称 -s ：默认选项，打印内核名称 -r ：打印内核版本  简单示例，查看全部信息： 12$ uname -aLinux 017103e87a5a 3.13.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-12-06 Linux 磁盘管理">
+<meta property="og:url" content="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="内容来自实验楼 查看设备信息系统信息Linux uname 命令可以打印正在运行的操作系统的一些信息。 常见的参数有：  -a or --all ：显示全部的信息 -m ：显示硬件类型 -n ：显示网络节点的主机名 -o ：显示操作系统的名称 -s ：默认选项，打印内核名称 -r ：打印内核版本  简单示例，查看全部信息： 12$ uname -aLinux 017103e87a5a 3.13.0">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206212332.png">
+<meta property="article:published_time" content="2019-12-06T12:50:45.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.517Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206212332.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-12-06 Linux 磁盘管理 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">查看设备信息</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.</span> <span class="nav-text">系统信息</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.</span> <span class="nav-text">设备信息</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A8%A1%E5%9D%97"><span class="nav-number">1.3.</span> <span class="nav-text">系统模块</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text">分区</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#df"><span class="nav-number">2.1.</span> <span class="nav-text">df</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%86%E5%8C%BA-1"><span class="nav-number">2.2.</span> <span class="nav-text">分区</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.3.</span> <span class="nav-text">创建文件系统</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%8C%82%E8%BD%BD"><span class="nav-number">2.4.</span> <span class="nav-text">挂载</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lvm"><span class="nav-number">3.</span> <span class="nav-text">lvm</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E5%88%86%E5%8C%BA"><span class="nav-number">4.</span> <span class="nav-text">交换分区</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/06/19-12-06-Linux-%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-12-06 Linux 磁盘管理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-06 20:50:45" itemprop="dateCreated datePublished" datetime="2019-12-06T20:50:45+08:00">2019-12-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>内容来自<a target="_blank" rel="noopener" href="https://www.shiyanlou.com/">实验楼</a></p>
+<h5 id="查看设备信息"><a href="#查看设备信息" class="headerlink" title="查看设备信息"></a>查看设备信息</h5><h6 id="系统信息"><a href="#系统信息" class="headerlink" title="系统信息"></a>系统信息</h6><p>Linux <code>uname</code> 命令可以打印正在运行的操作系统的一些信息。</p>
+<p>常见的参数有：</p>
+<ul>
+<li><code>-a</code> or <code>--all</code> ：显示全部的信息</li>
+<li><code>-m</code> ：显示硬件类型</li>
+<li><code>-n</code> ：显示网络节点的主机名</li>
+<li><code>-o</code> ：显示操作系统的名称</li>
+<li><code>-s</code> ：默认选项，打印内核名称</li>
+<li><code>-r</code> ：打印内核版本</li>
+</ul>
+<p>简单示例，查看全部信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ uname -a</span><br><span class="line">Linux 017103e87a5a 3.13.0-30-generic <span class="comment">#55-Ubuntu SMP Fri Jul 4 21:40:53 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h6 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h6><p><code>lspci</code> 命令可以查看可以 <code>pci</code> 设备信息。</p>
+<p>首先，我们需要安装 <code>pciutils</code> 工具。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install pciutils</span><br></pre></td></tr></table></figure>
+
+<h6 id="系统模块"><a href="#系统模块" class="headerlink" title="系统模块"></a>系统模块</h6><p>Linux <code>lsmod</code> 命令用于显示已载入系统的模块的信息，即 <code>list modules</code>。</p>
+<h5 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h5><h6 id="df"><a href="#df" class="headerlink" title="df"></a>df</h6><p>对 Linux 系统有过一些了解的同学可能会使用过 <code>df</code> 命令。在 <code>GNU</code> 的官方文档中对于 <code>df</code> 命令的定义是<code>报告文件系统磁盘空间的使用情况</code>。首先我们先来使用一下 <code>df</code> 命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ df</span><br><span class="line"></span><br><span class="line">文件系统        1K-块      已用     可用   已用% 挂载点</span><br><span class="line">udev            1011464       4  1011460    1% /dev</span><br><span class="line">tmpfs            204840     356   204484    1% /run</span><br><span class="line">/dev/vda1      41151808 3388000 35650380    9% /</span><br><span class="line">none                  4       0        4    0% /sys/fs/cgroup</span><br><span class="line">none               5120       0     5120    0% /run/lock</span><br><span class="line">none            1024196      72  1024124    1% /run/shm</span><br><span class="line">none             102400       8   102392    1% /run/user</span><br></pre></td></tr></table></figure>
+
+<p>上述信息显示的是当前被挂载的文件系统的使用情况，常用的有 <code>-h</code> 参数，使用我们熟悉的 <code>GB</code> 和 <code>MB</code> 单位显示使用情况，而不是多少<code>块</code>。</p>
+<p>这里我们看到了一些其它的信息，下面进行简单描述。</p>
+<p>首先是如下所示的 <code>udev</code>，我们可以看到该挂载点是 <code>/dev</code>。即我们存放设备文件的目录，这里只需要知道 <code>udev</code> 是 Linux 提供的一种用来管理设备的机制。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文件系统        1K-块      已用     可用   已用% 挂载点</span><br><span class="line">udev            1011464       4  1011460    1% /dev</span><br></pre></td></tr></table></figure>
+
+<p>其次是下面列出的挂载点为 <code>/run</code> 的内容，<code>tmpfs</code> 的意思代表的是 <code>临时文件系统</code>。而这里的 <code>/run</code>，其实与 <code>/var/run</code> 目录下的文件是一致的，我们可以查看对应目录下的文件来确认，而 <code>/var/run</code> 目录下则是系统运行时的一些变量数据。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">文件系统        1K-块      已用     可用   已用% 挂载点</span><br><span class="line"></span><br><span class="line">tmpfs            204840     356   204484    1% /run</span><br><span class="line">none               5120       0     5120    0% /run/lock</span><br><span class="line">none            1024196      72  1024124    1% /run/shm</span><br><span class="line">none             102400       8   102392    1% /run/user</span><br></pre></td></tr></table></figure>
+
+<p>最后是这里我们会着重描述的 <code>/dev/vda1</code>。这里的 <code>v</code> 代表的是设备类型，例如我们使用的 <code>sda</code>，<code>hda</code>，<code>s</code> 代表 <code>SATA</code> 硬盘设备，<code>h</code> 代表 <code>IDE</code> 设备等。<code>d</code> 代表的是 <code>disk</code> 磁盘或者说硬盘。<code>vda</code> 则代表的是第一块硬盘，类似的还有 <code>vdb</code>，<code>vdc</code> 等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">文件系统        1K-块      已用     可用   已用% 挂载点</span><br><span class="line">/dev/vda1      41151808 3388000 35650380    9% /</span><br></pre></td></tr></table></figure>
+
+<p>而对于完整的 <code>/dev/vda1</code>，这里的 <code>1</code> 代表的是一个分区。而分区则是将一个硬盘划分为已知大小的独立的块。</p>
+<h6 id="分区-1"><a href="#分区-1" class="headerlink" title="分区"></a>分区</h6><p>硬盘分区的类型一般分为主分区，扩展分区，逻辑分区。这是属于 <code>MBR</code> 的分区方式。因为 <code>MBR</code> 最多只支持 4 个主分区，而对于想创建更多的分区，则必须创建一个扩展分区，再在扩展分区中创建逻辑分区。而扩展分区和主分区的数目加起来不能超过四个。</p>
+<p>还有一种 <code>GPT</code> 的分区方式，可以创建多个分区，没有分区限制，解决了传统分区方式 <code>MBR</code> 的很多缺点。但是使用该方式会有很多限制，所以这里我们依旧学习 <code>MBR</code> 分区机制，这对于熟悉分区的流程来说已经足够。</p>
+<p>Linux 中使用 <code>fdisk</code> 工具对磁盘进行分区。</p>
+<p>实验环境中，已经有一块新添加的磁盘 <code>vdb</code>.</p>
+<p>使用如下命令，进入 <code>/dev/vdb</code> 的设备操作页面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo fdisk &#x2F;dev&#x2F;vdb</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输入 <code>m</code> ，我们可以查看各个命令的作用。</li>
+<li><code>p</code> 命令打印分区表</li>
+<li>使用 <code>n</code> 命令创建分区时，会提示选择创建主分区还是扩展分区，默认为 <code>p</code> 即，创建主分区，并且还需选择分区号</li>
+</ul>
+<h6 id="创建文件系统"><a href="#创建文件系统" class="headerlink" title="创建文件系统"></a>创建文件系统</h6><p>在进行分区操作之后，此时，我们只是创建了一个分区，即在 <code>/dev</code> 目录下，会有一个 <code>/dev/vdb1</code> 的文件。接下来我们需要给分区创建对应的文件系统。</p>
+<p>Linux <code>mkfs</code> 命令用于在特定的分区上建立 Linux 文件系统。</p>
+<p>例如，我们在终端里输入 <code>mkfs</code> ，然后使用 <code>tab</code> 自动补全，会有对应的提示信息，如下图:</p>
+ <img width="600" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191206212332.png">
+
+<p>除了可以通过 <code>-t</code> 参数指定文件系统类型，还可以通过点号（<code>.</code>）的扩展命令方式来达到对应的效果。我们将 <code>/dev/vdb1</code> 的分区格式化为 <code>ext4</code> 文件系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkfs.ext4 &#x2F;dev&#x2F;vdb1</span><br></pre></td></tr></table></figure>
+
+<h6 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h6><p>在上面的内容我们讲到过， <code>df</code> 命令查看的是已挂载的文件系统的使用情况，所以在创建分区，并格式化为 <code>ext4</code> 文件系统后，我们还需要将其挂载起来。</p>
+<p>而 <code>mount</code> 命令也可以列出已经挂载的文件系统</p>
+<p>除此之外，对于 <code>mount</code> 命令来说，<code>mount</code> 更多的还是用于挂载设备，即挂载设备上的文件系统。<code>mount</code> 挂载的格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mount [-t 文件系统类型]  待挂载项  挂载位置</span><br></pre></td></tr></table></figure>
+
+<p>-t 文件系统类型：加入文件系统类型来指定挂载的文件系统类型。</p>
+<p>这里，我们将在 <code>/home/shiyanlou</code> 目录下创建一个 <code>test1</code> 目录，作为 <code>/dev/vdb1</code> 的挂载位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir test1</span><br><span class="line"></span><br><span class="line">$ sudo mount &#x2F;dev&#x2F;vdb1 test1</span><br></pre></td></tr></table></figure>
+
+<p>此时，对 <code>test1</code> 的数据，都会被放进 <code>/dev/vdb1</code> 的分区里了。</p>
+<p>但是对于当前挂载的 <code>/dev/vdb1</code> 而言，在下一次重新启动系统后，分区不会消失，但是并不会默认的将其挂载到 <code>test1</code> 中，即 <code>mount</code> 命令只是临时挂载。而对于希望能够在重启系统之后，能够自动挂载，这里我们需要配置 <code>/etc/fstab</code> 文件。</p>
+<p>这里贴出一个本地环境下的 <code>/etc/fstab</code> 文件的内容，为了更加直观，调整了一下格式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 # &#x2F;etc&#x2F;fstab: static file system information.                                     2 #                                                                                 3 # Use &#39;blkid&#39; to print the universally unique identifier for a                   4 # device; this may be used with UUID&#x3D; as a more robust way to name devices       5 # that works even if disks are added and removed. See fstab(5).                   6 #                                                                                 7 # &lt;file system&gt; &lt;mount point&gt;   &lt;type&gt;  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;           8 UUID&#x3D;5ba34c3d-bd14-451d-a7d8-09a64009e3f1       &#x2F;               ext4    errors&#x3D;remount-ro 0       1  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>filesystem</code> ：即对应设备</li>
+<li><code>mount point</code> ：挂载点</li>
+<li><code>options</code> ：配置</li>
+<li><code>dump</code> ：备份，在下一节内容中将会讲述</li>
+<li><code>pass num</code> ：一般根目录对应的设为 <code>0</code></li>
+</ul>
+<p>对应上图中，这里的 <code>/dev/vdb1</code> 在 <code>/etc/fstab</code> 的配置信息我们可以写为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;dev&#x2F;vdb1    &#x2F;home&#x2F;shiyanlou&#x2F;test1    ext4    defaults    0    2</span><br></pre></td></tr></table></figure>
+
+<p>关于详细的<code>/etc/fstab</code> 的介绍可以参考<a target="_blank" rel="noopener" href="https://help.ubuntu.com/community/Fstab"> <code>ubuntu</code> 的官方页面</a></p>
+<h5 id="lvm"><a href="#lvm" class="headerlink" title="lvm"></a>lvm</h5><p>逻辑卷管理（logical volume manager），缩写为 （lvm）。<code>lvm</code> 是 Linux 环境下对磁盘分区进行管理的一种机制。</p>
+<p>概述</p>
+<p>引用自百度百科的定义。</p>
+<blockquote>
+<p>Linux 用户安装 Linux 操作系统时遇到的一个常见的难以决定的问题就是如何正确地评估各分区大小，以分配合适的硬盘空间。普通的磁盘分区管理方式在逻辑分区划分好之后就无法改变其大小，当一个逻辑分区存放不下某个文件时，这个文件因为受上层文件系统的限制，也不能跨越多个分区来存放，所以也不能同时放到别的磁盘上。而遇到出现某个分区空间耗尽时，解决的方法通常是使用符号链接，或者使用调整分区大小的工具，但这只是暂时解决办法，没有从根本上解决问题。随着 Linux 的逻辑卷管理功能的出现，这些问题都迎刃而解，用户在无需停机的情况下可以方便地调整各个分区大小。</p>
+</blockquote>
+<p>下面我们简单描述 lvm 的一些概念：</p>
+<ul>
+<li><code>PV</code> 物理卷（Physical Volume），物理卷处于 lvm 的最底层，是 <code>lvm</code> 的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与 LVM 相关的管理参数。</li>
+<li><code>VG</code> 卷组（Volume Group），卷组一般由一个或多个物理卷组成，在卷组创建之后，可以扩展卷组空间</li>
+<li><code>LV</code> 逻辑卷，逻辑卷建立在卷组之上。在逻辑卷上可以建立文件系统。逻辑卷也可以动态地调整空间。</li>
+<li><code>PE</code> 物理区域，对于物理卷来说，由 <code>PE</code> 组成。<code>PE</code> 的大小还可以在创建物理卷的时候指定。默认的大小为 4MB</li>
+<li><code>LE</code> 逻辑区域，不同于 <code>PE</code>，逻辑区域是给逻辑卷中可用于分配的最小单元，与 <code>PE</code> 对应，一般 <code>LE</code> 的大小为 <code>PE</code> 的倍数，默认为 （1 : 1）</li>
+</ul>
+<p>最后，我们需要在实验环境中安装 <code>lvm</code> ，使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install lvm2</span><br></pre></td></tr></table></figure>
+
+<h5 id="交换分区"><a href="#交换分区" class="headerlink" title="交换分区"></a>交换分区</h5><p>交换分区（swap），SWAP 就是 LINUX 下的虚拟内存分区,它的作用是在物理内存使用完之后，将磁盘空间(也就是 SWAP 分区)虚拟成内存来使用。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/03/19-12-04-Linux-%E7%AE%A1%E9%81%93%E7%AC%A6/" rel="prev" title="19-12-04 Linux 管道符">
+      <i class="fa fa-chevron-left"></i> 19-12-04 Linux 管道符
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/06/19-12-06-Linux-%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" rel="next" title="19-12-06 Linux 系统备份与恢复">
+      19-12-06 Linux 系统备份与恢复 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

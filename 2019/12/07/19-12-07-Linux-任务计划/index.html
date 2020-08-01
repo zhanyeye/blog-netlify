@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="内容来自实验楼 我们经常会需要安排脚本在某个时间或每隔一段时间来运行，如周期性的清理一下／tmp，周期性的去备份一次数据库，周期性的分析日志等等。而且有时候因为某些因素的限制，执行该任务的时间会很尴尬。Linux 调度通过 crontab 与 at 这两个工具。  at：处理仅执行一次就结束调度的指令。这次做完以后就没有。 crontab：周期性需要执行的任务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-12-07 Linux 任务计划">
+<meta property="og:url" content="http://yoursite.com/2019/12/07/19-12-07-Linux-%E4%BB%BB%E5%8A%A1%E8%AE%A1%E5%88%92/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="内容来自实验楼 我们经常会需要安排脚本在某个时间或每隔一段时间来运行，如周期性的清理一下／tmp，周期性的去备份一次数据库，周期性的分析日志等等。而且有时候因为某些因素的限制，执行该任务的时间会很尴尬。Linux 调度通过 crontab 与 at 这两个工具。  at：处理仅执行一次就结束调度的指令。这次做完以后就没有。 crontab：周期性需要执行的任务。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-07T00:41:05.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.517Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/07/19-12-07-Linux-%E4%BB%BB%E5%8A%A1%E8%AE%A1%E5%88%92/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-12-07 Linux 任务计划 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#at"><span class="nav-number">1.</span> <span class="nav-text">at</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#at-%E5%87%86%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">at 准备</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#at-%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">at 使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-at-%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number"></span> <span class="nav-text">2.3.2 at 的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#crontab"><span class="nav-number">1.</span> <span class="nav-text">crontab</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#crontab-%E5%87%86%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">crontab 准备</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#crontab-%E7%9A%84%E6%B7%B1%E5%85%A5"><span class="nav-number">1.2.</span> <span class="nav-text">crontab 的深入</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/07/19-12-07-Linux-%E4%BB%BB%E5%8A%A1%E8%AE%A1%E5%88%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-12-07 Linux 任务计划
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-07 08:41:05" itemprop="dateCreated datePublished" datetime="2019-12-07T08:41:05+08:00">2019-12-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>内容来自<a target="_blank" rel="noopener" href="https://www.shiyanlou.com/">实验楼</a></p>
+<p>我们经常会需要安排脚本在某个时间或每隔一段时间来运行，如周期性的清理一下／tmp，周期性的去备份一次数据库，周期性的分析日志等等。而且有时候因为某些因素的限制，执行该任务的时间会很尴尬。Linux 调度通过 crontab 与 at 这两个工具。</p>
+<ul>
+<li>at：处理仅执行一次就结束调度的指令。这次做完以后就没有。</li>
+<li>crontab：周期性需要执行的任务。</li>
+</ul>
+<a id="more"></a>
+
+<h5 id="at"><a href="#at" class="headerlink" title="at"></a>at</h5><p>设置 at 命令很简单，只是运行的时间，就会在那个时候运行。类似于打印进程，会把任务放到 <code>/var/spool/at</code> 目录中，到指定时间运行它。</p>
+<p><code>/etc/at.allow</code>和 <code>/etc/at.deny</code> 管理使用限制，写在 <code>/etc/at.allow</code> 中的用户才能使用 at，写在 <code>/etc/at.deny</code> 中的用户不能使用 at。若这两个文件不存在，则只有 root 用户可以使用 at。</p>
+<h6 id="at-准备"><a href="#at-准备" class="headerlink" title="at 准备"></a>at 准备</h6><p>使用单一工作调度，首先应启动 atd 服务。实验环境默认没有此服务，需要安装并启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新软件包列表</span></span><br><span class="line">sudo apt-get update</span><br><span class="line"><span class="comment">#安装</span></span><br><span class="line">sudo apt-get install at</span><br><span class="line"><span class="comment">#启动atd</span></span><br><span class="line">sudo service atd start</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>service 是 Linux 中非常常用的命令，用户启动已安装的服务，其主要是读取 <code>/etc/init.d</code> 中的脚本，并执行相关的脚本，通过参数来控制相关服务的状态，如启动、关闭，重启等等。</p>
+</blockquote>
+<p>关于一些 service 常用的操作有：</p>
+<ul>
+<li>start //启动服务</li>
+<li>stop //关闭服务</li>
+<li>restart //重启服务</li>
+<li>reload //重新载入配置</li>
+<li>status //查看服务状态</li>
+</ul>
+<h6 id="at-使用"><a href="#at-使用" class="headerlink" title="at 使用"></a>at 使用</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">at (选项) （参数）</span><br></pre></td></tr></table></figure>
+
+<p>选项：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-f</code></td>
+<td>指定包含具体指令的任务文件</td>
+</tr>
+<tr>
+<td><code>-q</code></td>
+<td>指定新任务的队列名称</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td>显示待执行任务的列表</td>
+</tr>
+<tr>
+<td><code>-d</code></td>
+<td>删除指定的待执行任务</td>
+</tr>
+<tr>
+<td><code>-m</code></td>
+<td>任务执行完成后向用户发送email</td>
+</tr>
+</tbody></table>
+<p>参数：</p>
+<p>参数为日期时间，格式如下：</p>
+<ol>
+<li><p>绝对计时</p>
+<p>（1）midnight（深夜），noon（中午），teatime（饮茶时间，一般是下午4点）</p>
+<p>（2）hh:mm today , hh:mm tomorrow 。例如：<code>14:30 today</code> 今天下午两点半，<code>14:30 tomorrow</code> 明天下午两点半</p>
+<p>（3）12小时制 ，时间后面加am（上午），pm（下午）。例如：<code>2:30 am</code> 上午两点半，<code>2:30 pm</code> 下午两点半</p>
+<p>（4）日期的表示的方式有：月日或者 mm/dd/yy（月/日/年）或者 dd.mm.yy（日.月.年）或者 yy-dd-mm（年-月-日）。例如 <code>14:30 17.10.25</code> 或者 <code>14:30 25.10.17</code> 或者 <code>14:30 2017/10/25</code>（2017 年 10 月 25 日下午两点半）</p>
+</li>
+<li><p>相对计时</p>
+<p><code>at now + 时间数量 时间单位</code>。时间单位可以是 minutes（分钟），hours（小时），days（天），weeks（星期）。例如 <code>at now + 3 minutes</code>（3 分钟后）</p>
+</li>
+</ol>
+<h4 id="2-3-2-at-的应用"><a href="#2-3-2-at-的应用" class="headerlink" title="2.3.2 at 的应用"></a>2.3.2 at 的应用</h4><p>下面我们开始进入到实践环节：</p>
+<p>（1）两分钟后写 hello shiyanlou 到 my.txt 中</p>
+<p>首先</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ at now + 2 minutes</span><br></pre></td></tr></table></figure>
+
+<p>然后按 <code>enter</code> 键，输入以下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">at&gt; <span class="built_in">echo</span> <span class="string">&quot;hello shiyanlou&quot;</span> &gt; my.txt</span><br><span class="line"></span><br><span class="line">at&gt; &lt;EOT&gt; //这里按ctrl + D 自动出现&lt;EOT&gt;</span><br><span class="line"></span><br><span class="line">job 1 at Wed Oct 25 18:01:00 2017</span><br></pre></td></tr></table></figure>
+
+<p>上面的最后一句意为第一个 at 工作将在 2017 年 10 月 25 日星期三的 18:01:00 运行</p>
+<p>可以使用 <code>atq</code> 或者 <code>at -l</code>查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ atq</span><br><span class="line">1    Wed Oct 25 18:18:00 2017 a shiyanlou</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>atq 如果没查到，那是因为过了两分钟了，该任务已经执行了。</p>
+</blockquote>
+<p>（2）在今天 18:28 输出时间到 time.log 中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ at 18:28 today                                     </span><br><span class="line">at&gt; date &gt; time.log</span><br><span class="line">at&gt; &lt;EOT&gt;</span><br><span class="line">job 2 at Wed Oct 25 18:28:00 2017</span><br><span class="line"><span class="comment">#可以使用如下命令将第2项工作内容列出来</span></span><br><span class="line">$ at -c 2</span><br></pre></td></tr></table></figure>
+
+<p>（3）在固定时间添加一个用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ at 06:39pm                                            </span><br><span class="line">at&gt; sudo useradd aaa</span><br><span class="line">at&gt; &lt;EOT&gt;</span><br><span class="line">job 3 at Wed Oct 25 18:36:00 2017</span><br></pre></td></tr></table></figure>
+
+<p>可以看到最后有个aaa的用户</p>
+<p>（4）在2017年10月26日 18:00关机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ at 18:00 2017-10-26                                   </span><br><span class="line">at&gt; sudo /bin/sync</span><br><span class="line">at&gt; sudo /bin/sync</span><br><span class="line">at&gt; sudo /sbin/shutdown -h now</span><br><span class="line">at&gt; &lt;EOT&gt;</span><br><span class="line">job 5 at Thu Oct 26 18:00:00 2017</span><br></pre></td></tr></table></figure>
+
+<p>要是发现写错了，想删除怎么办，可以使用 <code>atrm</code> 命令，该命令的作用是删除待执行的任务队列中的指定任务。</p>
+<p>其命令的格式是： <code>atrm 任务号</code></p>
+<h5 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h5><p>这个工具非常有用，例如我们需要在半夜执行数据库的 patch 脚本，例如我们需要半夜升级我们的站点，有了 crontable 我们就不需要半夜起来执行脚本，亦或者是因为睡过头而错过该执行的任务。</p>
+<p>和 at 相似，使用限制的配置文件在 <code>/etc/cron.allow</code> 和 <code>/etc/cron.deny</code> 中。当使用者使用 crontab 后，该项工作会被记录到<code>/var/spool/cron/</code> 里。不同用户执行的任务记录在不同用户的文件中。</p>
+<p>通过 crontab 命令，我们可以在固定的间隔时间或指定时间执行指定的系统指令或脚本。时间间隔的单位可以是分钟、小时、日、月、周的任意组合。</p>
+<p>这里我们看一看crontab 的格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Example of job definition:</span></span><br><span class="line"><span class="comment"># .---------------- minute (0 - 59)</span></span><br><span class="line"><span class="comment"># |  .------------- hour (0 - 23)</span></span><br><span class="line"><span class="comment"># |  |  .---------- day of month (1 - 31)</span></span><br><span class="line"><span class="comment"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span></span><br><span class="line"><span class="comment"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span></span><br><span class="line"><span class="comment"># |  |  |  |  |</span></span><br><span class="line"><span class="comment"># *  *  *  *  * command to be executed</span></span><br></pre></td></tr></table></figure>
+
+<p>其中特殊字符的意义：</p>
+<table>
+<thead>
+<tr>
+<th>特殊字符</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>任何时刻</td>
+</tr>
+<tr>
+<td>,</td>
+<td>分隔时段，例如<code>0 7,9 * * * command</code>代表7:00和9:00</td>
+</tr>
+<tr>
+<td>-</td>
+<td>时间范围，例如<code>30 7-9 * * * command</code> 代表7点到9点之间每小时的30分</td>
+</tr>
+<tr>
+<td>/n</td>
+<td>每隔n单位间隔，例如<code>*/10 * * * *</code> 每10分钟</td>
+</tr>
+</tbody></table>
+<h6 id="crontab-准备"><a href="#crontab-准备" class="headerlink" title="crontab 准备"></a>crontab 准备</h6><ul>
+<li><p>基本语法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab [-u username] [-l|-e|-r]</span><br></pre></td></tr></table></figure>
+
+<p>其常用的参数有：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-u</code></td>
+<td>只有root才能进行这个任务，帮其他使用者创建/移除crontab工作调度</td>
+</tr>
+<tr>
+<td><code>-e</code></td>
+<td>编辑crontab工作内容</td>
+</tr>
+<tr>
+<td><code>-l</code></td>
+<td>列出crontab工作内容</td>
+</tr>
+<tr>
+<td><code>-r</code></td>
+<td>移除所有的crontab工作内容</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>crontab 的应用</p>
+<p>添加一个计划任务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure>
+
+<p>第一次启动会是让我们选择编辑的工具，选择第一个基本的 vim 就可以了</p>
+<p>在文档的最后一行加上这样一行命令，该命令的意思是每分钟我们会在 /home/shiyanlou 目录下创建一个以当前的年月日时分秒为名字的空白文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/1 * * * * touch /home/shiyanlou/$(date +\%Y\%m\%d\%H\%M\%S)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong></p>
+<p>“ % ” 在 crontab 文件中，有结束命令行、换行、重定向的作用，前面加 ” \ ” 符号转义，否则，“ % ” 符号将执行其结束命令行或者换行的作用，并且其后的内容会被做为标准输入发送给前面的命令。</p>
+</blockquote>
+<p>添加成功后我们会得到 installing new crontab 的一个提示.</p>
+<p>为了确保我们任务添加的正确与否，我们会查看添加的任务详情：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -l</span><br></pre></td></tr></table></figure>
+
+<p>虽然我们添加了任务，但是如果 cron 的守护进程并没有启动，当然也就不会帮我们执行，我们可以通过以下 2 种方式来确定我们的 cron 是否成功的在后台启动，若是没有则需要启动一次。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ps aux | grep cron</span><br><span class="line"></span><br><span class="line"><span class="comment">#或者使用下面</span></span><br><span class="line"></span><br><span class="line">pgrep cron</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ps 的相关命令会在后续详细讲解，这里主要是为了查看 crontab 的后台程序是否正确执行。</p>
+</blockquote>
+<p>同样我们通过这样一个命令可以查看到执行任务命令之后在日志中的信息反馈：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tail -f /var/<span class="built_in">log</span>/syslog</span><br></pre></td></tr></table></figure>
+
+<p>从中我们同样可以验证所添加的任务又被执行，可以按<code>ctrl + c</code> 可以退出当前的状态。</p>
+<p>当我们并不需要某个任务的时候我们可以通过 <code>-e</code> 参数去配置文件中删除相关命令，若是我们需要清除所有的计划任务，我们可以使用这么一个命令去删除任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -r</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>练习</p>
+<p>下面将通过一下例子来巩固大家对 crontab 的学习：</p>
+<p>（1）每天中每小时的第5分钟执行脚本 test.sh</p>
+<p>首先在 /home/shiyanlou 下创建 test.sh 脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim test.sh</span><br></pre></td></tr></table></figure>
+
+<p>并在其中输入以下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">touch /home/shiyanlou/<span class="variable">$RANDOM</span></span><br></pre></td></tr></table></figure>
+
+<p>按 <code>esc</code> 然后输入 <code>:wq</code> 保存退出，完成脚本的编辑。</p>
+<p>紧接着添加一个计划任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br></pre></td></tr></table></figure>
+
+<p>输入以下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">05 * * * * /home/shiyanlou/test.sh</span><br></pre></td></tr></table></figure>
+
+<p>（2）每天的凌晨的 3、4、5 点执行 test.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00 3,4,5 * * * /home/shiyanlou/test.sh</span><br></pre></td></tr></table></figure>
+
+<p>（3）周日每隔 3 小时执行 test.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00 */3 * * 0 /home/shiyanlou/test.sh</span><br></pre></td></tr></table></figure>
+
+<p>（4）每天的下午 7 点关闭计算机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00 19 * * * /sbin/shutdown -h</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h6 id="crontab-的深入"><a href="#crontab-的深入" class="headerlink" title="crontab 的深入"></a>crontab 的深入</h6><p>每个用户使用 <code>crontab -e</code> 添加计划任务，都会在 <code>/var/spool/cron/crontabs</code>中添加一个该用户自己的任务文档，这样目的是为了隔离。</p>
+<p>如果是系统级别的定时任务，应该如何处理？只需要以 sudo 权限编辑 <code>/etc/crontab</code> 文件就可以。</p>
+<p>cron 服务监测时间最小单位是分钟，所以 cron 会每分钟去读取一次 /etc/crontab 与 /var/spool/cron/crontabs 里面的內容。</p>
+<p>在 /etc 目录下，cron 相关的目录有下面几个：</p>
+<ol>
+<li>/etc/cron.daily，目录下的脚本会每天执行一次，在每天的6点25分时运行；</li>
+<li>/etc/cron.hourly，目录下的脚本会每个小时执行一次，在每小时的17分钟时运行；</li>
+<li>/etc/cron.monthly，目录下的脚本会每月执行一次，在每月1号的6点52分时运行；</li>
+<li>/etc/cron.weekly，目录下的脚本会每周执行一次，在每周第七天的6点47分时运行；</li>
+</ol>
+<p>系统默认执行时间可以根据需求进行修改。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/06/19-12-06-Linux-%E7%B3%BB%E7%BB%9F%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/" rel="prev" title="19-12-06 Linux 系统备份与恢复">
+      <i class="fa fa-chevron-left"></i> 19-12-06 Linux 系统备份与恢复
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/07/19-12-07-Linux-%E8%BD%AF%E4%BB%B6%E7%AE%A1%E7%90%86/" rel="next" title="Linux 软件管理">
+      Linux 软件管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="单源最短路问题在带权图 G&#x3D;(V,E) 中，每条边都有一个权值 wi，即边的长度。路径的长度为路径上所有边权之和。单源最短路问题是指：求源点 s 到图中其余各顶点的最短路径。 如果用我们之前学习的 dfs 来解决单源最短路问题，效率上会很慢，能解决的问题的数据规模非常小。 而 bfs 能解决的最短路问题只限制在边权为 1 的图上。对于边权不同的图，利用 bfs 求解最短路是错误的。  解决单源最短">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dijkstra 最短路径算法">
+<meta property="og:url" content="http://yoursite.com/2019/04/28/19-04-28-Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="单源最短路问题在带权图 G&#x3D;(V,E) 中，每条边都有一个权值 wi，即边的长度。路径的长度为路径上所有边权之和。单源最短路问题是指：求源点 s 到图中其余各顶点的最短路径。 如果用我们之前学习的 dfs 来解决单源最短路问题，效率上会很慢，能解决的问题的数据规模非常小。 而 bfs 能解决的最短路问题只限制在边权为 1 的图上。对于边权不同的图，利用 bfs 求解最短路是错误的。  解决单源最短">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/15072f3ce9f3e53579a6c2e02d87ef57d56cb3fe.png">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/02b208d277615bebf57d9a796e46bc96900181a3.png">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/a310ffeebb4ebd561660aeed7cf81db5448b98cc.png">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/18bf6b9ce78f61fa85ce4b6563b8d3508b2b0470.png">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/39744d7c33d595558c4c79205c7778b3ae476a01.png">
+<meta property="og:image" content="https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png">
+<meta property="article:published_time" content="2019-04-28T10:00:12.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.509Z">
+<meta property="article:author" content="zhanyeye">
+<meta property="article:tag" content="图">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.jisuanke.com/img/upload/20170428/15072f3ce9f3e53579a6c2e02d87ef57d56cb3fe.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/04/28/19-04-28-Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dijkstra 最短路径算法 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%8D%95%E6%BA%90%E6%9C%80%E7%9F%AD%E8%B7%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">单源最短路问题</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">算法流程</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/28/19-04-28-Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dijkstra 最短路径算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-04-28 18:00:12" itemprop="dateCreated datePublished" datetime="2019-04-28T18:00:12+08:00">2019-04-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h6 id="单源最短路问题"><a href="#单源最短路问题" class="headerlink" title="单源最短路问题"></a>单源最短路问题</h6><p>在带权图 <em>G</em>=(<em>V</em>,<em>E</em>) 中，每条边都有一个权值 <em>wi</em>，即边的长度。路径的长度为路径上所有边权之和。单源最短路问题是指：求源点 <em>s</em> 到图中其余各顶点的最短路径。</p>
+<p>如果用我们之前学习的 dfs 来解决单源最短路问题，效率上会很慢，能解决的问题的数据规模非常小。</p>
+<p>而 bfs 能解决的最短路问题只限制在边权为 1 的图上。对于边权不同的图，利用 bfs 求解最短路是错误的。</p>
+<blockquote>
+<p>解决单源最短路径问题常用 Dijkstra 算法，用于计算一个顶点到其他所有顶点的最短路径。Dijkstra 算法的主要特点是以起点为中心，逐层向外扩展（这一点类似于 bfs，但是不同的是，bfs 每次扩展一个层，但是 Dijkstra 每次只会扩展一个点），每次都会取一个最近点继续扩展，直到取完所有点为止</p>
+</blockquote>
+<p>非负权图 , 贪心思想</p>
+<a id="more"></a>
+
+<h6 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h6><ul>
+<li><strong>一直维护一个还没有确定最短路的点的集合, 每次从集合中选出一个最小的点去更新其他的点</strong></li>
+<li><strong>不能处理负权图</strong>: 贪心正确的前提是没有负权</li>
+</ul>
+<p>我们定义带权图 <em>G</em> 所有顶点的集合为 <em>V</em>，接着我们再定义<strong>已确定从源点出发的最短路径的顶点集合</strong>为 <em>U</em>，初始集合 <em>U</em> 为空，记<strong>从源点 <em>s</em> 出发到每个顶点 <em>v</em> 的距离</strong>为 <em>dist_v</em>，初始 <em>dist_s</em>=0，其他<em>dist_v</em>为∞。接着执行以下操作：</p>
+<ol>
+<li>从 <em>V</em>−<em>U</em> 中找出一个距离源点最近的顶点 <em>v</em>，将 <em>v</em> 加入集合 <em>U</em>。</li>
+<li>并用 dist_v 和点 <em>v</em> 连出的边来更新和 <em>v</em> 相邻的、不在集合 <em>U</em> 中的顶点的 dist，这一步称为松弛操作。</li>
+<li>重复步骤 1 和 2，直到 V=U或找不出一个从 <em>s</em> 出发有路径到达的顶点，算法结束。</li>
+</ol>
+<p>如果最后V !=U，说明有顶点无法从源点到达；否则每个 dist_i表示从 <em>s</em> 出发到顶点 <em>i</em> 的最短距离。</p>
+<p>Dijkstra 算法的时间复杂度为O(<em>V</em>^2)，其中 <em>V</em> 表示顶点的数量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">10000</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//基于链表的邻接表</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> v;  <span class="comment">//顶点</span></span><br><span class="line">    <span class="keyword">int</span> w;  <span class="comment">//权值</span></span><br><span class="line">    <span class="keyword">int</span> next;  <span class="comment">//指向head[i] 所链接的链表，表示v 和 i 相邻</span></span><br><span class="line">    edge() &#123;&#125;</span><br><span class="line">    edge(<span class="keyword">int</span> _v, <span class="keyword">int</span> _w, <span class="keyword">int</span> _next): v(_v), w(_w), next(_next) &#123;&#125;</span><br><span class="line">&#125; E[M];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[N];  <span class="comment">// head数组的每一个元素代表链表的头指针</span></span><br><span class="line"><span class="keyword">int</span> cnt; <span class="comment">//边的数量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(head, <span class="number">-1</span>, <span class="keyword">sizeof</span> head);  <span class="comment">// 初始化时，每个链表都没有元素，初始化为空，即：-1</span></span><br><span class="line">    cnt = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">    E[cnt] = edge(v, w, head[u]);</span><br><span class="line">    head[u] = cnt;  <span class="comment">// 更新链表的头指针</span></span><br><span class="line">    cnt++;  <span class="comment">// 结点计数器 +1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert2</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">    insert(u, v, w);</span><br><span class="line">    insert(v, u, w);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, m;</span><br><span class="line"><span class="keyword">int</span> dis[N];   <span class="comment">// 标记点到 u 的距离</span></span><br><span class="line"><span class="keyword">bool</span> vis[N];  <span class="comment">// 标记一个点有没有被加入已确定最小值集合</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dijkstra</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(dis, <span class="number">0x3f</span>, <span class="keyword">sizeof</span> dis);  <span class="comment">//将所有定点到u的距离值 无穷大</span></span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="keyword">sizeof</span> vis);</span><br><span class="line">    dis[u] = <span class="number">0</span>;  <span class="comment">// u点到自己距离为0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 循环 n 次，每次确定一个dis 最小的点，2种可能</span></span><br><span class="line">    <span class="comment">// 循环 n 次，最终到所有点的最小值都确定</span></span><br><span class="line">    <span class="comment">// 没有循环 n 次，该图非连通图 </span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> min_dis = INF, min_index = <span class="number">-1</span>;</span><br><span class="line">        <span class="comment">// 找点集中 dis 最小的一个，将该点加入已确定最小值集合</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!vis[j] &amp;&amp; min_dis &gt; dis[j]) &#123;</span><br><span class="line">                min_dis = dis[j];</span><br><span class="line">                min_index = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (min_index == <span class="number">-1</span>) &#123; <span class="comment">//未确定点集中，顶点的min dis 是 无穷大， 该图非连通图</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        vis[min_index] = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> e = head[min_index]; ~e; e = E[e].next) &#123; <span class="comment">//注意这里e是插入序号, 而不是点</span></span><br><span class="line">            <span class="keyword">int</span> v = E[e].v;</span><br><span class="line">            <span class="keyword">int</span> w = E[e].w;</span><br><span class="line">            <span class="keyword">if</span> (!vis[v] &amp;&amp; dis[v] &gt; min_dis + w) &#123;</span><br><span class="line">                dis[v] = min_dis + w;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    init();</span><br><span class="line">    <span class="keyword">int</span> u, v, w;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        insert2(u, v, w);</span><br><span class="line">    &#125;</span><br><span class="line">    dijkstra(<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; dis[n] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>再回顾一下 Dijkstra 算法的核心思想，就是一直维护一个还没有确定最短路的点的集合，然后每次从这个集合中选出一个最小的点去更新其他的点。</p>
+<p><strong>堆优化</strong></p>
+<p>如果每次暴力枚举选取距离最小的元素，则总的时间复杂度是 $\mathcal{O}(V^2)$。</p>
+<p>结合之前学习的数据结构，如果考虑用堆优化，用一个<code>set</code>来维护点的集合，这样的时间复杂度就优化到了 $\mathcal{O}((V+E)\log V)$，对于稀疏图的优化效果非常好。</p>
+<p>小根堆优化的 Dijkstra 示例代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">5005</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">edge</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> v, w, next;</span><br><span class="line">    edge() &#123;&#125;</span><br><span class="line">    edge(<span class="keyword">int</span> _v, <span class="keyword">int</span> _w, <span class="keyword">int</span> _next):v(_v), w(_w), next(_next) &#123;&#125;</span><br><span class="line">&#125; E[<span class="number">2</span> * M];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[N];</span><br><span class="line"><span class="keyword">int</span> cnt;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(head, <span class="number">-1</span>, <span class="keyword">sizeof</span> head);</span><br><span class="line">    cnt = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">    E[cnt] = edge(v, w, head[u]);</span><br><span class="line">    head[u] = cnt++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert2</span><span class="params">(<span class="keyword">int</span> u, <span class="keyword">int</span> v, <span class="keyword">int</span> w)</span> </span>&#123;</span><br><span class="line">    insert(u, v, w);</span><br><span class="line">    insert(v, u, w);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dis[N];</span><br><span class="line"><span class="keyword">bool</span> vis[N];</span><br><span class="line"><span class="keyword">int</span> n, m;</span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">pair</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="built_in">set</span>&lt;PII, less&lt;PII&gt; &gt; min_heap;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dijstra</span><span class="params">(<span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(dis, <span class="number">0x3f</span>, <span class="keyword">sizeof</span> dis);</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="keyword">sizeof</span> vis);</span><br><span class="line">    dis[u] = <span class="number">0</span>;</span><br><span class="line">    min_heap.insert(<span class="built_in">make_pair</span>(<span class="number">0</span>, u));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (min_heap.<span class="built_in">size</span>() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">set</span>&lt;PII, less&lt;PII&gt; &gt;::iterator it = min_heap.<span class="built_in">begin</span>();</span><br><span class="line">        <span class="keyword">int</span> min_v = it-&gt;second;</span><br><span class="line">        vis[min_v] = <span class="literal">true</span>;</span><br><span class="line">        min_heap.erase(*it);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> e = head[min_v]; e != <span class="number">-1</span>; e = E[e].next) &#123;</span><br><span class="line">            <span class="keyword">int</span> v = E[e].v;</span><br><span class="line">            <span class="keyword">int</span> w = E[e].w;</span><br><span class="line">            <span class="keyword">if</span> (!vis[v] &amp;&amp; dis[min_v] + w &lt; dis[v]) &#123;</span><br><span class="line">                min_heap.erase(<span class="built_in">make_pair</span>(dis[v], v));</span><br><span class="line">                dis[v] = dis[min_v] + w;</span><br><span class="line">                min_heap.insert(<span class="built_in">make_pair</span>(dis[v], v));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a, b, c;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    init();</span><br><span class="line">    <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; a &gt;&gt; b &gt;&gt; c;</span><br><span class="line">        insert2(a, b, c);</span><br><span class="line">    &#125;</span><br><span class="line">    dijstra(<span class="number">1</span>); </span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; dis[n] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>算法演示</p>
+<p>接下来，我们用一个例子来说明这个算法。</p>
+<p><img src="https://res.jisuanke.com/img/upload/20170428/15072f3ce9f3e53579a6c2e02d87ef57d56cb3fe.png" alt="img"></p>
+<p>初始每个顶点的 dist 设置为无穷大 inf，源点 <em>M</em> 的 dist_M 设置为 0。</p>
+<ol>
+<li>当前<em>U</em>=∅，<em>V</em>−<em>U</em> 中 dist 最小的顶点是 M。</li>
+<li>从顶点 M 出发，更新相邻点的 dist。</li>
+</ol>
+<p><img src="https://res.jisuanke.com/img/upload/20170428/02b208d277615bebf57d9a796e46bc96900181a3.png"></p>
+<p>更新完毕，此时 <em>U</em>={<em>M</em>}，</p>
+<ol>
+<li><em>V</em>−<em>U</em> 中 dist 最小的顶点是 <em>W</em>。</li>
+<li>从 <em>W</em> 出发，更新相邻点的 dist。</li>
+</ol>
+<p><img src="https://res.jisuanke.com/img/upload/20170428/a310ffeebb4ebd561660aeed7cf81db5448b98cc.png" alt="img"></p>
+<p>更新完毕，此时 <em>U</em>={<em>M</em>,<em>W</em>}，</p>
+<ol>
+<li><em>V</em>−<em>U</em> 中 dist 最小的顶点是 <em>E</em>。</li>
+<li>从 <em>E</em> 出发，更新相邻顶点的 dist。</li>
+</ol>
+<p><img src="https://res.jisuanke.com/img/upload/20170428/18bf6b9ce78f61fa85ce4b6563b8d3508b2b0470.png" alt="img"></p>
+<p>更新完毕，此时 <em>U</em>={<em>M</em>,<em>W</em>,<em>E</em>}，</p>
+<ol>
+<li>V<em>−</em>U* 中 dist最小的顶点是 <em>X</em>。</li>
+<li>从 <em>X</em> 出发，更新相邻顶点的 dist。</li>
+</ol>
+<p><img src="https://res.jisuanke.com/img/upload/20170428/39744d7c33d595558c4c79205c7778b3ae476a01.png" alt="img"></p>
+<p>更新完毕，此时 <em>U</em>={<em>M</em>,<em>W</em>,<em>E</em>,<em>X</em>}，</p>
+<ol>
+<li>V<em>−</em>U* 中 dist 最小的顶点是 <em>D</em>。</li>
+<li>从 <em>D</em> 出发，没有其他不在集合 <em>U</em> 中的顶点。</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png"><img src="https://res.jisuanke.com/img/upload/20170428/ced8460a27686319529c898a1c7daec893bba313.png" alt="img"></a></p>
+<p>此时<em>U</em>=<em>V</em>，算法结束，单源最短路计算完毕。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9B%BE/" rel="tag"># 图</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/26/19-04-26%20%E5%9B%BE%E7%9A%84%E5%9F%BA%E7%A1%80/" rel="prev" title="图的基础">
+      <i class="fa fa-chevron-left"></i> 图的基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/29/19-04-29-%E9%98%85%E8%AF%BB--%E9%80%89%E8%AF%8D%E5%A1%AB%E7%A9%BA/" rel="next" title="阅读--选词填空">
+      阅读--选词填空 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

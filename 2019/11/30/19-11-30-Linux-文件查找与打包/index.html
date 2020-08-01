@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  
+  <link rel="stylesheet" href="/lib/animate-css/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"8.0.0-rc.5","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false};
+  </script>
+
+  <meta name="description" content="内容来自实验楼 findfind 命令用于在目录下查找文件，并且会打印所找到文件的有关信息，find 的使用情况如下所示： 1find [path...] [expression]  这里的 [expression] 由下面四种类型组成：  options 配置项 影响整体的操作  tests 测试项 返回一个 true 或 false 值，这些取决于文件的属性  actions 操作项 根据对应">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19-11-30 Linux 文件查找与打包">
+<meta property="og:url" content="http://yoursite.com/2019/11/30/19-11-30-Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%89%93%E5%8C%85/index.html">
+<meta property="og:site_name" content="zhanyeye&#39;s learning log">
+<meta property="og:description" content="内容来自实验楼 findfind 命令用于在目录下查找文件，并且会打印所找到文件的有关信息，find 的使用情况如下所示： 1find [path...] [expression]  这里的 [expression] 由下面四种类型组成：  options 配置项 影响整体的操作  tests 测试项 返回一个 true 或 false 值，这些取决于文件的属性  actions 操作项 根据对应">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191130211036.png">
+<meta property="og:image" content="https://doc.shiyanlou.com/document-uid377240labid3903timestamp1509355442069.png/wm">
+<meta property="og:image" content="https://doc.shiyanlou.com/document-uid377240labid3903timestamp1509355467324.png/wm">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191201090607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191201091459.png">
+<meta property="article:published_time" content="2019-11-30T13:03:21.000Z">
+<meta property="article:modified_time" content="2020-08-01T07:08:09.513Z">
+<meta property="article:author" content="zhanyeye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191130211036.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/30/19-11-30-Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%89%93%E5%8C%85/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>19-11-30 Linux 文件查找与打包 | zhanyeye's learning log</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <main class="main">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+        <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">zhanyeye's learning log</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">(^～^)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#find"><span class="nav-number">1.</span> <span class="nav-text">find</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%90%8D"><span class="nav-number">1.1.</span> <span class="nav-text">文件名</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Time"><span class="nav-number">1.3.</span> <span class="nav-text">Time</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Size"><span class="nav-number">1.4.</span> <span class="nav-text">Size</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#type"><span class="nav-number">1.5.</span> <span class="nav-text">type</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Owner"><span class="nav-number">1.6.</span> <span class="nav-text">Owner</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Exec"><span class="nav-number">1.7.</span> <span class="nav-text">Exec</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#locate"><span class="nav-number">2.</span> <span class="nav-text">locate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#whereis"><span class="nav-number">3.</span> <span class="nav-text">whereis</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#which"><span class="nav-number">4.</span> <span class="nav-text">which</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E5%92%8C%E8%A7%A3%E5%8E%8B"><span class="nav-number">5.</span> <span class="nav-text">文件打包和解压</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#gzip"><span class="nav-number">5.1.</span> <span class="nav-text">gzip</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#tar"><span class="nav-number">5.2.</span> <span class="nav-text">tar</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhanyeye</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhanyeye" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhanyeye" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </header>
+
+      
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div id="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+      <div class="main-inner">
+        
+
+        <div class="content post posts-expand">
+          
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/30/19-11-30-Linux-%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%89%93%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhanyeye">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zhanyeye's learning log">
+    </span>
+
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          19-11-30 Linux 文件查找与打包
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-30 21:03:21" itemprop="dateCreated datePublished" datetime="2019-11-30T21:03:21+08:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-01 15:08:09" itemprop="dateModified" datetime="2020-08-01T15:08:09+08:00">2020-08-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>内容来自<a target="_blank" rel="noopener" href="https://www.shiyanlou.com/">实验楼</a></p>
+<h5 id="find"><a href="#find" class="headerlink" title="find"></a>find</h5><p><code>find</code> 命令用于在目录下查找文件，并且会打印所找到文件的有关信息，<code>find</code> 的使用情况如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find [path...] [expression]</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>[expression]</code> 由下面四种类型组成：</p>
+<ul>
+<li><p><code>options</code> 配置项</p>
+<p>影响整体的操作</p>
+</li>
+<li><p><code>tests</code> 测试项</p>
+<p>返回一个 <code>true</code> 或 <code>false</code> 值，这些取决于文件的属性</p>
+</li>
+<li><p><code>actions</code> 操作项</p>
+<p>根据对应的操作，</p>
+</li>
+<li><p><code>operators</code> 运算符</p>
+<p>连接其它的参数。</p>
+</li>
+</ul>
+<p>例如下面的这个例子，查找 <code>/etc</code> 目录下，文件大小大于 100k 的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo find &#x2F;etc&#x2F; -size +100k   </span><br></pre></td></tr></table></figure>
+
+<img width="300" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191130211036.png">
+
+<p>这里需要说明的是，对于数值参数，可以指定为：</p>
+<ul>
+<li><code>+n</code> 大于 n</li>
+<li><code>-n</code> 小于 n</li>
+<li><code>n</code> 等于 n</li>
+</ul>
+<a id="more"></a>
+
+<h6 id="文件名"><a href="#文件名" class="headerlink" title="文件名"></a>文件名</h6><p>通配符</p>
+<p>对于常用的 <code>find</code> 和 <code>locate</code> 命令来说，可以通过一个包含特殊字符串的 <code>shell 模式（Shell Pattern）</code> 去比较文件名或者部分文件名。 这里的特殊字符串又被称为 <code>通配符(wildcards)</code> ，通配符是一些特殊字符，又被称为 <code>元字符(metacharacters)</code>，在后面的内容中我们统一称为 <code>通配符</code></p>
+<p>下面我们介绍常见的 <code>shell pattern</code> 中用到的通配符：</p>
+<ul>
+<li><code>*</code> ： 匹配 0 个 或多个字符</li>
+<li><code>?</code> ： 匹配任意 1 个字符</li>
+<li><code>[string]</code> ：匹配 <code>string</code> 字符串中的任意一个字符，如 <code>[abc]</code> 匹配 <code>abc</code> 三个字符中的任意一个，<code>[a-z0-9]</code> 匹配小写字母和数字。</li>
+<li><code>\</code> ：移除特殊字符的特殊含义，转义。如：空格</li>
+</ul>
+<p>基础名称模式</p>
+<ul>
+<li><code>-name</code> ：指定名称</li>
+<li><code>-iname</code> ：指定名称忽略大小写</li>
+</ul>
+<p>基础名称是指删除文件的前导目录，如果能够匹配到，则为 <code>True</code> ，我们知道 <code>find</code> 会打印所找到文件的有关信息，但是默认情况下，<code>find</code> 命令只会打印符合给定条件的文件名称到标准输出下。</p>
+<p>如下的简单示例，查找 <code>/usr</code> 目录下以字母 <code>r</code> 开头， <code>.txt</code> 结尾的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find &#x2F;usr -name &quot;r*.txt&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如下所示，使用 <code>-iname</code> 参数，不区分大小写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find &#x2F;usr -iname &quot;r*.txt&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>全名模式</p>
+<ul>
+<li><code>-path</code> ：指定路径</li>
+<li><code>-wholename</code> ：功能同 <code>-path</code> 类似</li>
+</ul>
+<p>同 <code>-name</code> 一样，<code>-path</code> 和 <code>-wholename</code> 也有对应的忽略大小写的参数，即 <code>-ipath</code> 和 <code>-iwholename</code> 。在使用 <code>-path</code> 参数时，需要指定从被搜索目录开始的 <code>全名</code>，也就是 <code>-path</code> 参数值的前缀需要跟被搜索目录一致。</p>
+<p>例如，在 <code>/usr/bin</code> 目录下搜索 <code>python</code> 文件，使用绝对路径可以这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find &#x2F;usr&#x2F;bin -path &#x2F;usr&#x2F;bin&#x2F;python</span><br></pre></td></tr></table></figure>
+
+<p>如果当前目录为 <code>/usr</code>，也可以使用相对路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find bin -path bin&#x2F;python</span><br></pre></td></tr></table></figure>
+
+
+
+<p>正则表达式</p>
+<ul>
+<li><code>-regex</code></li>
+<li><code>-iregex</code></li>
+</ul>
+<p>正如 <code>regex</code> 的中文释义一样，这里代指 <code>正则表达式</code>，与上面所说的通配符并不一样。<code>-regex</code> 可以通过正则表达式去匹配，并且我们可以通过 <code>-regextype</code> 选项去指定正则表达式的类型，常用的选项有（<code>emace</code>, <code>posix-awk</code>, <code>posix-egrep</code>），如使用 <code>-regextype posix-awk</code> ，代表与 <code>POSIX awk</code> 命令兼容的正则表达式。</p>
+<h6 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h6><p>符号链接</p>
+<p>符号链接 （symbolic links）是引用其他文件的名称。<code>find</code> 命令对符号链接的处理方式一般为检查链接本身或者检查链接所指向的文件。默认情况下， <code>find</code> 检查符号链接本身，即默认的 <code>-P</code> 选项。如果想要检查链接所指向的文件，可以使用 <code>-L</code> 参数。而 <code>-H</code> 参数，则代表除了处理命令行参数之外，不遵循符号链接。需要注意的是 <code>-P</code>，<code>-H</code>，<code>-L</code> 参数都必须在命令行上使用文件名之前指定此选项。</p>
+<ul>
+<li><code>-lname</code></li>
+<li><code>-ilname</code></li>
+</ul>
+<p><code>-lname</code> 属于测试项，用于匹配文件是否为一个符号链接，与对应的 <code>-ilname</code> 参数的区别同上面的大多数参数一样，不区分大小写。</p>
+<p>如下所示，我们分别查找 <code>/usr/bin</code> 目录下文件名包含 <code>python3</code> 的文件，和使用 <code>-lname</code> 参数，对得到的结果进行筛选，仅列出符号链接：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find &#x2F;usr&#x2F;bin -name &quot;*python3*&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://doc.shiyanlou.com/document-uid377240labid3903timestamp1509355442069.png/wm" alt="此处输入图片的描述"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find &#x2F;usr&#x2F;bin -lname &quot;*python3*&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://doc.shiyanlou.com/document-uid377240labid3903timestamp1509355467324.png/wm" alt="此处输入图片的描述"></p>
+<p>硬链接</p>
+<ul>
+<li><p><code>-samefile</code> 测试项</p>
+<p>如下示例，我们使用 <code>-samefile</code> 参数来得到当前目录下和 <code>file1</code> 文件 inode 相同的硬链接。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find -samefile file1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>-inum n</code> 测试项</p>
+<p>文件的 <code>inode</code> 号 <code>n</code>，<code>n</code> 是数值参数，可以是 <code>-n</code> 和 <code>+n</code></p>
+<p>每个 inode 都有一个号码，我们可以通过数值参数 <code>n</code> 来匹配相应的文件。</p>
+</li>
+<li><p><code>-links n</code> 测试项</p>
+<p>文件有 <code>n</code> 个硬链接，<code>n</code> 是数值参数，可以是 <code>-n</code> 和 <code>+n</code></p>
+<p>除此之外，硬链接的数目，也可以作为 <code>find</code> 的参数进行使用我们可以查看文件的硬链接数目，来判断与我们使用的 <code>-inum</code> 参数得到的结果是否一致。如下所示，匹配当前目录下硬链接数为 <code>3</code> 的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find -links 3</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h6 id="Time"><a href="#Time" class="headerlink" title="Time"></a>Time</h6><p>每个文件都有三个时间戳，分别为：</p>
+<ul>
+<li>访问（上一次访问文件的时间）</li>
+<li>更改（改变文件或其属性的时间）</li>
+<li>修改（修改文件内容的时间）</li>
+</ul>
+<p>注：部分系统还会有文件的创建时间，例如 (windows)。</p>
+<p>下面我们将介绍 <code>find</code> 命令中使用到这些时间戳的参数</p>
+<ul>
+<li><code>-atime n</code> 测试项</li>
+</ul>
+<p>文件上一次访问时间是在 <code>n*24</code> 小时之前。需要注意的是，如果我们使用的 <code>n</code> 值为 <code>0</code>，则向下取整，意味着距离上一次访问文件时间不足 <code>24</code> 小时。同样 <code>n</code> 是数值参数，可以是 <code>-n</code> 和 <code>+n</code></p>
+<ul>
+<li><p><code>-ctime n</code> 测试项</p>
+<p>这里代表的是状态的改变</p>
+</li>
+<li><p><code>-mtime n</code> 测试项</p>
+<p>这里代表文件内容被修改</p>
+</li>
+</ul>
+<p>为了方便记忆，我们可以将英文单词关联起来，这里的 <code>a</code> 是<code>access</code>，<code>c</code> 为 <code>change</code> ，而 <code>m</code> 则为 <code>modify</code>。</p>
+<p>除了用 <code>24</code> 小时计数之外，我们还可以细化到 <code>minute</code> 多少分钟，与上面对应的参数应该为：</p>
+<ul>
+<li><code>-amin n</code></li>
+<li><code>-cmin n</code></li>
+<li><code>-mmin n</code></li>
+</ul>
+<p>如下示例，我们查找当前目录下，修改文件的时间在 <code>5</code> 分钟 到 <code>24</code> 小时之间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find -mtime 0 -mmin +5</span><br></pre></td></tr></table></figure>
+
+<h6 id="Size"><a href="#Size" class="headerlink" title="Size"></a>Size</h6><p>文件的大小也是文件的属性中很重要的一栏，</p>
+<ul>
+<li><code>-size n[bckwMG]</code></li>
+</ul>
+<p>这里的 <code>n</code> 是数据参数，<code>b</code> 代表块 <code>block</code>，<code>c</code> 代表字节，<code>k</code> 代表 1024 字节，即 kb，<code>w</code> 代表字符数量（2-byte 的字符），<code>M</code> 代表兆字节，<code>G</code> 代表千兆字节。</p>
+<p>例如，查找当前目录下的大于 <code>100k</code> 的文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ find -size +100k</span><br></pre></td></tr></table></figure>
+
+<h6 id="type"><a href="#type" class="headerlink" title="type"></a>type</h6><p>这里我们仅介绍一些常用的文件类型</p>
+<ul>
+<li><code>-type c</code> 测试项</li>
+</ul>
+<p>这里代表 <code>c</code> 可以是以下的文件类型（仅列出部分文件类型）：</p>
+<ul>
+<li><code>d</code> 目录</li>
+<li><code>f</code> 普通文件</li>
+<li><code>l</code> 符号链接</li>
+</ul>
+<p>例如，查找 <code>/etc</code> 目录下，文件大小大于 <code>30k</code> 并且为普通文件的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo find &#x2F;etc -type f -size +30k</span><br></pre></td></tr></table></figure>
+
+<h6 id="Owner"><a href="#Owner" class="headerlink" title="Owner"></a>Owner</h6><ul>
+<li><p><code>-user uname</code></p>
+</li>
+<li><p><code>-group gname</code></p>
+<p>如上所示，<code>uname</code> 代表文件所属用户的名字，<code>gname</code> 代表文件所属组的名字</p>
+</li>
+<li><p><code>-uid n</code></p>
+</li>
+<li><p><code>-gid n</code></p>
+<p>这里的 n 分别代指用户 <code>id</code> 和 组 <code>id</code></p>
+</li>
+</ul>
+<p>如下所示，分别查找当前目录下所属用户为 <code>shiyanlou</code> 的文件，以及所属用户为 <code>root</code> 的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ find -user shiyanlou</span><br><span class="line"></span><br><span class="line"># root 用户的 id 为 0</span><br><span class="line">$ find -uid 0</span><br></pre></td></tr></table></figure>
+
+<h6 id="Exec"><a href="#Exec" class="headerlink" title="Exec"></a>Exec</h6><p>我们一般查找出来文件并不仅仅是看看而已，还会有进一步的操作，这个时候就要用到 <code>-exec</code> 选项。</p>
+<ul>
+<li><p>用法</p>
+<p><code>-exec</code> 选项后面紧跟要执行的命令或脚本，然后是 <code>&#123;&#125;</code>、空格和 <code>\;</code>。考虑到各个系统中 <code>;</code> 有不同的意义，所以前面要加反斜杠。有时使用这一选项是为了查找文件并删除它们。建议在真正执行删除之前，先确认一下。</p>
+<p><code>-ok</code> 选项的作用与上面的 <code>-exec</code> 一样，但它会增加一个额外的确认环节，对于查询结果的下一步操作，如果确认则输入 <code>y</code> 回车，如果否认则输入 <code>n</code> 回车。</p>
+</li>
+<li><p>实例 1</p>
+<p>目标：显示查找出来的文件的详细信息</p>
+<p>命令：<code>find . -type f -exec ls -l &#123;&#125; \;</code></p>
+<p>find 命令匹配到了当前目录下的所有普通文件，在 -exec 选项中使用 <code>ls -l</code> 命令将它们列出。</p>
+</li>
+<li><p>实例 2</p>
+<p>目标：删除当前目录下修改时间在 14 天前的文件</p>
+<p>命令：<code>find . -type f -mtime +14 -exec rm &#123;&#125; \;</code></p>
+<p>删除文件之前，应先查看要删除的文件，一定要小心！</p>
+</li>
+<li><p>实例 3</p>
+<p>目标：删除当前目录下后缀为 log 的文件，并在删除之前确认</p>
+<p>命令：<code>find . -name &#39;*.log&#39; -ok rm &#123;&#125; \;</code></p>
+<p>删除之前需要确认，按 <code>y</code> 键删除文件，按 <code>n</code> 键不删除。</p>
+</li>
+<li><p>实例 4</p>
+<p>目标：查找 <code>/etc</code> 目录下以 <code>passwd</code> 打头，并且内容包含 root 的文件</p>
+<p>命令：<code>find /etc -name &#39;passwd*&#39; -exec grep &#39;root&#39; &#123;&#125; \;</code></p>
+<p>find 命令首先匹配所有文件名为 <code>passwd*</code> 的文件，例如 <code>passwd、passwd.old、passwd.bak</code> 等，然后执行 <code>grep</code> 命令查看这些文件中是否存在 root 用户。</p>
+</li>
+</ul>
+<h5 id="locate"><a href="#locate" class="headerlink" title="locate"></a>locate</h5><p>除了使用 <code>find</code> 命令外，我们也可以使用 <code>locate</code> 命令来实现快速查找。但是不同于 <code>find</code> 命令，<code>locate</code> 命令其实是在一个保存有系统中所有文件名和目录名的数据库中去查找。而数据库中的内容并不是实时更新的，该数据库的更新操作可以使用 <code>updatedb</code> 命令来执行。</p>
+<p>如下，我们查找文件名中含有 <code>/usr/bin/python</code> 的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ locate &#x2F;usr&#x2F;bin&#x2F;python</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用 <code>--basename</code> 参数，查找基础名称，如下所示，查找基础名称中带有 <code>shiyanlou</code> 的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ locate --basename shiyanlou</span><br></pre></td></tr></table></figure>
+
+<h5 id="whereis"><a href="#whereis" class="headerlink" title="whereis"></a>whereis</h5><p><code>whereis</code> 命令同 <code>locate</code> 类似，也是在一个保存有系统中所有文件名和目录名的数据库中去查找。不同的在于<code>whereis</code> 命令查找的是二进制文件，源，或者 man 手册的文件。</p>
+<p>下面我们将会介绍一些该命令的常用参数并简单示例：</p>
+<ul>
+<li><code>-f</code> 定义搜索范围</li>
+<li><code>-b</code> 仅搜索二进制文件</li>
+<li><code>-m</code> 仅搜索 <code>man</code> 手册</li>
+<li><code>-s</code> 仅搜索源</li>
+</ul>
+<p>例如，搜索 <code>python</code> 相关的帮助手册:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ whereis -m python</span><br></pre></td></tr></table></figure>
+
+<h5 id="which"><a href="#which" class="headerlink" title="which"></a>which</h5><p><code>which</code> 命令一般用于查找 <code>shell</code> 命令的完整路径。该命令在环境变量<code>PATH</code>中列出的目录中搜索可执行文件或脚本进行匹配查找。</p>
+<p>常用的如 <code>-a</code> 参数，代表列出所有匹配的查找结果，而不仅仅是第一个。</p>
+<p>示例如下，查找 <code>python</code> 可执行文件的路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ which python</span><br></pre></td></tr></table></figure>
+
+<h5 id="文件打包和解压"><a href="#文件打包和解压" class="headerlink" title="文件打包和解压"></a>文件打包和解压</h5><h6 id="gzip"><a href="#gzip" class="headerlink" title="gzip"></a>gzip</h6><p><code>gzip</code> 命令用于对文件进行压缩，生成的压缩文件会以 <code>.gz</code> 结尾。而对应的解压缩的命令则是 <code>gunzip</code>。两个命令的使用格式情况如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gzip -v file</span><br><span class="line">gunzip -v file</span><br></pre></td></tr></table></figure>
+
+<p>简单示例，这里我们创建一个 <code>file4</code> 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ touch file4</span><br><span class="line">$ gzip file4</span><br><span class="line">$ ls</span><br></pre></td></tr></table></figure>
+
+<p>结果如下图，<code>file4</code> 文件消失，取而代之的是被压缩过的文件 <code>file4.gz</code>:</p>
+<p>解压文件 <code>file4</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gunzip file4.gz</span><br></pre></td></tr></table></figure>
+
+ <img width="500" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191201090607.png">
+
+<h6 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h6><p><code>tar</code> 是用于创建文件档案的命令行工具，多用于备份文件。顾名思义，<code>tar</code> 命令可以将一系列的文件打包到一个大文件中，也可以将大文件解包以恢复数据。下面，我们将介绍 <code>tar</code> 的常用参数，并简单示例。</p>
+<p><strong>注意：打包时一般使用相对路径，不然解压时会解压到绝对路径下面，可能会覆盖文件！</strong></p>
+<p>tar 命令的格式大致如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar [OPTION...] [FILE]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-c</code> 或 <code>--create</code> ：创建一个存档</li>
+<li><code>-r</code> ：将文件附加到档案文件末尾</li>
+<li><code>-z</code> 或 <code>--gzip</code> ：指定 <code>gzip</code> 格式</li>
+<li><code>-v</code> 或 <code>--verbose</code> ：显示文件处理的详细过程</li>
+<li><code>-f</code> ：指定档案文件名称</li>
+<li><code>-x</code> ：还原档案文件</li>
+</ul>
+<p>我们使用 <code>tar</code> 命令将四个文件归档到 <code>test.tar</code> 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ tar -cvf test.tar file1 file2 file3 file4</span><br><span class="line"></span><br><span class="line">$ ls</span><br></pre></td></tr></table></figure>
+
+<p>这时我们可以看见 <code>test.tar</code> 已经创建成功，接着我们删除四个文件，并从 <code>test.tar</code> 恢复文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ rm file1 file2 file3 file4</span><br><span class="line"></span><br><span class="line">$ ls</span><br><span class="line"></span><br><span class="line">$ tar -xvf test.tar</span><br></pre></td></tr></table></figure>
+
+ <img width="500" src="https://raw.githubusercontent.com/zhanyeye/Figure-bed/win-pic/img/20191201091459.png">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/29/19-11-29-Linux-%E7%9B%AE%E5%BD%95%E4%B8%8E%E6%96%87%E4%BB%B6/" rel="prev" title="19-11-29 Linux 目录与文件">
+      <i class="fa fa-chevron-left"></i> 19-11-29 Linux 目录与文件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/01/19-12-01-Linux-%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91/" rel="next" title="19-12-01 Linux 文本编辑（vim）">
+      19-12-01 Linux 文本编辑（vim） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+        </div>
+        
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhanyeye</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
